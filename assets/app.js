@@ -1,6 +1,27 @@
 'use strict';
 (async()=>{
 try {
+
+ // Check for a newer published calculation while this page stays open.
+ let version;
+ let checking=false;
+ async function checkVersion(){
+  if(checking||document.hidden)return;
+  checking=true;
+  try{
+   const r=await fetch('./data/manifest.json',{cache:'no-store'});
+   if(!r.ok)return;
+   const m=await r.json();
+   const next=m.source_fingerprint||m.updated_at||'initial';
+   if(version!==undefined&&next!==version){location.reload();return;}
+   version=next;
+  }catch(e){/* Keep the last valid charts when temporarily offline. */}
+  finally{checking=false;}
+ }
+ await checkVersion();
+ setInterval(checkVersion,60000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVersion();});
+
  const response=await fetch('./data/charts.json',{cache:'no-cache'});
  if(!response.ok)throw new Error('HTTP '+response.status);
  const figures=await response.json();
