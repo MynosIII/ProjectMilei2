@@ -1,0 +1,95 @@
+{
+  "n": 977,
+  "charts": 32,
+  "unique_answer_patterns": 757,
+  "invalid_ratings": 0,
+  "pca_variance": [
+    0.22018820362376051,
+    0.08581558084040208
+  ],
+  "top_categorical_associations": [
+    {
+      "Variable A": "Fuente",
+      "Variable B": "Problema",
+      "V corregida": 0.5205344988060479,
+      "p": 1.6412232742358997e-281,
+      "n": 977,
+      "% esperados <5": 59.3984962406015,
+      "q_BH": 4.595425167860519e-280
+    },
+    {
+      "Variable A": "Fuente",
+      "Variable B": "Identidad",
+      "V corregida": 0.40773841382689835,
+      "p": 1.2958538507214446e-171,
+      "n": 977,
+      "% esperados <5": 36.26373626373626,
+      "q_BH": 1.2094635940066817e-170
+    },
+    {
+      "Variable A": "Identidad",
+      "Variable B": "Problema",
+      "V corregida": 0.3717503912117346,
+      "p": 1.0925797711594807e-250,
+      "n": 977,
+      "% esperados <5": 74.89878542510121,
+      "q_BH": 1.529611679623273e-249
+    },
+    {
+      "Variable A": "Género",
+      "Variable B": "Problema",
+      "V corregida": 0.20815646839645827,
+      "p": 1.4474253586504268e-15,
+      "n": 977,
+      "% esperados <5": 48.68421052631579,
+      "q_BH": 1.0131977510552987e-14
+    },
+    {
+      "Variable A": "Género",
+      "Variable B": "Identidad",
+      "V corregida": 0.1915316045224592,
+      "p": 9.945518242577133e-15,
+      "n": 977,
+      "% esperados <5": 38.46153846153847,
+      "q_BH": 5.569490215843194e-14
+    }
+  ],
+  "largest_spread": [
+    {
+      "Identidad": "Sin declaración",
+      "n": 53,
+      "Dispersión": 47.00481208401682,
+      "P90": 87.83180259165768
+    },
+    {
+      "Identidad": "Derecha / centroderecha",
+      "n": 129,
+      "Dispersión": 31.022417723175753,
+      "P90": 55.15413470198261
+    },
+    {
+      "Identidad": "Independiente / sin definición",
+      "n": 98,
+      "Dispersión": 25.183429815687855,
+      "P90": 32.598575702916435
+    }
+  ],
+  "most_discriminating_questions": [
+    {
+      "Pregunta": "Bancos",
+      "V corregida": 0.6236076678787783,
+      "n": 977
+    },
+    {
+      "Pregunta": "Mercado",
+      "V corregida": 0.6511072701266015,
+      "n": 977
+    },
+    {
+      "Pregunta": "Modos de producción",
+      "V corregida": 0.743208254781759,
+      "n": 977
+    }
+  ],
+  "peronista_kirchnerista_pct": 18.219037871033777
+}

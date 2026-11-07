@@ -1,0 +1,782 @@
+[
+  {
+    "question": "Autoridad Política",
+    "key_question": 1,
+    "form_options": [
+      "El óptimo funcionamiento de una comunidad política requiere de líderes fuertes que mantengan la paz y el orden para el progreso.",
+      "La única forma legítima de organizar una comunidad política es a través de la libre asociación y los acuerdos voluntarios..",
+      "El óptimo funcionamiento de una comunidad política requiere del fortalecimiento de las instituciones democráticas y la implementación de reformas tendientes a mejorar el funcionamiento del Estado."
+    ],
+    "answers": {
+      "El óptimo funcionamiento de una comunidad política requiere de líderes fuertes que mantengan la paz y el orden para el progreso.": [
+        0,
+        2,
+        0
+      ],
+      "La única forma legítima de organizar una comunidad política es a través de la libre asociación y los acuerdos voluntarios..": [
+        0,
+        0,
+        0
+      ],
+      "El óptimo funcionamiento de una comunidad política requiere del fortalecimiento de las instituciones democráticas y la implementación de reformas tendientes a mejorar el funcionamiento del Estado.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Acción Política",
+    "key_question": 2,
+    "form_options": [
+      "Debemos tomar pasos definitivos para la consecución de nuestras propuestas, incluso si esto requiere del uso de la violencia.",
+      "La consecución de nuestros fines requiere de acción directa, iniciativas de resistencia civil autoorganizadas a nivel grupal o individual.",
+      "Nuestros fines y propuestas siempre deben ir de la mano de las instituciones democráticas, el diálogo y el consenso."
+    ],
+    "answers": {
+      "Debemos tomar pasos definitivos para la consecución de nuestras propuestas, incluso si esto requiere del uso de la violencia.": [
+        0,
+        2,
+        0
+      ],
+      "La consecución de nuestros fines requiere de acción directa, iniciativas de resistencia civil autoorganizadas a nivel grupal o individual.": [
+        0,
+        0,
+        0
+      ],
+      "Nuestros fines y propuestas siempre deben ir de la mano de las instituciones democráticas, el diálogo y el consenso.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Cambio Social",
+    "key_question": 3,
+    "form_options": [
+      "Actualmente hay una gran revisión de muchos valores, hábitos e ideas del pasado inmediato. Es necesario que el estado tenga un rol activo en este proceso, bien imponiendo la transformación social o frenandola.",
+      "La transformación social debería ser influenciada por cambios a nivel individual o grupal, no por las autoridades.",
+      "El Estado puede legislar normas para influir sobre los hábitos y valores de las personas, pero estas deben ser sometidas a votación popular u otros procedimientos democráticos"
+    ],
+    "answers": {
+      "Actualmente hay una gran revisión de muchos valores, hábitos e ideas del pasado inmediato. Es necesario que el estado tenga un rol activo en este proceso, bien imponiendo la transformación social o frenandola.": [
+        0,
+        2,
+        0
+      ],
+      "La transformación social debería ser influenciada por cambios a nivel individual o grupal, no por las autoridades.": [
+        0,
+        0,
+        0
+      ],
+      "El Estado puede legislar normas para influir sobre los hábitos y valores de las personas, pero estas deben ser sometidas a votación popular u otros procedimientos democráticos": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Seguridad Preventiva",
+    "key_question": 4,
+    "form_options": [
+      "Los nuevos sistemas de vigilancia y monitoreo de la población son una buena herramienta para combatir el crimen. El que nada debe, nada teme.",
+      "La vigilancia y el monitoreo de los ciudadanos a expensas de su privacidad, sea por el Estado o por empresas, es un crimen y debe ser prohibida.",
+      "El Estado debería tener permiso para vigilar y monitorear a ciudadanos, pero sólo en casos provistos por Ley y con mandato explícito de una autoridad competente."
+    ],
+    "answers": {
+      "Los nuevos sistemas de vigilancia y monitoreo de la población son una buena herramienta para combatir el crimen. El que nada debe, nada teme.": [
+        0,
+        2,
+        0
+      ],
+      "La vigilancia y el monitoreo de los ciudadanos a expensas de su privacidad, sea por el Estado o por empresas, es un crimen y debe ser prohibida.": [
+        0,
+        0,
+        0
+      ],
+      "El Estado debería tener permiso para vigilar y monitorear a ciudadanos, pero sólo en casos provistos por Ley y con mandato explícito de una autoridad competente.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Inmigración",
+    "key_question": 5,
+    "form_options": [
+      "Debemos limitar la inmigración al mínimo necesario y debemos asegurar que los inmigrantes se integren correctamente en la cultura y los valores de nuestra nación.",
+      "El control generalizado de las fronteras es un fenómeno relativamente reciente, la libre circulación es la única posición consecuente con la libertad.",
+      "La inmigración trae beneficios positivos, pero nuestras fronteras deben estar controladas para no fomentar políticas y cambios sociales irresponsables."
+    ],
+    "answers": {
+      "Debemos limitar la inmigración al mínimo necesario y debemos asegurar que los inmigrantes se integren correctamente en la cultura y los valores de nuestra nación.": [
+        0,
+        2,
+        0
+      ],
+      "El control generalizado de las fronteras es un fenómeno relativamente reciente, la libre circulación es la única posición consecuente con la libertad.": [
+        0,
+        0,
+        0
+      ],
+      "La inmigración trae beneficios positivos, pero nuestras fronteras deben estar controladas para no fomentar políticas y cambios sociales irresponsables.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Servicio Militar",
+    "key_question": 6,
+    "form_options": [
+      "El servicio militar debe ser obligatorio, la disciplina cohesiona la sociedad y nos prepara para defender lo nuestro en un mundo cada vez más inestable.",
+      "Resulta inaceptable que una institución nos instruya a matar a nuestros semejantes por intereses de Estado. Hay que idear soluciones alternativas para la defensa.",
+      "El servicio militar debe ser voluntario. Es el mejor modo de tener un ejército profesional y además se respeta la autonomía de las personas."
+    ],
+    "answers": {
+      "El servicio militar debe ser obligatorio, la disciplina cohesiona la sociedad y nos prepara para defender lo nuestro en un mundo cada vez más inestable.": [
+        0,
+        2,
+        0
+      ],
+      "Resulta inaceptable que una institución nos instruya a matar a nuestros semejantes por intereses de Estado. Hay que idear soluciones alternativas para la defensa.": [
+        0,
+        0,
+        0
+      ],
+      "El servicio militar debe ser voluntario. Es el mejor modo de tener un ejército profesional y además se respeta la autonomía de las personas.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Libertad de Expresión",
+    "key_question": 7,
+    "form_options": [
+      "Los gobiernos no deberían limitar la libertad de expresión. El fundamento último del intercambio libre de opiniones es la búsqueda de la verdad.",
+      "La libertad de expresión nunca es un derecho absoluto. La censura es legítima si se combate la incitación al odio, la discrimnación, la desinformación, la manipulación o la desobediencia civil.",
+      "Los gobiernos sólo deberían limitar la libertad de expresión de personas o grupos extremistas que inciten acciones ilegales."
+    ],
+    "answers": {
+      "Los gobiernos no deberían limitar la libertad de expresión. El fundamento último del intercambio libre de opiniones es la búsqueda de la verdad.": [
+        0,
+        2,
+        0
+      ],
+      "La libertad de expresión nunca es un derecho absoluto. La censura es legítima si se combate la incitación al odio, la discrimnación, la desinformación, la manipulación o la desobediencia civil.": [
+        0,
+        0,
+        0
+      ],
+      "Los gobiernos sólo deberían limitar la libertad de expresión de personas o grupos extremistas que inciten acciones ilegales.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Libertad de Culto",
+    "key_question": 8,
+    "form_options": [
+      "La tolerancia religiosa presupone falsamente que todas las religiones son iguales y que sus respectivas influencias en la sociedad son indistintas. Las autoridades deben promover activamente una cosmovisión y valores.",
+      "La sociedad debe ser organizada de manera independiente a confesiones religiosas o irreligiosas y las autoridades no deben promover valores o normas morales particulares.",
+      "La libertad religiosa es un derecho, pero ello no obsta a que el Estado sostenga un culto mayoritario, históricamente enraizado en la población"
+    ],
+    "answers": {
+      "La tolerancia religiosa presupone falsamente que todas las religiones son iguales y que sus respectivas influencias en la sociedad son indistintas. Las autoridades deben promover activamente una cosmovisión y valores.": [
+        0,
+        0,
+        0
+      ],
+      "La sociedad debe ser organizada de manera independiente a confesiones religiosas o irreligiosas y las autoridades no deben promover valores o normas morales particulares.": [
+        0,
+        2,
+        0
+      ],
+      "La libertad religiosa es un derecho, pero ello no obsta a que el Estado sostenga un culto mayoritario, históricamente enraizado en la población": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Educación",
+    "key_question": 9,
+    "form_options": [
+      "Las autoridades deben dictar y monitorear los planes y programas educativos en todos los niveles, ya sea en establecimientos públicos o privados.",
+      "Las autoridades no deben interferir en la educación de los hijos, pues este es un derecho de las familias y, por extensión, de las comunidades locales culturales o religiosas.",
+      "Las autoridades deben limitarse a organizar y conducir las instituciones de gestión estatal y asegurar que todos puedan acceder a ella."
+    ],
+    "answers": {
+      "Las autoridades deben dictar y monitorear los planes y programas educativos en todos los niveles, ya sea en establecimientos públicos o privados.": [
+        0,
+        2,
+        0
+      ],
+      "Las autoridades no deben interferir en la educación de los hijos, pues este es un derecho de las familias y, por extensión, de las comunidades locales culturales o religiosas.": [
+        0,
+        0,
+        0
+      ],
+      "Las autoridades deben limitarse a organizar y conducir las instituciones de gestión estatal y asegurar que todos puedan acceder a ella.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Modos de producción",
+    "key_question": 10,
+    "form_options": [
+      "Hay que sostener la propiedad privada de los medios de producción, la libre empresa y la libre competencia, bases del desarrollo económico y la prosperidad.",
+      "Hay que superar el modo de producción capitalista, base de la explotación y las crisis cíclicas del sistema económico vigente.",
+      "Hay que articular un punto medio entre el modo de producción capitalista y las políticas de planificación económica deliberada."
+    ],
+    "answers": {
+      "Hay que sostener la propiedad privada de los medios de producción, la libre empresa y la libre competencia, bases del desarrollo económico y la prosperidad.": [
+        0,
+        2,
+        0
+      ],
+      "Hay que superar el modo de producción capitalista, base de la explotación y las crisis cíclicas del sistema económico vigente.": [
+        0,
+        0,
+        0
+      ],
+      "Hay que articular un punto medio entre el modo de producción capitalista y las políticas de planificación económica deliberada.": [
+        0,
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Mercado",
+    "key_question": 11,
+    "form_options": [
+      "El mercado es libre o no es mercado, las regulaciones deben reducirse al mínimo o eliminarse.",
+      "El mercado es ineficiente, la asignación de recursos debería ser planificada.",
+      "El mercado puede ser útil para la asignación de recursos, pero este debe estar ampliamente regulado."
+    ],
+    "answers": {
+      "El mercado es libre o no es mercado, las regulaciones deben reducirse al mínimo o eliminarse.": [
+        2,
+        0,
+        0
+      ],
+      "El mercado es ineficiente, la asignación de recursos debería ser planificada.": [
+        0,
+        0,
+        0
+      ],
+      "El mercado puede ser útil para la asignación de recursos, pero este debe estar ampliamente regulado.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Dinero y Moneda",
+    "key_question": 12,
+    "form_options": [
+      "Hay que instaurar un régimen de libertad monetaria, libre competencia de divisas: dólares, oro, bitcoin, etc.",
+      "Idealmente, habría que abolir el dinero y sustituirlo por vales de trabajo o cartillas de racionamiento.",
+      "Hay que mantener un régimen de soberanía monetaria, una moneda nacional controlada y monopolizada por el gobierno."
+    ],
+    "answers": {
+      "Hay que instaurar un régimen de libertad monetaria, libre competencia de divisas: dólares, oro, bitcoin, etc.": [
+        2,
+        0,
+        0
+      ],
+      "Idealmente, habría que abolir el dinero y sustituirlo por vales de trabajo o cartillas de racionamiento.": [
+        0,
+        0,
+        0
+      ],
+      "Hay que mantener un régimen de soberanía monetaria, una moneda nacional controlada y monopolizada por el gobierno.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Impuestos (Financiamiento y subsistencia del Estado)",
+    "key_question": 13,
+    "form_options": [
+      "Debemos eliminar o reducir los impuestos al mínimo posible. La mayoría de ellos son inmorales y antieconómicos.",
+      "Debemos aplicar una fuerte política de impuestos progresivos con el fin de distribuir la riqueza e incrementar el bienestar social.",
+      "Los impuestos son un elemento indispensable del contrato social, pero debemos aplicar una política fiscal razonable para no incurrir en el déficit."
+    ],
+    "answers": {
+      "Debemos eliminar o reducir los impuestos al mínimo posible. La mayoría de ellos son inmorales y antieconómicos.": [
+        2,
+        0,
+        0
+      ],
+      "Debemos aplicar una fuerte política de impuestos progresivos con el fin de distribuir la riqueza e incrementar el bienestar social.": [
+        0,
+        0,
+        0
+      ],
+      "Los impuestos son un elemento indispensable del contrato social, pero debemos aplicar una política fiscal razonable para no incurrir en el déficit.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Bancos",
+    "key_question": 14,
+    "form_options": [
+      "Hay que eliminar toda intervención estatal sobre el dinero y el crédito.",
+      "Hay que cerrar todos los bancos privados y centralizar el crédito en manos del estado.",
+      "Las autoridades monetarias deben controlar el dinero y el crédito para asegurar la estabilidad económica de la nación."
+    ],
+    "answers": {
+      "Hay que eliminar toda intervención estatal sobre el dinero y el crédito.": [
+        2,
+        0,
+        0
+      ],
+      "Hay que cerrar todos los bancos privados y centralizar el crédito en manos del estado.": [
+        0,
+        0,
+        0
+      ],
+      "Las autoridades monetarias deben controlar el dinero y el crédito para asegurar la estabilidad económica de la nación.": [
+        1,
+        0.5,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Comercio Exterior",
+    "key_question": 15,
+    "form_options": [
+      "No debe haber limitaciones al comercio exterior, este debe ser libre y sus aranceles deben reducirse o eliminarse.",
+      "Hay que limitar el comercio exterior en un esfuerzo por construir estructuras económicas independientes y autosuficientes.",
+      "El libre comercio puede ser provechoso, pero es admisible aplicar medidas proteccionistas de acuerdo a una planificación estratégica."
+    ],
+    "answers": {
+      "No debe haber limitaciones al comercio exterior, este debe ser libre y sus aranceles deben reducirse o eliminarse.": [
+        2,
+        0,
+        0
+      ],
+      "Hay que limitar el comercio exterior en un esfuerzo por construir estructuras económicas independientes y autosuficientes.": [
+        0,
+        0,
+        0
+      ],
+      "El libre comercio puede ser provechoso, pero es admisible aplicar medidas proteccionistas de acuerdo a una planificación estratégica.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Salarios",
+    "key_question": 16,
+    "form_options": [
+      "Los salarios se forman por procesos de mercado, para incrementarlos, solo debemos incrementar la productividad de nuestra economía.",
+      "¡De cada cual según sus capacidades, a cada cual según sus necesidades!",
+      "Los salarios se forman por procesos de mercado, pero requerimos de una legislación que imponga salarios mínimos."
+    ],
+    "answers": {
+      "Los salarios se forman por procesos de mercado, para incrementarlos, solo debemos incrementar la productividad de nuestra economía.": [
+        2,
+        0,
+        0
+      ],
+      "¡De cada cual según sus capacidades, a cada cual según sus necesidades!": [
+        0,
+        0,
+        0
+      ],
+      "Los salarios se forman por procesos de mercado, pero requerimos de una legislación que imponga salarios mínimos.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Precios",
+    "key_question": 17,
+    "form_options": [
+      "No hay que intervenir sobre el sistema de precios porque estos comunican información pertinente a todos los participantes del mercado.",
+      "Los precios deberían fijarse dinámicamente por una oficina central de planificación utilizando, por ejemplo, la cibernética.",
+      "Los mecanismos de mercado pueden formar los precios, pero hay que controlarlos para asegurar la disponibilidad y el acceso de ciertos bienes y servicios."
+    ],
+    "answers": {
+      "No hay que intervenir sobre el sistema de precios porque estos comunican información pertinente a todos los participantes del mercado.": [
+        2,
+        0,
+        0
+      ],
+      "Los precios deberían fijarse dinámicamente por una oficina central de planificación utilizando, por ejemplo, la cibernética.": [
+        0,
+        0,
+        0
+      ],
+      "Los mecanismos de mercado pueden formar los precios, pero hay que controlarlos para asegurar la disponibilidad y el acceso de ciertos bienes y servicios.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Seguridad Social",
+    "key_question": 18,
+    "form_options": [
+      "Los servicios sociales deberían ser provistos por la libre competencia empresarial, garantizando así la gestión más eficiente de los mismos.",
+      "Hay que garantizar un estado de bienestar mediante fuertes políticas de redistribución de la riqueza.",
+      "Hay que garantizar el acceso público a ciertos servicios básicos bajo los principios de una justicia distributiva."
+    ],
+    "answers": {
+      "Los servicios sociales deberían ser provistos por la libre competencia empresarial, garantizando así la gestión más eficiente de los mismos.": [
+        2,
+        1,
+        0
+      ],
+      "Hay que garantizar un estado de bienestar mediante fuertes políticas de redistribución de la riqueza.": [
+        0,
+        0,
+        0
+      ],
+      "Hay que garantizar el acceso público a ciertos servicios básicos bajo los principios de una justicia distributiva.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Propiedad sobre los Recursos Naturales",
+    "key_question": 19,
+    "form_options": [
+      "Los derechos de propiedad exclusiva sobre los recursos naturales suelen garantizar el desarrollo de una gestión óptima de los mismos.",
+      "Los recursos naturales deberían ser de libre acceso, sin ningún tipo de limitaciones derivadas de la presencia de derechos de propiedad.",
+      "Los derechos de propiedad común sobre los recursos naturales, gestionados a nivel comunal o estatal, suelen garantizar una gestión óptima de los mismos."
+    ],
+    "answers": {
+      "Los derechos de propiedad exclusiva sobre los recursos naturales suelen garantizar el desarrollo de una gestión óptima de los mismos.": [
+        2,
+        0,
+        0
+      ],
+      "Los recursos naturales deberían ser de libre acceso, sin ningún tipo de limitaciones derivadas de la presencia de derechos de propiedad.": [
+        0,
+        0,
+        0
+      ],
+      "Los derechos de propiedad común sobre los recursos naturales, gestionados a nivel comunal o estatal, suelen garantizar una gestión óptima de los mismos.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Moral",
+    "key_question": 20,
+    "form_options": [
+      "Nuestras obligaciones y deberes morales derivan de principios supremos y universales fundados en la naturaleza humana y cognoscibles por la razón.",
+      "Ningún conocimiento o principio moral es verdadero independientemente de las opiniones de las personas o de sus circunstancias.",
+      "Nuestras obligaciones y deberes morales derivan de criterios naturales, empíricos y no éticos, como minimizar el sufrimiento o maximizar el placer, el bienestar o la felicidad."
+    ],
+    "answers": {
+      "Nuestras obligaciones y deberes morales derivan de principios supremos y universales fundados en la naturaleza humana y cognoscibles por la razón.": [
+        2,
+        0,
+        0
+      ],
+      "Ningún conocimiento o principio moral es verdadero independientemente de las opiniones de las personas o de sus circunstancias.": [
+        0,
+        0,
+        0
+      ],
+      "Nuestras obligaciones y deberes morales derivan de criterios naturales, empíricos y no éticos, como minimizar el sufrimiento o maximizar el placer, el bienestar o la felicidad.": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "question": "Identidad Humana",
+    "key_question": 21,
+    "form_options": [
+      "Hay una naturaleza humana y esta puede alcanzar su perfeccionamiento al ordenar la inteligencia y voluntad hacia su fin último.",
+      "No hay naturaleza humana, el hombre existe como un proyecto a realizar, es radicalmente libre y dueño de su propio destino y propósito.",
+      "Hay una naturaleza humana, pero esta solo es resultado de la constitución biológica del hombre y el conjunto de sus relaciones sociales."
+    ],
+    "answers": {
+      "Hay una naturaleza humana y esta puede alcanzar su perfeccionamiento al ordenar la inteligencia y voluntad hacia su fin último.": [
+        0,
+        0,
+        0
+      ],
+      "No hay naturaleza humana, el hombre existe como un proyecto a realizar, es radicalmente libre y dueño de su propio destino y propósito.": [
+        0,
+        0,
+        2
+      ],
+      "Hay una naturaleza humana, pero esta solo es resultado de la constitución biológica del hombre y el conjunto de sus relaciones sociales.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Tradición",
+    "key_question": 22,
+    "form_options": [
+      "Debemos honrar el pasado y resguardar los valores, hábitos y costumbres nucleares de nuestra civilización.",
+      "La cultura es una construcción social artificial. La “tradición” es un instrumento de poder disciplinario que sirve para la dominación de unos a otros.",
+      "La cultura y la tradición no deben ser ideales prácticos porque atentan contra la diversidad y perjudican una cohesión social sana y dinámica."
+    ],
+    "answers": {
+      "Debemos honrar el pasado y resguardar los valores, hábitos y costumbres nucleares de nuestra civilización.": [
+        0,
+        0,
+        0
+      ],
+      "La cultura es una construcción social artificial. La “tradición” es un instrumento de poder disciplinario que sirve para la dominación de unos a otros.": [
+        0,
+        0,
+        2
+      ],
+      "La cultura y la tradición no deben ser ideales prácticos porque atentan contra la diversidad y perjudican una cohesión social sana y dinámica.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Religión",
+    "key_question": 23,
+    "form_options": [
+      "La religiosidad es una característica inherente al ser humano y cumple un importante rol en unir a las personas bajo ideas y preceptos que los trascienden.",
+      "La religión ha tenido consecuencias nefastas sobre el progreso de la humanidad. Es una herramienta de manipulación social y una gran detractora de la ciencia y la razón.",
+      "La religión siempre ha sido importante en el ser humano, pero esta debe reducirse al ámbito de la consciencia y no traslucir a la vida social y política."
+    ],
+    "answers": {
+      "La religiosidad es una característica inherente al ser humano y cumple un importante rol en unir a las personas bajo ideas y preceptos que los trascienden.": [
+        0,
+        0,
+        0
+      ],
+      "La religión ha tenido consecuencias nefastas sobre el progreso de la humanidad. Es una herramienta de manipulación social y una gran detractora de la ciencia y la razón.": [
+        0,
+        0,
+        2
+      ],
+      "La religión siempre ha sido importante en el ser humano, pero esta debe reducirse al ámbito de la consciencia y no traslucir a la vida social y política.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Igualitarismo",
+    "key_question": 24,
+    "form_options": [
+      "El igualitarismo, obsesión de la modernidad, es una rebelión contra la naturaleza fundada en el resentimiento.",
+      "Las desigualdades son producto de unas determinadas circunstancias sociales y por consiguiente, es posible y también benéfico eliminarlas.",
+      "La igualdad socioeconómica no debe ser un ideal ni un criterio permanente para juzgar la sociedad, pero hay que asegurar una igualdad de oportunidades basada en la no discriminación."
+    ],
+    "answers": {
+      "El igualitarismo, obsesión de la modernidad, es una rebelión contra la naturaleza fundada en el resentimiento.": [
+        0,
+        0,
+        0
+      ],
+      "Las desigualdades son producto de unas determinadas circunstancias sociales y por consiguiente, es posible y también benéfico eliminarlas.": [
+        0,
+        0,
+        2
+      ],
+      "La igualdad socioeconómica no debe ser un ideal ni un criterio permanente para juzgar la sociedad, pero hay que asegurar una igualdad de oportunidades basada en la no discriminación.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Familia",
+    "key_question": 25,
+    "form_options": [
+      "La familia tradicional, elemento primigenio de la arquitectura social, debe ser objeto de preservación, apoyo y promoción.",
+      "La familia tradicional, bastión del patriarcado y la heteronorma, es una institución que frena el progreso y que debe superarse.",
+      "No hay tipos de familia mejores o peores, pues ante todo, es una asociación que surge de la voluntad de uno o más adultos de establecer una relación perdurable de intimidad y cuidado."
+    ],
+    "answers": {
+      "La familia tradicional, elemento primigenio de la arquitectura social, debe ser objeto de preservación, apoyo y promoción.": [
+        0,
+        0,
+        0
+      ],
+      "La familia tradicional, bastión del patriarcado y la heteronorma, es una institución que frena el progreso y que debe superarse.": [
+        0,
+        0,
+        2
+      ],
+      "No hay tipos de familia mejores o peores, pues ante todo, es una asociación que surge de la voluntad de uno o más adultos de establecer una relación perdurable de intimidad y cuidado.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Feminismo",
+    "key_question": 26,
+    "form_options": [
+      "El feminismo, en todas sus variantes, es nocivo para las personas y el conjunto de la sociedad. Desde sus orígenes ha transmitido una versión distorsionada de la historia, el progreso y las sanas diferencias entre el hombre y la mujer.",
+      "La sociedad está organizada bajo un orden androcéntrico que sitúa a las mujeres en un estatus de subordinación y explotación. Debemos deconstruir este orden y emancipar a la mujer.",
+      "El feminismo es un motor del cambio social que ha logrado muchos logros durante el siglo XX, pero en al actualidad, el activismo feminista ha ido demasiado lejos."
+    ],
+    "answers": {
+      "El feminismo, en todas sus variantes, es nocivo para las personas y el conjunto de la sociedad. Desde sus orígenes ha transmitido una versión distorsionada de la historia, el progreso y las sanas diferencias entre el hombre y la mujer.": [
+        0,
+        0,
+        0
+      ],
+      "La sociedad está organizada bajo un orden androcéntrico que sitúa a las mujeres en un estatus de subordinación y explotación. Debemos deconstruir este orden y emancipar a la mujer.": [
+        0,
+        0,
+        2
+      ],
+      "El feminismo es un motor del cambio social que ha logrado muchos logros durante el siglo XX, pero en al actualidad, el activismo feminista ha ido demasiado lejos.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Movimiento LGTBQI+",
+    "key_question": 27,
+    "form_options": [
+      "Los actos homosexuales son intrínsecamente desordenados, pues son contrarios a la ley natural. El respeto a las personas LGBT+ no supone en ningún caso la aprobación de sus actos.",
+      "La sexualidad es una construcción histórica y social. Lo normal y lo anormal, lo legítimo e ilegítimo, se delinea por discursos mediante el poder. La emancipación sexual supone abandonar las identidades sexuales.",
+      "Hay que combatir el clima de intolerancia y discrimanción contra las minorías sexuales. Debemos apoyar el movimiento LGBT+, siempre y cuando esto no provoque nuevas desigualdades legales."
+    ],
+    "answers": {
+      "Los actos homosexuales son intrínsecamente desordenados, pues son contrarios a la ley natural. El respeto a las personas LGBT+ no supone en ningún caso la aprobación de sus actos.": [
+        0,
+        0,
+        0
+      ],
+      "La sexualidad es una construcción histórica y social. Lo normal y lo anormal, lo legítimo e ilegítimo, se delinea por discursos mediante el poder. La emancipación sexual supone abandonar las identidades sexuales.": [
+        0,
+        0,
+        2
+      ],
+      "Hay que combatir el clima de intolerancia y discrimanción contra las minorías sexuales. Debemos apoyar el movimiento LGBT+, siempre y cuando esto no provoque nuevas desigualdades legales.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Tranhsumanismo",
+    "key_question": 28,
+    "form_options": [
+      "La biotecnología debe restringirse a usos terapéuticos. No es lo mismo curar que manipular ilimitadamente al ser humano y redefinir su identidad.",
+      "Debemos aprovechar al máximo la capacidad de la biotecnología para transformar al ser humano y mejorarlo en su dimensión física, psicológica e intelectual. Envejecer, sufrir o morir, podrían ser cosas del pasado.",
+      "El transhumanismo no es algo intrínsecamente malo, el problema reside en otros aspectos, mayores niveles de desigualdad o el consentimiento de las modificaciones prenatales, por dar ejemplos."
+    ],
+    "answers": {
+      "La biotecnología debe restringirse a usos terapéuticos. No es lo mismo curar que manipular ilimitadamente al ser humano y redefinir su identidad.": [
+        0,
+        0,
+        0
+      ],
+      "Debemos aprovechar al máximo la capacidad de la biotecnología para transformar al ser humano y mejorarlo en su dimensión física, psicológica e intelectual. Envejecer, sufrir o morir, podrían ser cosas del pasado.": [
+        0,
+        0,
+        2
+      ],
+      "El transhumanismo no es algo intrínsecamente malo, el problema reside en otros aspectos, mayores niveles de desigualdad o el consentimiento de las modificaciones prenatales, por dar ejemplos.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Animalismo",
+    "key_question": 29,
+    "form_options": [
+      "El ser humano posee un derecho legítimo a disponer de los animales y los bienes materiales. Debemos luchar contra la sacralización de la naturaleza, que es inherentemente anti humanista y misántropa.",
+      "Debemos luchar por la liberación animal y el reconocimiento de sus derechos, ignorados por la vigencia de un antropocentrismo que está destruyendo el planeta.",
+      "La lucha ecologista es una prioridad, pero no porque preservar la naturaleza sea un fin en sí mismo, sino porque sirve para que podamos vivir en una sociedad más saludable."
+    ],
+    "answers": {
+      "El ser humano posee un derecho legítimo a disponer de los animales y los bienes materiales. Debemos luchar contra la sacralización de la naturaleza, que es inherentemente anti humanista y misántropa.": [
+        0,
+        0,
+        0
+      ],
+      "Debemos luchar por la liberación animal y el reconocimiento de sus derechos, ignorados por la vigencia de un antropocentrismo que está destruyendo el planeta.": [
+        0,
+        0,
+        2
+      ],
+      "La lucha ecologista es una prioridad, pero no porque preservar la naturaleza sea un fin en sí mismo, sino porque sirve para que podamos vivir en una sociedad más saludable.": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "question": "Derecho y Justicia",
+    "key_question": 30,
+    "form_options": [
+      "Solo existen normas creadas por el hombre y mediadas por el Estado.",
+      "Una ley injusta, no es ley y es un deber moral desobedecerla.",
+      "Las normas jurídicas se legitiman por medio de la democracia. Solo el diálogo y el consenso tienen un carácter dirimente para resolver las controversias de una sociedad cada vez más plural."
+    ],
+    "answers": {
+      "Solo existen normas creadas por el hombre y mediadas por el Estado.": [
+        0,
+        0,
+        0
+      ],
+      "Una ley injusta, no es ley y es un deber moral desobedecerla.": [
+        0,
+        0,
+        2
+      ],
+      "Las normas jurídicas se legitiman por medio de la democracia. Solo el diálogo y el consenso tienen un carácter dirimente para resolver las controversias de una sociedad cada vez más plural.": [
+        0,
+        0,
+        1
+      ]
+    }
+  }
+]

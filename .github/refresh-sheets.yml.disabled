@@ -1,0 +1,58 @@
+name: Refresh Sheets and publish Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pjm-pages
+  cancel-in-progress: false
+
+jobs:
+  refresh-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install analysis dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Recalculate from Google Sheets
+        run: python -I -S scripts/refresh.py
+      - name: Verify public files
+        run: node scripts/verify.mjs
+      - name: Retain the latest public aggregates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets data
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh public aggregates from Google Sheets'
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - name: Stage only public website files
+        run: |
+          mkdir _site
+          cp index.html .nojekyll _site/
+          cp -R assets data _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

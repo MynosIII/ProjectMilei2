@@ -1,0 +1,91 @@
+﻿Pregunta,Título,Opción,Texto,Score 1,Score 2,Score 3
+1,Autoridad Política,1,El óptimo funcionamiento de una comunidad política requiere de líderes fuertes que mantengan la paz y el orden para el progreso.,0,2,0
+1,Autoridad Política,2,La única forma legítima de organizar una comunidad política es a través de la libre asociación y los acuerdos voluntarios..,0,0,0
+1,Autoridad Política,3,El óptimo funcionamiento de una comunidad política requiere del fortalecimiento de las instituciones democráticas y la implementación de reformas tendientes a mejorar el funcionamiento del Estado.,0,1,0
+2,Acción Política,1,"Debemos tomar pasos definitivos para la consecución de nuestras propuestas, incluso si esto requiere del uso de la violencia.",0,2,0
+2,Acción Política,2,"La consecución de nuestros fines requiere de acción directa, iniciativas de resistencia civil autoorganizadas a nivel grupal o individual.",0,0,0
+2,Acción Política,3,"Nuestros fines y propuestas siempre deben ir de la mano de las instituciones democráticas, el diálogo y el consenso.",0,1,0
+3,Cambio Social,1,"Actualmente hay una gran revisión de muchos valores, hábitos e ideas del pasado inmediato. Es necesario que el estado tenga un rol activo en este proceso, bien imponiendo la transformación social o frenandola.",0,2,0
+3,Cambio Social,2,"La transformación social debería ser influenciada por cambios a nivel individual o grupal, no por las autoridades.",0,0,0
+3,Cambio Social,3,"El Estado puede legislar normas para influir sobre los hábitos y valores de las personas, pero estas deben ser sometidas a votación popular u otros procedimientos democráticos",0,1,0
+4,Seguridad Preventiva,1,"Los nuevos sistemas de vigilancia y monitoreo de la población son una buena herramienta para combatir el crimen. El que nada debe, nada teme.",0,2,0
+4,Seguridad Preventiva,2,"La vigilancia y el monitoreo de los ciudadanos a expensas de su privacidad, sea por el Estado o por empresas, es un crimen y debe ser prohibida.",0,0,0
+4,Seguridad Preventiva,3,"El Estado debería tener permiso para vigilar y monitorear a ciudadanos, pero sólo en casos provistos por Ley y con mandato explícito de una autoridad competente.",0,1,0
+5,Inmigración,1,Debemos limitar la inmigración al mínimo necesario y debemos asegurar que los inmigrantes se integren correctamente en la cultura y los valores de nuestra nación.,0,2,0
+5,Inmigración,2,"El control generalizado de las fronteras es un fenómeno relativamente reciente, la libre circulación es la única posición consecuente con la libertad.",0,0,0
+5,Inmigración,3,"La inmigración trae beneficios positivos, pero nuestras fronteras deben estar controladas para no fomentar políticas y cambios sociales irresponsables.",0,1,0
+6,Servicio Militar,1,"El servicio militar debe ser obligatorio, la disciplina cohesiona la sociedad y nos prepara para defender lo nuestro en un mundo cada vez más inestable.",0,2,0
+6,Servicio Militar,2,Resulta inaceptable que una institución nos instruya a matar a nuestros semejantes por intereses de Estado. Hay que idear soluciones alternativas para la defensa.,0,0,0
+6,Servicio Militar,3,El servicio militar debe ser voluntario. Es el mejor modo de tener un ejército profesional y además se respeta la autonomía de las personas.,0,1,0
+7,Libertad de Expresión,1,Los gobiernos no deberían limitar la libertad de expresión. El fundamento último del intercambio libre de opiniones es la búsqueda de la verdad.,0,2,0
+7,Libertad de Expresión,2,"La libertad de expresión nunca es un derecho absoluto. La censura es legítima si se combate la incitación al odio, la discrimnación, la desinformación, la manipulación o la desobediencia civil.",0,0,0
+7,Libertad de Expresión,3,Los gobiernos sólo deberían limitar la libertad de expresión de personas o grupos extremistas que inciten acciones ilegales.,0,1,0
+8,Libertad de Culto,1,La tolerancia religiosa presupone falsamente que todas las religiones son iguales y que sus respectivas influencias en la sociedad son indistintas. Las autoridades deben promover activamente una cosmovisión y valores.,0,0,0
+8,Libertad de Culto,2,La sociedad debe ser organizada de manera independiente a confesiones religiosas o irreligiosas y las autoridades no deben promover valores o normas morales particulares.,0,2,0
+8,Libertad de Culto,3,"La libertad religiosa es un derecho, pero ello no obsta a que el Estado sostenga un culto mayoritario, históricamente enraizado en la población",0,1,0
+9,Educación,1,"Las autoridades deben dictar y monitorear los planes y programas educativos en todos los niveles, ya sea en establecimientos públicos o privados.",0,2,0
+9,Educación,2,"Las autoridades no deben interferir en la educación de los hijos, pues este es un derecho de las familias y, por extensión, de las comunidades locales culturales o religiosas.",0,0,0
+9,Educación,3,Las autoridades deben limitarse a organizar y conducir las instituciones de gestión estatal y asegurar que todos puedan acceder a ella.,0,1,0
+10,Modos de producción,1,"Hay que sostener la propiedad privada de los medios de producción, la libre empresa y la libre competencia, bases del desarrollo económico y la prosperidad.",0,2,0
+10,Modos de producción,2,"Hay que superar el modo de producción capitalista, base de la explotación y las crisis cíclicas del sistema económico vigente.",0,0,0
+10,Modos de producción,3,Hay que articular un punto medio entre el modo de producción capitalista y las políticas de planificación económica deliberada.,0,1,0
+11,Mercado,1,"El mercado es libre o no es mercado, las regulaciones deben reducirse al mínimo o eliminarse.",2,0,0
+11,Mercado,2,"El mercado es ineficiente, la asignación de recursos debería ser planificada.",0,0,0
+11,Mercado,3,"El mercado puede ser útil para la asignación de recursos, pero este debe estar ampliamente regulado.",1,0,0
+12,Dinero y Moneda,1,"Hay que instaurar un régimen de libertad monetaria, libre competencia de divisas: dólares, oro, bitcoin, etc.",2,0,0
+12,Dinero y Moneda,2,"Idealmente, habría que abolir el dinero y sustituirlo por vales de trabajo o cartillas de racionamiento.",0,0,0
+12,Dinero y Moneda,3,"Hay que mantener un régimen de soberanía monetaria, una moneda nacional controlada y monopolizada por el gobierno.",1,0,0
+13,Impuestos (Financiamiento y subsistencia del Estado),1,Debemos eliminar o reducir los impuestos al mínimo posible. La mayoría de ellos son inmorales y antieconómicos.,2,0,0
+13,Impuestos (Financiamiento y subsistencia del Estado),2,Debemos aplicar una fuerte política de impuestos progresivos con el fin de distribuir la riqueza e incrementar el bienestar social.,0,0,0
+13,Impuestos (Financiamiento y subsistencia del Estado),3,"Los impuestos son un elemento indispensable del contrato social, pero debemos aplicar una política fiscal razonable para no incurrir en el déficit.",1,0,0
+14,Bancos,1,Hay que eliminar toda intervención estatal sobre el dinero y el crédito.,2,0,0
+14,Bancos,2,Hay que cerrar todos los bancos privados y centralizar el crédito en manos del estado.,0,0,0
+14,Bancos,3,Las autoridades monetarias deben controlar el dinero y el crédito para asegurar la estabilidad económica de la nación.,1,0.5,0
+15,Comercio Exterior,1,"No debe haber limitaciones al comercio exterior, este debe ser libre y sus aranceles deben reducirse o eliminarse.",2,0,0
+15,Comercio Exterior,2,Hay que limitar el comercio exterior en un esfuerzo por construir estructuras económicas independientes y autosuficientes.,0,0,0
+15,Comercio Exterior,3,"El libre comercio puede ser provechoso, pero es admisible aplicar medidas proteccionistas de acuerdo a una planificación estratégica.",1,0,0
+16,Salarios,1,"Los salarios se forman por procesos de mercado, para incrementarlos, solo debemos incrementar la productividad de nuestra economía.",2,0,0
+16,Salarios,2,"¡De cada cual según sus capacidades, a cada cual según sus necesidades!",0,0,0
+16,Salarios,3,"Los salarios se forman por procesos de mercado, pero requerimos de una legislación que imponga salarios mínimos.",1,0,0
+17,Precios,1,No hay que intervenir sobre el sistema de precios porque estos comunican información pertinente a todos los participantes del mercado.,2,0,0
+17,Precios,2,"Los precios deberían fijarse dinámicamente por una oficina central de planificación utilizando, por ejemplo, la cibernética.",0,0,0
+17,Precios,3,"Los mecanismos de mercado pueden formar los precios, pero hay que controlarlos para asegurar la disponibilidad y el acceso de ciertos bienes y servicios.",1,0,0
+18,Seguridad Social,1,"Los servicios sociales deberían ser provistos por la libre competencia empresarial, garantizando así la gestión más eficiente de los mismos.",2,1,0
+18,Seguridad Social,2,Hay que garantizar un estado de bienestar mediante fuertes políticas de redistribución de la riqueza.,0,0,0
+18,Seguridad Social,3,Hay que garantizar el acceso público a ciertos servicios básicos bajo los principios de una justicia distributiva.,1,0,0
+19,Propiedad sobre los Recursos Naturales,1,Los derechos de propiedad exclusiva sobre los recursos naturales suelen garantizar el desarrollo de una gestión óptima de los mismos.,2,0,0
+19,Propiedad sobre los Recursos Naturales,2,"Los recursos naturales deberían ser de libre acceso, sin ningún tipo de limitaciones derivadas de la presencia de derechos de propiedad.",0,0,0
+19,Propiedad sobre los Recursos Naturales,3,"Los derechos de propiedad común sobre los recursos naturales, gestionados a nivel comunal o estatal, suelen garantizar una gestión óptima de los mismos.",1,0,0
+20,Moral,1,Nuestras obligaciones y deberes morales derivan de principios supremos y universales fundados en la naturaleza humana y cognoscibles por la razón.,2,0,0
+20,Moral,2,Ningún conocimiento o principio moral es verdadero independientemente de las opiniones de las personas o de sus circunstancias.,0,0,0
+20,Moral,3,"Nuestras obligaciones y deberes morales derivan de criterios naturales, empíricos y no éticos, como minimizar el sufrimiento o maximizar el placer, el bienestar o la felicidad.",1,0,0
+21,Identidad Humana,1,Hay una naturaleza humana y esta puede alcanzar su perfeccionamiento al ordenar la inteligencia y voluntad hacia su fin último.,0,0,0
+21,Identidad Humana,2,"No hay naturaleza humana, el hombre existe como un proyecto a realizar, es radicalmente libre y dueño de su propio destino y propósito.",0,0,2
+21,Identidad Humana,3,"Hay una naturaleza humana, pero esta solo es resultado de la constitución biológica del hombre y el conjunto de sus relaciones sociales.",0,0,1
+22,Tradición,1,"Debemos honrar el pasado y resguardar los valores, hábitos y costumbres nucleares de nuestra civilización.",0,0,0
+22,Tradición,2,La cultura es una construcción social artificial. La “tradición” es un instrumento de poder disciplinario que sirve para la dominación de unos a otros.,0,0,2
+22,Tradición,3,La cultura y la tradición no deben ser ideales prácticos porque atentan contra la diversidad y perjudican una cohesión social sana y dinámica.,0,0,1
+23,Religión,1,La religiosidad es una característica inherente al ser humano y cumple un importante rol en unir a las personas bajo ideas y preceptos que los trascienden.,0,0,0
+23,Religión,2,La religión ha tenido consecuencias nefastas sobre el progreso de la humanidad. Es una herramienta de manipulación social y una gran detractora de la ciencia y la razón.,0,0,2
+23,Religión,3,"La religión siempre ha sido importante en el ser humano, pero esta debe reducirse al ámbito de la consciencia y no traslucir a la vida social y política.",0,0,1
+24,Igualitarismo,1,"El igualitarismo, obsesión de la modernidad, es una rebelión contra la naturaleza fundada en el resentimiento.",0,0,0
+24,Igualitarismo,2,"Las desigualdades son producto de unas determinadas circunstancias sociales y por consiguiente, es posible y también benéfico eliminarlas.",0,0,2
+24,Igualitarismo,3,"La igualdad socioeconómica no debe ser un ideal ni un criterio permanente para juzgar la sociedad, pero hay que asegurar una igualdad de oportunidades basada en la no discriminación.",0,0,1
+25,Familia,1,"La familia tradicional, elemento primigenio de la arquitectura social, debe ser objeto de preservación, apoyo y promoción.",0,0,0
+25,Familia,2,"La familia tradicional, bastión del patriarcado y la heteronorma, es una institución que frena el progreso y que debe superarse.",0,0,2
+25,Familia,3,"No hay tipos de familia mejores o peores, pues ante todo, es una asociación que surge de la voluntad de uno o más adultos de establecer una relación perdurable de intimidad y cuidado.",0,0,1
+26,Feminismo,1,"El feminismo, en todas sus variantes, es nocivo para las personas y el conjunto de la sociedad. Desde sus orígenes ha transmitido una versión distorsionada de la historia, el progreso y las sanas diferencias entre el hombre y la mujer.",0,0,0
+26,Feminismo,2,La sociedad está organizada bajo un orden androcéntrico que sitúa a las mujeres en un estatus de subordinación y explotación. Debemos deconstruir este orden y emancipar a la mujer.,0,0,2
+26,Feminismo,3,"El feminismo es un motor del cambio social que ha logrado muchos logros durante el siglo XX, pero en al actualidad, el activismo feminista ha ido demasiado lejos.",0,0,1
+27,Movimiento LGTBQI+,1,"Los actos homosexuales son intrínsecamente desordenados, pues son contrarios a la ley natural. El respeto a las personas LGBT+ no supone en ningún caso la aprobación de sus actos.",0,0,0
+27,Movimiento LGTBQI+,2,"La sexualidad es una construcción histórica y social. Lo normal y lo anormal, lo legítimo e ilegítimo, se delinea por discursos mediante el poder. La emancipación sexual supone abandonar las identidades sexuales.",0,0,2
+27,Movimiento LGTBQI+,3,"Hay que combatir el clima de intolerancia y discrimanción contra las minorías sexuales. Debemos apoyar el movimiento LGBT+, siempre y cuando esto no provoque nuevas desigualdades legales.",0,0,1
+28,Tranhsumanismo,1,La biotecnología debe restringirse a usos terapéuticos. No es lo mismo curar que manipular ilimitadamente al ser humano y redefinir su identidad.,0,0,0
+28,Tranhsumanismo,2,"Debemos aprovechar al máximo la capacidad de la biotecnología para transformar al ser humano y mejorarlo en su dimensión física, psicológica e intelectual. Envejecer, sufrir o morir, podrían ser cosas del pasado.",0,0,2
+28,Tranhsumanismo,3,"El transhumanismo no es algo intrínsecamente malo, el problema reside en otros aspectos, mayores niveles de desigualdad o el consentimiento de las modificaciones prenatales, por dar ejemplos.",0,0,1
+29,Animalismo,1,"El ser humano posee un derecho legítimo a disponer de los animales y los bienes materiales. Debemos luchar contra la sacralización de la naturaleza, que es inherentemente anti humanista y misántropa.",0,0,0
+29,Animalismo,2,"Debemos luchar por la liberación animal y el reconocimiento de sus derechos, ignorados por la vigencia de un antropocentrismo que está destruyendo el planeta.",0,0,2
+29,Animalismo,3,"La lucha ecologista es una prioridad, pero no porque preservar la naturaleza sea un fin en sí mismo, sino porque sirve para que podamos vivir en una sociedad más saludable.",0,0,1
+30,Derecho y Justicia,1,Solo existen normas creadas por el hombre y mediadas por el Estado.,0,0,0
+30,Derecho y Justicia,2,"Una ley injusta, no es ley y es un deber moral desobedecerla.",0,0,2
+30,Derecho y Justicia,3,Las normas jurídicas se legitiman por medio de la democracia. Solo el diálogo y el consenso tienen un carácter dirimente para resolver las controversias de una sociedad cada vez más plural.,0,0,1

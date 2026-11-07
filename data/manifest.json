@@ -1,0 +1,27 @@
+{
+  "project": "ProjectMilei2",
+  "purpose": "Prueba de concepto para presentación",
+  "responses": 977,
+  "charts": 32,
+  "unit": "Una respuesta a la encuesta",
+  "public_database": "charts.json",
+  "database_format": "Diccionario de figuras Plotly con datos calculados; no es una copia de filas sociodemográficas individuales",
+  "tables": [
+    "asociaciones_cramer.csv",
+    "asociaciones_eta2.csv",
+    "dispersion_identidades.csv",
+    "diversidad_preguntas.csv",
+    "identificacion_peronista_agregada.csv",
+    "preguntas_identidad_cramer.csv",
+    "clave_auditada.csv",
+    "resumen_resultados.json"
+  ],
+  "scoring": "La clave por número de pregunta y opción se conserva en clave_auditada.csv",
+  "source": "PJM 2 (Responses), versión utilizada en el análisis",
+  "limitations": [
+    "Análisis exploratorio de esta base; sin ponderación poblacional",
+    "El enlace numérico de la clave usa el orden actual del formulario",
+    "Los referentes se muestran por centros de seguidores, sin respuestas simuladas"
+  ],
+  "privacy": "No incluye fechas, contactos ni una tabla individual que vincule demografía y política. Las figuras espaciales contienen coordenadas sin identificadores de personas."
+}
