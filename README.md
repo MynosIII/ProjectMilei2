@@ -16,9 +16,9 @@ En Settings → Pages, seleccionar **GitHub Actions**. El workflow activo `Publi
 
 ## Actualización desde Google Sheets
 
-**Estado: preparada, pero desactivada.** La revisión automática bloqueó la ejecución de la actualización por un destino de telemetría no verificado. No se ejecuta ni se programa desde GitHub hasta resolver ese bloqueo. La versión activa del sitio conserva la última base calculada.
+**Estado: activada.** El workflow descarga los CSV de Google y ejecuta el análisis en Python aislado, con conexiones de red bloqueadas durante el cálculo. Si una actualización falla, se conserva la última publicación válida.
 
-La propuesta está en `.github/refresh-sheets.yml.disabled`: ejecución cada hora (minuto 17 UTC), al subir cambios a `main` y manualmente desde Actions. Las ejecuciones programadas de GitHub pueden demorarse; no es sincronización instantánea.
+El workflow activo está en `.github/workflows/pages.yml`: ejecución cada hora (minuto 17 UTC), al subir cambios a `main` y manualmente desde Actions. Las ejecuciones programadas de GitHub pueden demorarse; no es sincronización instantánea.
 
 Lee las respuestas y la clave de puntajes de la hoja configurada en `sheets_source.json`, calcula las 32 figuras y actualiza el sitio. Una huella de los datos evita recalcular si no cambiaron. La web muestra la fecha de la última actualización con cambios.
 
@@ -26,7 +26,7 @@ La hoja ya permite exportación CSV sin autenticación. No se modificaron sus pe
 
 El cálculo usa Python aislado (`-I -S`) y bloquea conexiones de red antes de importar las librerías de análisis. Solo la fase de descarga puede realizar GET al export de Google y sus redirecciones `googleusercontent.com`. Las filas de origen se procesan en un directorio temporal que se descarta; solo se guardan resultados preparados para publicación.
 
-El comando preparado es `python -I -S scripts/refresh.py`; sus dependencias están en `requirements.txt`. La ejecución no fue validada como exitosa y sigue pendiente de autorización por el bloqueo indicado.
+El comando es `python -I -S scripts/refresh.py`; sus dependencias están en `requirements.txt`. Con la página abierta, se consulta cada minuto si hay una versión nueva y se recarga automáticamente cuando cambia.
 
 ## Base de datos pública
 
