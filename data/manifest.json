@@ -23,5 +23,10 @@
     "El enlace numérico de la clave usa el orden actual del formulario",
     "Los referentes se muestran por centros de seguidores, sin respuestas simuladas"
   ],
-  "privacy": "No incluye fechas, contactos ni una tabla individual que vincule demografía y política. Las figuras espaciales contienen coordenadas sin identificadores de personas."
+  "privacy": "No incluye fechas, contactos ni una tabla individual que vincule demografía y política. Las figuras espaciales contienen coordenadas sin identificadores de personas.",
+  "source_fingerprint": "e57cae366309d34bf919cfa2d4cfb4e20af66ba7aa0e25b719028f124f00a961",
+  "updated_at": "2026-11-07T02:55:53.100350+00:00",
+  "source_rows": 977,
+  "excluded_incomplete": 0,
+  "refresh": "GitHub Actions every hour, or manual workflow dispatch"
 }
