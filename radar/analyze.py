@@ -182,7 +182,7 @@ def narratives(df, k=None):
         labels.append(" · ".join(top))
     strength = W.max(axis=1)
     topic = np.where(strength > 0.01, W.argmax(axis=1), -1)
-    df = df.assign(narrative=[labels[t] if t >= 0 else "Sin narrativa clara" for t in topic])
+    df = df.assign(narrative=[labels[t] if t >= 0 else "Sin narrativa clara" for t in topic], _w=strength)
     sizes = df.loc[df["narrative"] != "Sin narrativa clara", "narrative"].value_counts()
     order = list(sizes.index)
     colors = {n: PALETTE[i % len(PALETTE)] for i, n in enumerate(order)}
@@ -205,7 +205,7 @@ def narratives(df, k=None):
     f_size.update_layout(**layout("Narrativas detectadas: tamaño y plataforma donde circulan", height=120 + 46 * len(order),
                                   barmode="stack", xaxis_title="publicaciones", margin=dict(l=320, r=30, t=70, b=60)))
     table = [{"narrativa": n, "publicaciones": int(sizes[n]),
-              "ejemplo": df.loc[df["narrative"] == n].sort_values("engagement", ascending=False)["text"].iloc[0][:180]}
+              "ejemplo": df.loc[df["narrative"] == n].sort_values("_w", ascending=False)["text"].iloc[0][:180]}
              for n in order]
     return df, axes(f_share), axes(f_size), table
 
@@ -347,8 +347,9 @@ def hashtags(df, top=30):
     for h in tags:
         for a, b in combinations(sorted(set(h) & keep), 2):
             G.add_edge(a, b, w=G[a][b]["w"] + 1 if G.has_edge(a, b) else 1)
-    G.add_nodes_from(keep)
-    pos = nx.spring_layout(G, seed=3, weight="w")
+    if G.number_of_nodes() < 4:
+        return None
+    pos = nx.spring_layout(G, seed=3, weight="w", k=1.2 / np.sqrt(G.number_of_nodes()))
     comm = {n: k for k, c in enumerate(nx.community.greedy_modularity_communities(G, weight="w")) for n in c}
     fig = go.Figure()
     mw = max([d["w"] for *_, d in G.edges(data=True)] or [1])
@@ -356,7 +357,7 @@ def hashtags(df, top=30):
         fig.add_scatter(x=[pos[a][0], pos[b][0]], y=[pos[a][1], pos[b][1]], mode="lines", hoverinfo="skip", showlegend=False,
                         line=dict(color="#34465e", width=0.5 + 4 * d["w"] / mw))
     nodes = list(G.nodes())
-    fig.add_scatter(x=[pos[n][0] for n in nodes], y=[pos[n][1] for n in nodes], mode="markers+text", text=["#" + n for n in nodes],
+    fig.add_scatter(x=[pos[n][0] for n in nodes], y=[pos[n][1] for n in nodes], mode="markers+text", text=["#" + n if cnt[n] >= sorted(cnt[x] for x in nodes)[-12] else "" for n in nodes],
                     textposition="top center", textfont=dict(size=11, color=MUTED), showlegend=False,
                     marker=dict(size=[8 + 30 * np.sqrt(cnt[n] / cnt.most_common(1)[0][1]) for n in nodes],
                                 color=[PALETTE[comm[n] % len(PALETTE)] for n in nodes]),

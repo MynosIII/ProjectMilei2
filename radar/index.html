@@ -117,7 +117,7 @@ fetch('./data/radar.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
   document.getElementById('foot').textContent=`Actualizado: ${new Date(d.updated_at).toLocaleString('es-AR')}. Análisis exploratorio de conversación pública; no representa a la población.`;
   const drawn=new Set();
   const draw=sec=>{const id=sec.id,fig=d.figures[id];if(drawn.has(id))return;drawn.add(id);
-    if(!fig){document.getElementById('plot-'+id).innerHTML='<p>Sin datos suficientes en este período.</p>';return;}
+    if(!fig){document.getElementById('plot-'+id).innerHTML=(id==='r7'||id==='r8')?'<p>No se detectaron grupos de 3 o más cuentas que repitan mensajes de forma coordinada en este período. Es un resultado: la conversación observada parece orgánica.</p>':'<p>Sin datos suficientes en este período.</p>';return;}
     Plotly.newPlot('plot-'+id,fig.data,fig.layout,{responsive:true,displaylogo:false,toImageButtonOptions:{format:'png',scale:2}});};
   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)draw(e.target)}),{rootMargin:'600px'});
   document.querySelectorAll('section[id^="r"]').forEach(x=>obs.observe(x));
