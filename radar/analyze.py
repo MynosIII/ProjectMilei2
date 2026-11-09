@@ -80,9 +80,43 @@ def fig_json(fig) -> dict:
     return json.loads(fig.to_json())
 
 
-def load(path: Path) -> pd.DataFrame:
-    with gzip.open(path, "rt", encoding="utf8") as f:
-        df = pd.DataFrame([json.loads(l) for l in f])
+ES_PT = set("de la que el en los las del se por un una para con no es su al lo como mas pero sus le ya o fue este ha si porque esta son entre cuando muy sin sobre tambien hay donde quien desde todo nos durante uno les ni contra otros ese eso ante ellos esto antes algunos unos yo otro otras otra el tanto esa estos mucho quienes nada muchos cual poco ella estar estas algunas algo nosotros os em um uma nao com dos das na no ao ele mais isso".split())
+EN_ETC = set("the and of to is in for on that with this are was it be as by at from have has not but they he she you we or an will his their its after der die und das ist nicht mit ein eine les des et est pour pas sur".split())
+
+
+def is_es_pt(text: str, lang) -> bool:
+    if lang in ("es", "pt"):
+        return True
+    if lang:  # idioma declarado distinto
+        return False
+    words = re.findall(r"[a-z]+", norm(text))
+    a = sum(w in ES_PT for w in words)
+    b = sum(w in EN_ETC for w in words)
+    return a >= 2 and a > b
+
+
+def read_jsonl(path: Path) -> list:
+    opener = gzip.open if str(path).endswith(".gz") else open
+    with opener(path, "rt", encoding="utf8") as f:
+        return [json.loads(l) for l in f if l.strip()]
+
+
+def load(path: Path, extra=()) -> pd.DataFrame:
+    rows = read_jsonl(path) if Path(path).exists() else []
+    for e in extra:  # otros JSONL con el mismo esquema (por ejemplo, una recolección manual)
+        for f in (sorted(Path(e).glob("*.jsonl*")) if Path(e).is_dir() else [Path(e)]):
+            rows += read_jsonl(f)
+    df = pd.DataFrame(rows).drop_duplicates(subset="id", keep="last")
+    for col, default in [("hashtags", None), ("domains", None), ("outlet", ""), ("engagement", 0), ("kind", "post")]:
+        if col not in df:
+            df[col] = default
+    df["hashtags"] = df["hashtags"].map(lambda x: x if isinstance(x, list) else [])
+    df["domains"] = df["domains"].map(lambda x: x if isinstance(x, list) else [])
+    df["engagement"] = pd.to_numeric(df["engagement"], errors="coerce").fillna(0)
+    if "lang" not in df:
+        df["lang"] = None
+    # El análisis es sobre conversación en español y portugués: Mastodon trae mucho contenido global por etiqueta
+    df = df[[is_es_pt(t, l if isinstance(l, str) else None) for t, l in zip(df["text"], df["lang"])]].copy()
     df["ts"] = pd.to_datetime(df["created_at"], utc=True).dt.tz_convert(TZ)
     df["day"] = df["ts"].dt.tz_localize(None).dt.normalize()
     df["clean"] = (df["text"].str.replace(r"https?://\S+", " ", regex=True)
@@ -123,7 +157,7 @@ def distinctive_terms(target: pd.Series, rest: pd.Series, k=5):
     def counts(s):
         c = Counter()
         for t in s:
-            c.update({w for w in re.findall(r"[a-z0-9#]{4,}", t) if w not in STOP})
+            c.update({w for w in re.findall(r"(?<![a-z0-9])[a-z]{4,}(?![a-z0-9])", t) if w not in STOP})
         return c
     a, b = counts(target), counts(rest)
     na, nb = max(len(target), 1), max(len(rest), 1)
@@ -135,7 +169,7 @@ def distinctive_terms(target: pd.Series, rest: pd.Series, k=5):
 
 def narratives(df, k=None):
     docs = df["clean"]
-    vec = TfidfVectorizer(stop_words=list(STOP), token_pattern=r"(?u)\b[a-z][a-z0-9]{3,}\b", ngram_range=(1, 2),
+    vec = TfidfVectorizer(stop_words=list(STOP), token_pattern=r"(?u)\b[a-z]{4,}\b", ngram_range=(1, 2),
                           min_df=max(3, len(df) // 2000), max_df=0.4, max_features=20000, sublinear_tf=True)
     X = vec.fit_transform(docs)
     k = k or int(np.clip(len(df) // 250, 4, 10))
@@ -349,6 +383,23 @@ def domains(df, top=15):
     return axes(fig)
 
 
+def amplifiers(df, top=15):
+    posts = df[df["kind"] == "post"]
+    if posts.empty:
+        return None, {}
+    by = posts.groupby("who").agg(n=("id", "size"), plat=("platform", lambda x: x.mode().iat[0]),
+                                  narr=("narrative", lambda x: x.mode().iat[0])).sort_values("n", ascending=False)
+    k = max(1, int(np.ceil(len(by) * 0.01)))
+    conc = {"cuentas": int(len(by)), "top1pct_cuentas": k, "top1pct_share": round(float(by["n"].iloc[:k].sum() / by["n"].sum() * 100), 1),
+            "top10_share": round(float(by["n"].iloc[:10].sum() / by["n"].sum() * 100), 1)}
+    t = by.iloc[:top][::-1]
+    fig = go.Figure(go.Bar(x=t["n"], y=[f"{w} · {p}" for w, p in zip(t.index, t["plat"])], orientation="h", marker_color="#7aa7ff",
+                           customdata=t["narr"], hovertemplate="%{y}<br>%{x} publicaciones<br>narrativa principal: %{customdata}<extra></extra>"))
+    fig.update_layout(**layout(f"Cuentas más activas: el {conc['top1pct_share']}% del volumen lo generan {k} cuentas (1% del total)",
+                               height=120 + 30 * len(t), xaxis_title="publicaciones", margin=dict(l=230, r=30, t=70, b=60)))
+    return axes(fig), conc
+
+
 def coverage(df, status):
     c = df.groupby("platform").agg(publicaciones=("id", "size"), cuentas=("who", "nunique"), desde=("ts", "min"), hasta=("ts", "max"))
     rows = [[p, int(r.publicaciones), int(r.cuentas), r.desde.strftime("%d/%m"), r.hasta.strftime("%d/%m")] for p, r in c.iterrows()]
@@ -377,12 +428,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(HERE / ".store" / "posts.jsonl.gz"))
     ap.add_argument("--out", default=str(HERE / "data" / "radar.json"))
+    ap.add_argument("--extra", nargs="*", default=[], help="Archivos o carpetas JSONL adicionales")
     ap.add_argument("--label", default="", help="Texto de aviso visible (por ejemplo, 'datos de prueba')")
     args = ap.parse_args()
     store = Path(args.store)
     status_path = store.parent / "collect_status.json"
     status = json.loads(status_path.read_text(encoding="utf8")) if status_path.exists() else None
-    df = load(store)
+    df = load(store, args.extra)
     figs = {}
     figs["r1"], spikes = volume(df)
     df, figs["r2"], figs["r3"], narr_table = narratives(df)
@@ -391,6 +443,7 @@ def main():
     figs["r9"] = hashtags(df)
     figs["r10"] = domains(df)
     figs["r11"] = coverage(df, status)
+    figs["r12"], conc = amplifiers(df)
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "label": args.label,
@@ -400,7 +453,7 @@ def main():
             "platforms": sorted(df["platform"].unique().tolist()),
             "from": df["ts"].min().strftime("%Y-%m-%d"), "to": df["ts"].max().strftime("%Y-%m-%d"),
             "narratives": narr_table, "spikes": spikes, "actors": actor_summary, "coordination": coord,
-            "coordination_examples": coord_groups[:5],
+            "coordination_examples": coord_groups[:5], "concentration": conc,
         },
         "figures": {k: fig_json(v) for k, v in figs.items() if v is not None},
     }

@@ -29,7 +29,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
   <nav>
     <a href="#hallazgos">Hallazgos</a><a href="#r1">Volumen y picos</a><a href="#r2">Narrativas en el tiempo</a><a href="#r3">Narrativas por plataforma</a>
     <a href="#r4">Menciones por actor</a><a href="#r5">Actor × narrativa</a><a href="#r6">Riesgo reputacional</a>
-    <a href="#r7">Posible coordinación</a><a href="#r8">Mensajes repetidos</a><a href="#r9">Hashtags</a><a href="#r10">Sitios enlazados</a>
+    <a href="#r12">Cuentas más activas</a><a href="#r7">Posible coordinación</a><a href="#r8">Mensajes repetidos</a><a href="#r9">Hashtags</a><a href="#r10">Sitios enlazados</a>
     <a href="#r11">Cobertura</a><a href="#metodo">Método y límites</a><a href="../">← Encuesta ProjectMilei2</a>
   </nav>
 </aside>
@@ -52,6 +52,8 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
     <p class="how">Porcentaje de las menciones de cada actor que pertenecen a cada narrativa. Muestra el encuadre con el que se habla de cada dirigente.</p><div class="plot" id="plot-r5"></div></section>
   <section id="r6"><h2>Exposición reputacional</h2>
     <p class="how">Porcentaje de menciones que aparecen junto a términos de riesgo (corrupción, denuncia, filtración, audios, hackeo, fraude, etc.), con intervalo de confianza del 95%. Es una medida de exposición, no de culpa: incluye defensas y desmentidas.</p><div class="plot" id="plot-r6"></div></section>
+  <section id="r12"><h2>Quién empuja la conversación</h2>
+    <p class="how">Cuentas con más publicaciones (seudonimizadas). Una conversación muy concentrada en pocas cuentas es más fácil de mover y de manipular.</p><div class="plot" id="plot-r12"></div></section>
   <section id="r7"><h2>Posible coordinación entre cuentas</h2>
     <p class="how">Dos cuentas se unen si publicaron textos casi idénticos (similitud ≥ 0,9) con menos de 60 minutos de diferencia, en al menos 2 mensajes distintos. Se muestran grupos de 3 o más cuentas. Es una señal para revisar a mano, no una prueba de automatización.</p><div class="plot" id="plot-r7"></div></section>
   <section id="r8"><h2>Mensajes repetidos de esos grupos</h2><div class="plot" id="plot-r8"></div></section>
@@ -87,6 +89,7 @@ fetch('./data/radar.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
   s.spikes.slice(-3).reverse().forEach(p=>f.push(`Pico el <b>${p.day}</b>: ${fmt(p.posts)} publicaciones (z = ${p.z}), impulsado por <i>${esc(p.terms.slice(0,4).join(', '))}</i>.`));
   if(s.actors.length){const top=[...s.actors].sort((a,b)=>b.riesgo_pct-a.riesgo_pct)[0];
     f.push(`<b>${esc(s.actors[0].actor)}</b> concentra más menciones (${fmt(s.actors[0].menciones)}); el más expuesto a términos de riesgo es <b>${esc(top.actor)}</b> (${top.riesgo_pct}% de sus menciones).`);}
+  if(s.concentration&&s.concentration.cuentas)f.push(`La conversación está concentrada: <b>${s.concentration.top1pct_cuentas} cuentas</b> (el 1% más activo) generan el <b>${s.concentration.top1pct_share}%</b> de las publicaciones en redes.`);
   if(s.coordination.grupos>0){const e=s.coordination_examples[0];
     f.push(`Se detectaron <b>${s.coordination.grupos} grupo(s)</b> con ${s.coordination.cuentas} cuentas que repiten mensajes casi idénticos en minutos. Ejemplo: “${esc(e.mensaje.slice(0,120))}…” (${e.cuentas} cuentas, ${esc(e.plataforma)}).`);}
   else f.push('No se detectaron grupos de cuentas que repitan mensajes de forma coordinada en este período.');

@@ -44,7 +44,7 @@ def get(url: str, headers: dict | None = None, data: bytes | None = None, retrie
                 return r.read()
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 502, 503) and attempt < retries:
-                time.sleep(5 * (attempt + 1))
+                time.sleep(15 * (attempt + 1))
                 continue
             raise
         except urllib.error.URLError:
@@ -75,7 +75,7 @@ def iso(dt: datetime) -> str:
     return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def record(platform, pid, author, text, created, url="", engagement=0, links=None, query="", kind="post", outlet=""):
+def record(platform, pid, author, text, created, url="", engagement=0, links=None, query="", kind="post", outlet="", lang=None):
     text = clean(text)
     links = list(dict.fromkeys((links or []) + URL_RE.findall(text)))
     return {
@@ -91,6 +91,7 @@ def record(platform, pid, author, text, created, url="", engagement=0, links=Non
         "hashtags": sorted({h.lower() for h in HASHTAG_RE.findall(text)}),
         "domains": sorted({d for d in (domain(l) for l in links) if d}),
         "query": query,
+        "lang": (lang or "")[:2].lower() or None,
     }
 
 
@@ -116,7 +117,7 @@ def mastodon(cfg):
                     out.append(record(
                         "Mastodon", s.get("uri") or s["id"], acct, s.get("content", ""), s["created_at"][:19] + "Z",
                         s.get("url") or "", (s.get("favourites_count", 0) + s.get("reblogs_count", 0) + s.get("replies_count", 0)),
-                        [c.get("url") for c in [s.get("card") or {}] if c.get("url")], f"#{tag}"))
+                        [c.get("url") for c in [s.get("card") or {}] if c.get("url")], f"#{tag}", lang=s.get("language")))
                 max_id = rows[-1]["id"]
                 time.sleep(1)
     return out
@@ -152,7 +153,8 @@ def bluesky(cfg):
                 out.append(record(
                     "Bluesky", p["uri"], p["author"]["handle"], rec.get("text", ""), (rec.get("createdAt") or p.get("indexedAt"))[:19] + "Z",
                     f"https://bsky.app/profile/{p['author']['handle']}/post/{rkey}",
-                    p.get("likeCount", 0) + p.get("repostCount", 0) + p.get("replyCount", 0) + p.get("quoteCount", 0), links, qtext))
+                    p.get("likeCount", 0) + p.get("repostCount", 0) + p.get("replyCount", 0) + p.get("quoteCount", 0), links, qtext,
+                    lang=(rec.get("langs") or [None])[0]))
             cursor = d.get("cursor")
             if not cursor:
                 break
@@ -199,7 +201,7 @@ def google_news(cfg):
             except (TypeError, ValueError):
                 continue
             out.append(record("Google News", it.findtext("guid", "") or it.findtext("link", ""), outlet, title, created,
-                              it.findtext("link", ""), 0, [src_url] if src_url else [], f["q"], kind="news", outlet=outlet))
+                              it.findtext("link", ""), 0, [src_url] if src_url else [], f["q"], kind="news", outlet=outlet, lang=f["hl"]))
         time.sleep(1)
     return out
 
@@ -220,8 +222,9 @@ def gdelt(cfg):
             except (KeyError, ValueError):
                 continue
             out.append(record("GDELT", a["url"], a.get("domain", ""), a.get("title", ""), created, a["url"], 0,
-                              [a["url"]], qtext, kind="news", outlet=a.get("domain", "")))
-        time.sleep(6)  # GDELT pide ~1 consulta cada 5 s
+                              [a["url"]], qtext, kind="news", outlet=a.get("domain", ""),
+                              lang={"Spanish": "es", "Portuguese": "pt"}.get(a.get("language", ""), "xx")))
+        time.sleep(12)  # GDELT limita fuerte: ~1 consulta cada 5-10 s
     return out
 
 
