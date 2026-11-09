@@ -1,11 +1,12 @@
 {
- "updated_at": "2026-11-09T19:20:50Z",
+ "updated_at": "2026-11-09T21:16:53Z",
  "domains": [
   {
    "name": "Casa Rosada",
    "domain": "casarosada.gob.ar",
    "tipo": "Ejecutivo nacional",
-   "subdomains": 3,
+   "error_crtsh": "The read operation timed out",
+   "subdomains": null,
    "mail": {
     "spf": false,
     "spf_strict": false,
@@ -13,7 +14,7 @@
     "dmarc_policy": "ninguna"
    },
    "services": {
-    "ips": 2,
+    "ips": 1,
     "open_ports": 0,
     "risky_services": 0,
     "hosts_with_known_cves": 0
@@ -45,8 +46,7 @@
    "name": "Cámara de Diputados",
    "domain": "hcdn.gob.ar",
    "tipo": "Legislativo",
-   "error_crtsh": "The read operation timed out",
-   "subdomains": null,
+   "subdomains": 13,
    "mail": {
     "spf": true,
     "spf_strict": true,
@@ -54,8 +54,8 @@
     "dmarc_policy": "reject"
    },
    "services": {
-    "ips": 1,
-    "open_ports": 2,
+    "ips": 4,
+    "open_ports": 3,
     "risky_services": 0,
     "hosts_with_known_cves": 0
    },
@@ -134,7 +134,7 @@
     "dmarc_policy": "quarantine"
    },
    "services": {
-    "ips": 8,
+    "ips": 7,
     "open_ports": 2,
     "risky_services": 0,
     "hosts_with_known_cves": 0
@@ -166,7 +166,8 @@
    "name": "Ciudad de Buenos Aires",
    "domain": "buenosaires.gob.ar",
    "tipo": "Ciudad",
-   "subdomains": 118,
+   "error_crtsh": "The read operation timed out",
+   "subdomains": null,
    "mail": {
     "spf": true,
     "spf_strict": true,
@@ -174,13 +175,13 @@
     "dmarc_policy": "none"
    },
    "services": {
-    "ips": 20,
-    "open_ports": 6,
-    "risky_services": 2,
-    "hosts_with_known_cves": 1
+    "ips": 1,
+    "open_ports": 1,
+    "risky_services": 0,
+    "hosts_with_known_cves": 0
    },
    "breaches_catalog": -1,
-   "semaforo": "rojo"
+   "semaforo": "amarillo"
   }
  ]
 }
