@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tablero de opinión pública</title>
+<meta name="description" content="Tablero de opinión pública y conversación digital en Argentina: encuesta, redes, búsquedas en Google e integridad digital.">
+<style>
+:root{--bg:#0b111c;--panel:#111a28;--panel2:#0f1724;--line:#223047;--txt:#e9eef6;--muted:#b7c6db;--dim:#8a9bb3;--acc:#55d5ba;--warn:#f2b84b;--bad:#ef6f6c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(11,17,28,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;max-width:1500px;margin:0 auto;padding:14px 24px 0}
+.brand{font-weight:bold;font-size:19px}.brand span{color:var(--acc)}
+.meta{color:var(--dim);font-size:12px;margin-left:auto}
+nav{display:flex;gap:4px;max-width:1500px;margin:0 auto;padding:10px 24px 0;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:9px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--txt);border-bottom-color:var(--acc)}
+main{max-width:1500px;margin:0 auto;padding:22px 24px 40px}
+.tab{display:none}.tab.on{display:block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--panel);border-left:3px solid var(--acc);padding:14px 16px}.kpi b{display:block;font-size:26px}
+.kpi span{color:var(--muted);font-size:12.5px}.kpi.w{border-left-color:var(--warn)}.kpi.r{border-left-color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{background:var(--panel);border-top:1px solid #27384e;padding:16px 18px;min-width:0}
+.card.full{grid-column:1/-1}.card h3{margin:0 0 4px;font-size:16px}.card p{margin:0 0 8px;color:var(--muted);font-size:13px}
+.plot{width:100%}
+.find{background:var(--panel);border-left:3px solid var(--warn);padding:6px 22px;margin-bottom:18px}.find li{margin:7px 0;color:var(--muted)}.find b{color:var(--txt)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;color:var(--muted);vertical-align:top}th{color:var(--txt);font-weight:normal}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:2px 9px;margin:2px 4px 2px 0;font-size:12px;color:var(--muted)}
+.chip.ok::before{content:"● ";color:var(--acc)}.chip.no::before{content:"● ";color:var(--bad)}
+a{color:var(--acc)}footer{color:var(--dim);font-size:12px;max-width:1500px;margin:0 auto;padding:0 24px 30px}
+.empty{color:var(--dim);font-size:13px;padding:30px 0;text-align:center}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.top,nav,main{padding-left:16px;padding-right:16px}.meta{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div class="brand">Tablero de <span>opinión pública</span> · Argentina</div><div class="meta" id="meta">Cargando…</div></div>
+  <nav id="tabs">
+    <button data-t="resumen" class="on">Resumen</button><button data-t="redes">Conversación en redes</button>
+    <button data-t="busquedas">Búsquedas en Google</button><button data-t="integridad">Integridad digital</button>
+    <button data-t="encuesta">Encuesta</button><button data-t="fuentes">Fuentes y método</button>
+  </nav>
+</header>
+<main>
+  <section class="tab on" id="t-resumen">
+    <div class="kpis" id="kpis"></div>
+    <div class="find"><ul id="find"></ul></div>
+    <div class="grid">
+      <div class="card"><h3>Volumen diario de conversación</h3><p>Publicaciones y titulares por día y fuente.</p><div class="plot" data-fig="r1" data-h="340"></div></div>
+      <div class="card"><h3>Exposición reputacional por dirigente</h3><p>% de menciones junto a términos de riesgo (corrupción, filtración, fraude…), con IC 95%.</p><div class="plot" data-fig="r6" data-h="340"></div></div>
+      <div class="card"><h3>Reparto de búsquedas en Google por provincia</h3><p>Qué dirigente busca más la gente en cada provincia (últimos 3 meses).</p><div class="plot" data-fig="r15" data-h="420"></div></div>
+      <div class="card"><h3>Semáforo de exposición digital</h3><p>Instituciones públicas, solo fuentes pasivas.</p><div id="sema-mini"></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-redes">
+    <div class="grid">
+      <div class="card full"><h3>Narrativas en el tiempo</h3><p>Relatos detectados sin etiquetas previas (TF-IDF + NMF) y su peso diario.</p><div class="plot" data-fig="r2" data-h="430"></div></div>
+      <div class="card"><h3>Dónde circula cada narrativa</h3><div class="plot" data-fig="r3"></div></div>
+      <div class="card"><h3>Con qué narrativa aparece cada dirigente</h3><div class="plot" data-fig="r5"></div></div>
+      <div class="card"><h3>Menciones diarias por dirigente</h3><div class="plot" data-fig="r4" data-h="380"></div></div>
+      <div class="card"><h3>Quién empuja la conversación</h3><p>Cuentas más activas (seudonimizadas).</p><div class="plot" data-fig="r12"></div></div>
+      <div class="card full"><h3>YouTube según la línea editorial del canal</h3><p>Comentarios en videos políticos recientes de 19 canales de todo el espectro.</p><div class="plot" data-fig="r14"></div></div>
+      <div class="card"><h3>Hashtags que viajan juntos</h3><div class="plot" data-fig="r9" data-h="460"></div></div>
+      <div class="card"><h3>Sitios más enlazados</h3><div class="plot" data-fig="r10"></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-busquedas">
+    <div class="grid">
+      <div class="card full"><h3>Qué busca la gente en Google</h3><p>Google Trends mide búsquedas de toda la población conectada, no solo de quienes publican. Índice 0-100 comparable solo dentro de cada grupo.</p><div class="plot" data-fig="r13"></div></div>
+      <div class="card full"><h3>Reparto por provincia</h3><div class="plot" data-fig="r15"></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-integridad">
+    <div class="grid">
+      <div class="card full"><h3>Exposición digital de instituciones</h3><p>Subdominios visibles (crt.sh), protección contra suplantación de correo (SPF/DMARC), servicios indexados (Shodan InternetDB) y brechas catalogadas. No se escanea nada y no se publica qué hosts ni qué vulnerabilidades.</p><div id="sema-full"></div></div>
+      <div class="card"><h3>Posible coordinación entre cuentas</h3><p>Textos casi idénticos de cuentas distintas en menos de 60 minutos, repetido al menos 2 veces.</p><div class="plot" data-fig="r7" data-empty="No se detectaron grupos de 3 o más cuentas coordinadas en este período: la conversación observada parece orgánica."></div></div>
+      <div class="card"><h3>Riesgo reputacional por dirigente</h3><div class="plot" data-fig="r6"></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-encuesta">
+    <div class="kpis" id="kpis-enc"></div>
+    <div class="grid">
+      <div class="card full"><h3>Qué problema prioriza cada identidad</h3><p>% dentro de cada identidad declarada.</p><div class="plot" data-src="survey" data-fig="g24" data-h="620"></div></div>
+      <div class="card"><h3>Evaluación de dirigentes por identidad</h3><div class="plot" data-src="survey" data-fig="g21" data-h="560"></div></div>
+      <div class="card"><h3>Medios e identidades: afinidad relativa</h3><div class="plot" data-src="survey" data-fig="g23" data-h="560"></div></div>
+      <div class="card full"><h3>Identidades declaradas según fuente de información</h3><div class="plot" data-src="survey" data-fig="g12" data-h="480"></div></div>
+    </div>
+    <p style="margin-top:14px"><a href="./">Abrir el explorador completo de la encuesta (32 gráficos) →</a></p>
+  </section>
+
+  <section class="tab" id="t-fuentes">
+    <div class="grid">
+      <div class="card full"><h3>Cobertura y estado de cada fuente</h3><div id="chips"></div><div class="plot" data-fig="r11"></div></div>
+      <div class="card"><h3>Qué ve y qué no ve la escucha</h3>
+        <table><thead><tr><th>Plataforma</th><th>Alcance AR</th><th>¿Escuchable gratis?</th></tr></thead><tbody>
+          <tr><td>YouTube</td><td>70% de la población</td><td>Sí (API, en el tablero)</td></tr>
+          <tr><td>Google</td><td>Búsquedas de toda la población conectada</td><td>Sí (Trends, foto con fecha)</td></tr>
+          <tr><td>Facebook / Instagram</td><td>64% / 63%</td><td>No hay API abierta</td></tr>
+          <tr><td>TikTok</td><td>24,4 M (18+)</td><td>Limitado</td></tr>
+          <tr><td>X</td><td>16%</td><td>Pago (USD 200/mes)</td></tr>
+          <tr><td>WhatsApp</td><td>99%</td><td>No (privado)</td></tr>
+          <tr><td>Mastodon / Bluesky</td><td>Nicho</td><td>Sí, rotulado como nicho</td></tr>
+        </tbody></table>
+        <p style="margin-top:8px">Alcance publicitario según DataReportal 2025; WhatsApp: Infobip 2026.</p></div>
+      <div class="card"><h3>Método y límites</h3>
+        <ul style="color:var(--muted);padding-left:18px;margin:0">
+          <li>La encuesta (977 respuestas) es exploratoria y no está ponderada a la población.</li>
+          <li>Las redes no representan a la población: Mastodon tiene sesgo joven, tecnológico y de centroizquierda; YouTube y Google son las señales más masivas.</li>
+          <li>Cuentas seudonimizadas; no se publican textos completos salvo mensajes repetidos por grupos coordinados.</li>
+          <li>Recolección y cálculo diarios en GitHub Actions; ventana de 30 días.</li>
+          <li>Desinformación en contexto: más de 360 denuncias electorales en AR 2025, 31 por deepfakes (<a href="https://chequeado.com/ultimas-noticias/los-videos-falsos-de-politicos-hechos-con-ia-fueron-protagonistas-en-las-elecciones-2025/" target="_blank" rel="noopener">Chequeado</a>); confianza en noticias de 26% (<a href="https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2026/how-brazilians-get-their-news" target="_blank" rel="noopener">Reuters Institute 2026</a>).</li>
+        </ul>
+        <p style="margin-top:10px"><a href="radar/">Ver el informe completo del Radar →</a></p></div>
+    </div>
+  </section>
+</main>
+<footer id="foot"></footer>
+<script src="assets/plotly.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),fmt=n=>Number(n).toLocaleString('es-AR');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const J=(u,w)=>w?Promise.resolve(w):fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
+Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/exposure.json',window.EXPOSURE),J('data/charts.json',window.SURVEY),J('data/manifest.json',window.MANIFEST)])
+.then(([R,E,S,M])=>{
+  const s=R?R.summary:{},F=R?R.figures:{};
+  $('#meta').textContent=R?`Redes y medios: ${s.from} a ${s.to} · actualizado ${new Date(R.updated_at).toLocaleString('es-AR')}`:'Sin datos del Radar';
+  const red=E&&E.domains?E.domains.filter(d=>d.semaforo==='rojo').length:0;
+  const k=[[fmt(M?M.responses:977),'respuestas de la encuesta'],[fmt(s.social_posts||0),'publicaciones en redes'],[fmt(s.accounts||0),'cuentas distintas'],
+    [fmt((s.outlets||0)),'medios con titulares'],[s.narratives?s.narratives.length:0,'narrativas detectadas'],
+    [s.concentration?s.concentration.top1pct_share+'%':'—','del volumen lo genera el 1% de cuentas','w'],
+    [s.coordination?s.coordination.cuentas:0,'cuentas en grupos coordinados',s.coordination&&s.coordination.cuentas?'r':''],
+    [E?`${red} de ${E.domains.length}`:'—','instituciones en rojo (exposición digital)',red?'r':'']];
+  $('#kpis').innerHTML=k.map(([v,l,c])=>`<div class="kpi ${c||''}"><b>${v}</b><span>${l}</span></div>`).join('');
+  const f=[];
+  if(s.narratives&&s.narratives.length){const t=s.narratives.reduce((a,n)=>a+n.publicaciones,0),n=s.narratives[0];f.push(`Narrativa más grande: <b>${esc(n.narrativa)}</b> (${Math.round(100*n.publicaciones/t)}% de lo clasificado).`);}
+  if(s.actors&&s.actors.length){const top=[...s.actors].sort((a,b)=>b.riesgo_pct-a.riesgo_pct)[0];f.push(`<b>${esc(s.actors[0].actor)}</b> concentra más menciones (${fmt(s.actors[0].menciones)}); el más expuesto a términos de riesgo es <b>${esc(top.actor)}</b> (${top.riesgo_pct}%).`);}
+  if(s.concentration&&s.concentration.cuentas)f.push(`Conversación concentrada: <b>${s.concentration.top1pct_cuentas} cuentas</b> generan el <b>${s.concentration.top1pct_share}%</b> de las publicaciones.`);
+  if(E&&E.domains){const rr=E.domains.filter(d=>d.semaforo==='rojo').map(d=>d.name);if(rr.length)f.push(`Exposición digital en rojo: <b>${rr.map(esc).join(', ')}</b>.`);
+    const nd=E.domains.filter(d=>!d.mail.dmarc).map(d=>d.name);if(nd.length)f.push(`Sin DMARC (se puede suplantar su correo): <b>${nd.map(esc).join(', ')}</b>.`);}
+  f.push(s.coordination&&s.coordination.grupos?`Se detectaron <b>${s.coordination.grupos} grupo(s)</b> de cuentas coordinadas.`:'No se detectaron grupos de cuentas coordinadas en el período.');
+  $('#find').innerHTML=f.map(x=>`<li>${x}</li>`).join('');
+  // Semáforo
+  const col={verde:'var(--acc)',amarillo:'var(--warn)',rojo:'var(--bad)'};
+  const mail=m=>m.dmarc_policy==='reject'||m.dmarc_policy==='quarantine'?`Protegido (DMARC ${m.dmarc_policy})`:(m.dmarc?'DMARC solo monitorea':'Sin DMARC')+(m.spf?'':' · sin SPF');
+  if(E&&E.domains){
+    const ord={rojo:0,amarillo:1,verde:2},ds=[...E.domains].sort((a,b)=>ord[a.semaforo]-ord[b.semaforo]);
+    $('#sema-mini').innerHTML=`<table><tbody>${ds.map(d=>`<tr><td><span class="dot" style="background:${col[d.semaforo]}"></span>${esc(d.name)}</td><td>${mail(d.mail)}</td></tr>`).join('')}</tbody></table>`;
+    $('#sema-full').innerHTML=`<table><thead><tr><th>Institución</th><th>Subdominios</th><th>Correo</th><th>Servicios indexados</th><th>IP con CVE conocidos</th><th>Semáforo</th></tr></thead><tbody>${ds.map(d=>`<tr><td><b style="color:var(--txt)">${esc(d.name)}</b><br><span style="font-size:12px">${esc(d.domain)} · ${esc(d.tipo)}</span></td><td>${d.subdomains==null?'sin dato':d.subdomains}</td><td>${mail(d.mail)}</td><td>${d.services.open_ports} puertos · ${d.services.risky_services} sensibles</td><td>${d.services.hosts_with_known_cves} de ${d.services.ips}</td><td><span class="dot" style="background:${col[d.semaforo]}"></span>${d.semaforo}</td></tr>`).join('')}</tbody></table><p style="margin-top:8px">Semáforo: DMARC solo monitorea (1) o no existe (2), sin SPF (1), servicios sensibles expuestos (1), IP con vulnerabilidades conocidas (2). Verde 0, amarillo 1-2, rojo 3+.</p>`;
+  } else {$('#sema-mini').innerHTML=$('#sema-full').innerHTML='<div class="empty">Sin datos todavía.</div>';}
+  // Fuentes
+  const names={mastodon:'Mastodon',bluesky:'Bluesky',reddit:'Reddit',google_news:'Google News',rss:'RSS de medios',youtube:'YouTube',google_trends:'Google Trends',gdelt:'GDELT'};
+  if(R&&R.figures.r11)$('#chips').innerHTML=(s.platforms||[]).map(p=>`<span class="chip ok">${esc(p)}</span>`).join('')+'<span class="chip ok">Google Trends (foto 9/11)</span>';
+  // Encuesta KPIs
+  $('#kpis-enc').innerHTML=[[fmt(M?M.responses:977),'respuestas'],['32','gráficos en el explorador'],['3','ejes: economía, social, político'],['Sin ponderar','muestra exploratoria','w']].map(([v,l,c])=>`<div class="kpi ${c||''}"><b>${v}</b><span>${l}</span></div>`).join('');
+  $('#foot').innerHTML=`Tablero exploratorio. Encuesta: ${M?new Date(M.updated_at).toLocaleDateString('es-AR'):''} · Radar: ${R?new Date(R.updated_at).toLocaleDateString('es-AR'):''}. Las asociaciones no implican causalidad; las redes no representan a la población.`;
+  // Dibujo
+  const drawn=new WeakSet();
+  function draw(el){if(drawn.has(el))return;drawn.add(el);
+    const src=el.dataset.src==='survey'?S:F,fig=src&&src[el.dataset.fig];
+    if(!fig){el.innerHTML=`<div class="empty">${esc(el.dataset.empty||'Sin datos suficientes en este período.')}</div>`;return;}
+    const lay=JSON.parse(JSON.stringify(fig.layout));delete lay.title;
+    lay.paper_bgcolor=lay.plot_bgcolor='#111a28';lay.font=Object.assign({},lay.font,{color:'#e9eef6',size:11});
+    lay.margin=Object.assign({l:60,r:20,t:20,b:50},lay.margin||{});lay.margin.t=Math.min(lay.margin.t||20,40);
+    if(el.dataset.h)lay.height=+el.dataset.h;else lay.height=Math.min(lay.height||450,560);
+    lay.autosize=true;
+    Plotly.newPlot(el,fig.data,lay,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});}
+  function drawTab(id){document.querySelectorAll(`#t-${id} .plot`).forEach(draw);setTimeout(()=>window.dispatchEvent(new Event('resize')),50);}
+  drawTab('resumen');
+  document.querySelectorAll('#tabs button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.t));
+    drawTab(b.dataset.t);try{history.replaceState(null,'','#'+b.dataset.t)}catch(e){}}));
+  const h=location.hash.slice(1);if(h){const b=document.querySelector(`#tabs button[data-t="${h}"]`);if(b)b.click();}
+});
+</script>
+</body>
+</html>
