@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-09T18:44:36Z",
+ "updated_at": "2026-11-09T18:57:33Z",
  "domains": [
   {
    "name": "Casa Rosada",
@@ -26,7 +26,8 @@
    "name": "Argentina.gob.ar",
    "domain": "argentina.gob.ar",
    "tipo": "Ejecutivo nacional",
-   "subdomains": 45,
+   "error_crtsh": "The read operation timed out",
+   "subdomains": null,
    "mail": {
     "spf": true,
     "spf_strict": true,
@@ -34,7 +35,7 @@
     "dmarc_policy": "reject"
    },
    "services": {
-    "ips": 9,
+    "ips": 3,
     "open_ports": 12,
     "risky_services": 0,
     "hosts_with_known_cves": 1
@@ -106,7 +107,8 @@
    "name": "Justicia Nacional Electoral",
    "domain": "electoral.gob.ar",
    "tipo": "Electoral",
-   "subdomains": 1,
+   "error_crtsh": "The read operation timed out",
+   "subdomains": null,
    "mail": {
     "spf": false,
     "spf_strict": false,
