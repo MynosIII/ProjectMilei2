@@ -432,5 +432,56 @@
       "Bullrich",
       "Villarruel"
     ]
+  },
+  "exposure": {
+    "max_subdomains": 15,
+    "max_ips": 25,
+    "domains": [
+      {
+        "name": "Casa Rosada",
+        "domain": "casarosada.gob.ar",
+        "tipo": "Ejecutivo nacional"
+      },
+      {
+        "name": "Argentina.gob.ar",
+        "domain": "argentina.gob.ar",
+        "tipo": "Ejecutivo nacional"
+      },
+      {
+        "name": "Cámara de Diputados",
+        "domain": "hcdn.gob.ar",
+        "tipo": "Legislativo"
+      },
+      {
+        "name": "Senado",
+        "domain": "senado.gob.ar",
+        "tipo": "Legislativo"
+      },
+      {
+        "name": "Poder Judicial de la Nación",
+        "domain": "pjn.gov.ar",
+        "tipo": "Judicial"
+      },
+      {
+        "name": "Justicia Nacional Electoral",
+        "domain": "electoral.gob.ar",
+        "tipo": "Electoral"
+      },
+      {
+        "name": "ARCA (ex AFIP)",
+        "domain": "arca.gob.ar",
+        "tipo": "Organismo"
+      },
+      {
+        "name": "Provincia de Buenos Aires",
+        "domain": "gba.gob.ar",
+        "tipo": "Provincia"
+      },
+      {
+        "name": "Ciudad de Buenos Aires",
+        "domain": "buenosaires.gob.ar",
+        "tipo": "Ciudad"
+      }
+    ]
   }
 }

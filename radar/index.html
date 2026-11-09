@@ -19,7 +19,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
 .plot{width:100%;min-width:680px}a{color:#55d5ba}
 .banner{background:#3a2a10;border:1px solid #f2b84b;color:#f6d79a;padding:12px 16px;margin:18px 0;border-radius:4px}
 .findings{background:#111a28;border-left:3px solid #f2b84b;padding:6px 26px;margin:24px 0}
-.findings li{margin:8px 0}table.ctx{border-collapse:collapse;width:100%;max-width:1050px;font-size:14px}table.ctx th,table.ctx td{border-bottom:1px solid #223047;padding:8px 10px;text-align:left;color:#b7c6db}table.ctx th{color:#e9eef6}.how{font-size:14px}footer{padding:35px 0;color:#91a6c1;font-size:13px}
+.findings li{margin:8px 0}table.ctx{border-collapse:collapse;width:100%;max-width:1050px;font-size:14px}table.ctx th,table.ctx td{border-bottom:1px solid #223047;padding:8px 10px;text-align:left;color:#b7c6db}table.ctx th{color:#e9eef6}.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:middle}.how{font-size:14px}footer{padding:35px 0;color:#91a6c1;font-size:13px}
 @media(max-width:1000px){aside{display:none}main{margin:0;padding:18px 16px}h1{font-size:32px}section{padding:12px}.kpi{min-width:130px}}
 </style>
 </head>
@@ -30,7 +30,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
     <a href="#hallazgos">Hallazgos</a><a href="#contexto">Qué ve la escucha</a><a href="#r1">Volumen y picos</a><a href="#r2">Narrativas en el tiempo</a><a href="#r3">Narrativas por plataforma</a>
     <a href="#r13">Búsquedas en Google</a><a href="#r14">YouTube por línea editorial</a><a href="#r4">Menciones por actor</a><a href="#r5">Actor × narrativa</a><a href="#r6">Riesgo reputacional</a>
     <a href="#r12">Cuentas más activas</a><a href="#r7">Posible coordinación</a><a href="#r8">Mensajes repetidos</a><a href="#r9">Hashtags</a><a href="#r10">Sitios enlazados</a>
-    <a href="#r11">Cobertura</a><a href="#metodo">Método y límites</a><a href="../">← Encuesta ProjectMilei2</a>
+    <a href="#exposicion">Exposición digital</a><a href="#r11">Cobertura</a><a href="#metodo">Método y límites</a><a href="../">← Encuesta ProjectMilei2</a>
   </nav>
 </aside>
 <main>
@@ -84,6 +84,9 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
   <section id="r9"><h2>Hashtags que viajan juntos</h2><div class="plot" id="plot-r9"></div></section>
   <section id="r10"><h2>Sitios más enlazados</h2>
     <p class="how">Qué fuentes usa la conversación para respaldarse. Útil para detectar sitios poco conocidos que ganan tracción.</p><div class="plot" id="plot-r10"></div></section>
+  <section id="exposicion"><h2>Exposición digital de instituciones</h2>
+    <p class="how">Ficha pasiva por dominio público: subdominios visibles en certificados (crt.sh), protección contra suplantación de correo (SPF y DMARC), servicios ya indexados por Shodan InternetDB y brechas públicas catalogadas (Have I Been Pwned). No se escanea nada y no se publica qué hosts ni qué vulnerabilidades: solo conteos.</p>
+    <div id="exp-table"><p>Sin datos todavía.</p></div></section>
   <section id="r11"><h2>Cobertura</h2><div class="plot" id="plot-r11"></div></section>
 
   <section id="metodo"><h2>Método y límites</h2>
@@ -100,6 +103,14 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
 <script src="../assets/plotly.min.js"></script>
 <script>
 const fmt=n=>Number(n).toLocaleString('es-AR');
+const escE=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const EXP=window.EXPOSURE?Promise.resolve(window.EXPOSURE):fetch('./data/exposure.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
+EXP.then(e=>{if(!e||!e.domains||!e.domains.length)return;
+  const col={verde:'#55d5ba',amarillo:'#f2b84b',rojo:'#ef6f6c'};
+  const mail=m=>m.dmarc_policy==='reject'||m.dmarc_policy==='quarantine'?`Protegido (DMARC ${m.dmarc_policy})`:(m.dmarc?'DMARC solo monitorea (p=none)':'Sin DMARC')+(m.spf?'':' · sin SPF');
+  const rows=e.domains.map(d=>`<tr><td><b>${escE(d.name)}</b><br><span style="font-size:12px">${escE(d.domain)} · ${escE(d.tipo)}</span></td><td>${d.subdomains}</td><td>${mail(d.mail)}</td><td>${d.services.open_ports} puertos · ${d.services.risky_services} sensibles</td><td>${d.services.hosts_with_known_cves} de ${d.services.ips}</td><td>${d.breaches_catalog<0?'sin dato':d.breaches_catalog}</td><td><span class="dot" style="background:${col[d.semaforo]}"></span>${d.semaforo}</td></tr>`).join('');
+  document.getElementById('exp-table').innerHTML=`<table class="ctx"><thead><tr><th>Institución</th><th>Subdominios visibles</th><th>Correo</th><th>Servicios indexados</th><th>IP con CVE conocidos</th><th>Brechas públicas</th><th>Semáforo</th></tr></thead><tbody>${rows}</tbody></table><p class="how">Actualizado: ${new Date(e.updated_at).toLocaleString('es-AR')}. Semáforo: suma simple de correo sin DMARC estricto, sin SPF, servicios sensibles expuestos (escritorio remoto, bases de datos) e IP con vulnerabilidades conocidas.</p>`;});
+
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 fetch('./data/radar.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
   const s=d.summary;

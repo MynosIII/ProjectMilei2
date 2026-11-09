@@ -50,6 +50,9 @@ jobs:
         env:
           RADAR_SALT: ${{ secrets.RADAR_SALT }}
         run: python radar/analyze.py
+      - name: Digital exposure card (passive sources)
+        continue-on-error: true
+        run: cd radar && python exposure.py
       - name: Show collection status
         if: always()
         run: cat radar/.store/collect_status.json || true
