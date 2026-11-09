@@ -59,5 +59,10 @@ jobs:
           git add radar/data
           if ! git diff --cached --quiet; then
             git commit -m 'Radar: actualizar agregados públicos'
-            git push
+            # Si alguien empujó a la rama durante la corrida, se integra y se conserva el radar.json recién calculado
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin "$GITHUB_REF_NAME" && git push && exit 0
+              sleep $((i * 5))
+            done
+            exit 1
           fi
