@@ -402,11 +402,41 @@ def amplifiers(df, top=15):
     return axes(fig), conc
 
 
+def trends(path: Path):
+    if not path.exists():
+        return None
+    t = json.loads(path.read_text(encoding="utf8"))
+    if not t.get("rows"):
+        return None
+    x = [datetime.fromtimestamp(r["time"], timezone.utc).strftime("%Y-%m-%d") for r in t["rows"]]
+    fig = go.Figure()
+    for i, term in enumerate(t["terms"]):
+        fig.add_scatter(x=x, y=[r["values"][i] for r in t["rows"]], name=term, mode="lines", line=dict(width=2, color=PALETTE[i % len(PALETTE)]))
+    fig.update_layout(**layout(f"Interés de búsqueda en Google ({t['geo']}), 100 = máximo del período", yaxis_title="interés relativo",
+                               yaxis_range=[0, 105]))
+    return axes(fig)
+
+
+def editorial_lines(df):
+    if "linea" not in df or df["linea"].fillna("").eq("").all():
+        return None
+    d = df[df["linea"].fillna("") != ""]
+    narr = [n for n in d["narrative"].value_counts().index if n != "Sin narrativa clara"][:8]
+    t = d[d["narrative"].isin(narr)].groupby(["linea", "narrative"]).size().unstack(fill_value=0).reindex(columns=narr, fill_value=0)
+    pct = t.div(t.sum(axis=1), axis=0).mul(100)
+    fig = go.Figure(go.Heatmap(z=pct.values.round(1), x=pct.columns, y=pct.index, colorscale=[[0, PANEL], [1, "#f2b84b"]], text=t.values,
+                               hovertemplate="%{y}<br>%{x}<br>%{z:.1f}% (n=%{text})<extra></extra>", colorbar=dict(title="%")))
+    fig.update_layout(**layout("Comentarios en YouTube según la línea editorial del canal: qué narrativa domina",
+                               height=200 + 50 * len(pct), margin=dict(l=200, r=30, t=70, b=200)))
+    fig.update_xaxes(tickangle=30)
+    return fig
+
+
 def coverage(df, status):
     c = df.groupby("platform").agg(publicaciones=("id", "size"), cuentas=("who", "nunique"), desde=("ts", "min"), hasta=("ts", "max"))
     rows = [[p, int(r.publicaciones), int(r.cuentas), r.desde.strftime("%d/%m"), r.hasta.strftime("%d/%m")] for p, r in c.iterrows()]
     st = {s["source"]: ("ok" if s["ok"] else "falló: " + s.get("error", "")[:60]) for s in (status or {}).get("sources", [])}
-    names = {"mastodon": "Mastodon", "bluesky": "Bluesky", "reddit": "Reddit", "google_news": "Google News", "rss": "RSS medios", "gdelt": "GDELT"}
+    names = {"mastodon": "Mastodon", "bluesky": "Bluesky", "reddit": "Reddit", "google_news": "Google News", "rss": "RSS medios", "youtube": "YouTube", "google_trends": "Google Trends", "gdelt": "GDELT"}
     for k, v in st.items():
         for r in rows:
             if r[0] == names.get(k):
@@ -446,6 +476,8 @@ def main():
     figs["r10"] = domains(df)
     figs["r11"] = coverage(df, status)
     figs["r12"], conc = amplifiers(df)
+    figs["r13"] = trends(store.parent / "trends.json")
+    figs["r14"] = editorial_lines(df)
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "label": args.label,

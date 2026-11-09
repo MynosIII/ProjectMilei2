@@ -28,7 +28,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
   <div class="eyebrow">Social listening</div><strong>Radar</strong>
   <nav>
     <a href="#hallazgos">Hallazgos</a><a href="#contexto">Qué ve la escucha</a><a href="#r1">Volumen y picos</a><a href="#r2">Narrativas en el tiempo</a><a href="#r3">Narrativas por plataforma</a>
-    <a href="#r4">Menciones por actor</a><a href="#r5">Actor × narrativa</a><a href="#r6">Riesgo reputacional</a>
+    <a href="#r13">Búsquedas en Google</a><a href="#r14">YouTube por línea editorial</a><a href="#r4">Menciones por actor</a><a href="#r5">Actor × narrativa</a><a href="#r6">Riesgo reputacional</a>
     <a href="#r12">Cuentas más activas</a><a href="#r7">Posible coordinación</a><a href="#r8">Mensajes repetidos</a><a href="#r9">Hashtags</a><a href="#r10">Sitios enlazados</a>
     <a href="#r11">Cobertura</a><a href="#metodo">Método y límites</a><a href="../">← Encuesta ProjectMilei2</a>
   </nav>
@@ -67,6 +67,10 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
     <p class="how">Narrativas detectadas sin etiquetas previas (TF-IDF + factorización NMF). Cada nombre son sus términos principales. Sirve para ver qué relato gana o pierde espacio día a día.</p><div class="plot" id="plot-r2"></div></section>
   <section id="r3"><h2>Narrativas por plataforma</h2>
     <p class="how">Dónde circula cada relato: lo que domina en medios no siempre es lo que domina en redes.</p><div class="plot" id="plot-r3"></div></section>
+  <section id="r13"><h2>Qué busca la gente en Google</h2>
+    <p class="how">Google Trends mide búsquedas de toda la población conectada, no solo de quienes publican. Es la señal más masiva del radar y sirve para contrastar el ruido de redes.</p><div class="plot" id="plot-r13"></div></section>
+  <section id="r14"><h2>YouTube por línea editorial</h2>
+    <p class="how">Comentarios en videos recientes de canales de todo el espectro, agrupados por la línea editorial del canal. Permite comparar qué relato domina en cada audiencia.</p><div class="plot" id="plot-r14"></div></section>
   <section id="r4"><h2>Menciones por actor</h2><div class="plot" id="plot-r4"></div></section>
   <section id="r5"><h2>Con qué narrativa aparece cada actor</h2>
     <p class="how">Porcentaje de las menciones de cada actor que pertenecen a cada narrativa. Muestra el encuadre con el que se habla de cada dirigente.</p><div class="plot" id="plot-r5"></div></section>
@@ -85,6 +89,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
   <section id="metodo"><h2>Método y límites</h2>
     <ul>
       <li><b>Fuentes:</b> publicaciones públicas de Bluesky, Mastodon y Reddit, y titulares de Google News, GDELT y RSS de 13 medios de Argentina y Brasil. No incluye X/Twitter, TikTok, Instagram ni WhatsApp (requieren acceso pago o no son públicos).</li>
+      <li><b>Sesgo de cada fuente:</b> Mastodon y Bluesky tienen usuarios más jóvenes, tecnológicos y de centroizquierda; por eso se rotulan como nicho y no como "opinión en redes". YouTube (70% de alcance) y Google Trends son las señales más masivas; X y Facebook requieren acceso pago o no tienen API abierta.</li>
       <li><b>No es una muestra de la población:</b> quienes publican en redes son más jóvenes y más politizados. Para estimar opinión se cruza con la <a href="../">encuesta</a>.</li>
       <li><b>Privacidad:</b> las cuentas se muestran con un seudónimo; los textos completos no se publican, salvo los mensajes repetidos por grupos coordinados.</li>
       <li><b>Actualización:</b> GitHub Actions recolecta y recalcula una vez por día; se conservan los últimos 30 días.</li>

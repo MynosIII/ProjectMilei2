@@ -305,6 +305,33 @@
         "stf",
         "planalto"
       ]
+    },
+    "youtube": {
+      "queries": [
+        "Milei",
+        "Kicillof",
+        "Cristina Kirchner",
+        "Bullrich",
+        "Congreso Argentina",
+        "Lula",
+        "Bolsonaro"
+      ],
+      "region": "AR",
+      "language": "es",
+      "days": 14,
+      "videos_per_query": 8,
+      "comments_per_video": 100
     }
+  },
+  "trends": {
+    "geo": "AR",
+    "timeframe": "today 1-m",
+    "terms": [
+      "Milei",
+      "Kicillof",
+      "Cristina Kirchner",
+      "Bullrich",
+      "Villarruel"
+    ]
   }
 }

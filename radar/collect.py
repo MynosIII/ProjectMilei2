@@ -263,7 +263,73 @@ def rss(cfg):
     return out
 
 
-COLLECTORS = {"mastodon": mastodon, "bluesky": bluesky, "reddit": reddit, "google_news": google_news, "rss": rss, "gdelt": gdelt}
+def youtube(cfg):
+    """Comentarios de videos políticos recientes (YouTube Data API v3; necesita YOUTUBE_API_KEY, gratis)."""
+    key = os.environ.get("YOUTUBE_API_KEY")
+    if not key:
+        raise RuntimeError("falta YOUTUBE_API_KEY")
+    api = "https://www.googleapis.com/youtube/v3/"
+    since = iso(datetime.now(timezone.utc) - timedelta(days=cfg.get("days", 14)))
+    out, seen = [], set()
+    # Búsquedas por tema + canales de todo el espectro (cada uno rotulado con su línea editorial)
+    jobs = [({"q": q, "regionCode": cfg.get("region", "AR"), "relevanceLanguage": cfg.get("language", "es"), "order": "viewCount"}, "")
+            for q in cfg["queries"]]
+    jobs += [({"channelId": ch["channel_id"], "order": "date"}, ch.get("linea", "")) for ch in cfg.get("channels", [])]
+    for extra, linea in jobs:
+        params = {"part": "snippet", "type": "video", "publishedAfter": since, "maxResults": cfg.get("videos_per_query", 8), "key": key, **extra}
+        q = extra.get("q") or "canal"
+        for v in get_json(api + "search?" + urllib.parse.urlencode(params)).get("items", []):
+            vid = v["id"]["videoId"]
+            if vid in seen:
+                continue
+            seen.add(vid)
+            channel = v["snippet"]["channelTitle"]
+            try:
+                d = get_json(api + "commentThreads?" + urllib.parse.urlencode(
+                    {"part": "snippet", "videoId": vid, "order": "relevance", "maxResults": cfg.get("comments_per_video", 100),
+                     "textFormat": "plainText", "key": key}))
+            except urllib.error.HTTPError:  # comentarios desactivados
+                continue
+            for t in d.get("items", []):
+                c = t["snippet"]["topLevelComment"]["snippet"]
+                out.append(record("YouTube", t["id"], c.get("authorChannelId", {}).get("value") or c.get("authorDisplayName", ""),
+                                  c.get("textOriginal") or c.get("textDisplay", ""), c["publishedAt"][:19] + "Z",
+                                  f"https://www.youtube.com/watch?v={vid}&lc={t['id']}",
+                                  c.get("likeCount", 0) + t["snippet"].get("totalReplyCount", 0), [], f"{q} · {channel}",
+                                  lang=None) | {"channel": channel, "linea": linea})
+    return out
+
+
+def google_trends(cfg, path):
+    """Interés de búsqueda relativo (0-100) en Google para los términos configurados. Guarda una serie, no publicaciones."""
+    import http.cookiejar
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    opener.addheaders = [("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) RadarConversacion/0.1"), ("Accept-Language", "es-419,es")]
+    opener.open(f"https://trends.google.com/trends/explore?geo={cfg['geo']}", timeout=30).read()
+
+    def call(url):
+        for attempt in range(3):
+            try:
+                raw = opener.open(url, timeout=30).read().decode("utf8")
+                return json.loads(raw[raw.find("{"):])
+            except urllib.error.HTTPError as e:
+                if e.code == 429 and attempt < 2:
+                    time.sleep(20 * (attempt + 1))
+                    continue
+                raise
+
+    req = {"comparisonItem": [{"keyword": t, "geo": cfg["geo"], "time": cfg["timeframe"]} for t in cfg["terms"]], "category": 0, "property": ""}
+    ex = call("https://trends.google.com/trends/api/explore?" + urllib.parse.urlencode({"hl": "es-419", "tz": 180, "req": json.dumps(req)}))
+    w = next(x for x in ex["widgets"] if x["id"] == "TIMESERIES")
+    data = call("https://trends.google.com/trends/api/widgetdata/multiline?" + urllib.parse.urlencode(
+        {"hl": "es-419", "tz": 180, "req": json.dumps(w["request"]), "token": w["token"]}))
+    rows = [{"time": int(p["time"]), "values": p["value"]} for p in data["default"]["timelineData"]]
+    path.write_text(json.dumps({"geo": cfg["geo"], "terms": cfg["terms"], "rows": rows}, ensure_ascii=False), encoding="utf8")
+    return rows
+
+
+COLLECTORS = {"mastodon": mastodon, "bluesky": bluesky, "reddit": reddit, "google_news": google_news, "rss": rss, "youtube": youtube, "gdelt": gdelt}
 
 
 # ---------------------------------------------------------------- almacén
@@ -290,9 +356,10 @@ def save(path: Path, rows: dict):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(HERE / ".store" / "posts.jsonl.gz"))
-    ap.add_argument("--only", nargs="*", choices=list(COLLECTORS))
+    ap.add_argument("--only", nargs="*", choices=list(COLLECTORS) + ["trends"])
     args = ap.parse_args()
     store = Path(args.store)
+    store.parent.mkdir(parents=True, exist_ok=True)
     rows = load(store)
     before = len(rows)
     cutoff = iso(datetime.now(timezone.utc) - timedelta(days=CONFIG["window_days"]))
@@ -310,6 +377,14 @@ def main():
             status.append({"source": name, "ok": True, "fetched": len(got), "new": new, "seconds": round(time.time() - t0, 1)})
         except Exception as e:  # una fuente caída no detiene las demás
             status.append({"source": name, "ok": False, "error": f"{type(e).__name__}: {str(e)[:160]}", "seconds": round(time.time() - t0, 1)})
+        print(json.dumps(status[-1], ensure_ascii=False), flush=True)
+    if not args.only or "trends" in (args.only or []):
+        t0 = time.time()
+        try:
+            got = google_trends(CONFIG["trends"], store.parent / "trends.json")
+            status.append({"source": "google_trends", "ok": True, "fetched": len(got), "new": len(got), "seconds": round(time.time() - t0, 1)})
+        except Exception as e:
+            status.append({"source": "google_trends", "ok": False, "error": f"{type(e).__name__}: {str(e)[:160]}", "seconds": round(time.time() - t0, 1)})
         print(json.dumps(status[-1], ensure_ascii=False), flush=True)
     rows = {k: v for k, v in rows.items() if v["created_at"] >= cutoff}
     save(store, rows)
