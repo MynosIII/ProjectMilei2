@@ -383,6 +383,9 @@ def main():
     store.parent.mkdir(parents=True, exist_ok=True)
     rows = load(store)
     before = len(rows)
+    first = store.parent / "first_run.txt"  # inicio del historial: las comparaciones semana a semana necesitan 14 días
+    if not first.exists():
+        first.write_text(datetime.now(timezone.utc).strftime("%Y-%m-%d"), encoding="utf8")
     cutoff = iso(datetime.now(timezone.utc) - timedelta(days=CONFIG["window_days"]))
     status = []
     for name, fn in COLLECTORS.items():

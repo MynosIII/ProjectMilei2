@@ -59,6 +59,8 @@ main{max-width:1560px;margin:0 auto;padding:18px 20px 40px}
 .sect{font:600 11px var(--mono);letter-spacing:1.4px;color:var(--dim);text-transform:uppercase;margin:22px 0 10px;display:flex;align-items:center;gap:10px}
 .sect::after{content:"";flex:1;height:1px;background:var(--line)}
 .plot{width:100%}
+.note{margin:10px 0 0;color:var(--dim);font-size:12px}
+.card h3{margin-bottom:10px}
 .empty{color:var(--dim);font-size:13px;padding:28px 0;text-align:center}
 /* KPIs */
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:14px}
@@ -156,7 +158,7 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
   <button data-t="cubo">Cubo político</button>
   <button data-t="conversacion">Conversación</button>
   <button data-t="busquedas">Búsquedas</button>
-  <button data-t="integridad">Integridad y desinformación</button>
+  <button data-t="integridad">Desinformación</button>
   <button data-t="encuesta">Encuesta</button>
   <button data-t="metodo">Fuentes y método</button>
   <a class="navlink" id="nav-si" href="sanisidro/" hidden>San Isidro ↗</a>
@@ -166,14 +168,14 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
   <section class="tab on" id="t-panorama">
     <div class="kpis" id="kpis"></div>
     <div class="g">
-      <div class="card c8"><h3>Mapa de la conversación <span class="tag">provincias</span></h3><p class="sub">Menciones de cada provincia en titulares y comentarios. Tamaño = volumen; color = tono neto (rojo negativo, azul positivo).</p><div class="plot" id="map" style="height:520px"></div></div>
-      <div class="card c4"><h3>Alertas <span class="tag" id="al-n"></span></h3><p class="sub">Generadas automáticamente en cada corrida.</p><div class="alerts" id="alerts"></div></div>
-      <div class="card c7"><h3>Termómetro de presión reputacional <span class="tag">índice 0-100</span></h3><p class="sub">Combina tono negativo, agresividad, términos de riesgo y aceleración de menciones. Tocá un político para ver su perfil.</p><div id="press"></div></div>
+      <div class="card c8"><h3>Mapa de la conversación <span class="tag">provincias</span></h3><div class="plot" id="map" style="height:520px"></div></div>
+      <div class="card c4"><h3>Alertas <span class="tag" id="al-n"></span></h3><div class="alerts" id="alerts"></div></div>
+      <div class="card c7"><h3>Termómetro de presión reputacional <span class="tag">índice 0-100</span></h3><div id="press"></div></div>
       <div class="card c5"><h3>Feed de titulares <span class="tag">fuentes públicas</span></h3>
         <div class="feedf" id="feedf"><button class="pill on" data-k="">Todo</button><button class="pill" data-k="noticia">Noticias</button><button class="pill" data-k="verificación">Verificaciones</button></div>
         <div class="feed" id="feed"></div></div>
-      <div class="card c6"><h3>Volumen diario por fuente</h3><p class="sub">▲ marca picos con sus términos distintivos.</p><div class="plot" data-fig="r1" data-h="330"></div></div>
-      <div class="card c6"><h3>Tono por fuente</h3><p class="sub">% de textos negativos, neutros y positivos.</p><div class="plot" data-fig="r16" data-h="330"></div></div>
+      <div class="card c6"><h3>Volumen diario por fuente</h3><div class="plot" data-fig="r1" data-h="330"></div></div>
+      <div class="card c6"><h3>Tono por fuente</h3><div class="plot" data-fig="r16" data-h="330"></div></div>
     </div>
   </section>
 
@@ -205,26 +207,26 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
       <label class="chk"><input type="checkbox" id="csame"> solo rivales del mismo distrito</label>
     </div>
     <div class="g">
-      <div class="card c8"><h3>Cubo político <span class="tag">economía · sociedad · política</span></h3><p class="sub">Cada punto es un político; el tamaño es su volumen de menciones en 30 días. Girá el cubo con el mouse. Las líneas unen al elegido con sus 5 más cercanos.</p><div class="plot" id="cube" style="height:600px"></div></div>
-      <div class="card c4"><h3 id="nn-t">Más cercanos</h3><p class="sub">Distancia en los tres ejes: cuanto más cerca, más se parecen sus ofertas y más probable es que compitan por los mismos votantes.</p><div id="nn"></div></div>
-      <div class="card c12"><h3>Cómo se ubicó a cada político <span class="tag">criterio documentado</span></h3><p class="sub" id="pos-meth"></p><div style="overflow-x:auto"><table class="t" id="pos-t"></table></div></div>
+      <div class="card c8"><h3>Cubo político <span class="tag">economía · sociedad · política</span></h3><div class="plot" id="cube" style="height:600px"></div></div>
+      <div class="card c4"><h3 id="nn-t">Más cercanos</h3><div id="nn"></div></div>
+      <div class="card c12"><h3>Cómo se ubicó a cada político <span class="tag">criterio documentado</span></h3><div style="overflow-x:auto;margin-top:8px"><table class="t" id="pos-t"></table></div><p class="note" id="pos-meth"></p></div>
     </div>
   </section>
 
   <!-- ======================= CONVERSACIÓN ======================= -->
   <section class="tab" id="t-conversacion">
     <div class="g">
-      <div class="card c12"><h3>Narrativas en el tiempo</h3><p class="sub">Relatos detectados sin etiquetas previas (TF-IDF + NMF) y su peso diario.</p><div class="plot" data-fig="r2" data-h="420"></div></div>
-      <div class="card c6"><h3>Tono neto diario</h3><p class="sub">% positivo − % negativo; comentarios en redes vs titulares de medios.</p><div class="plot" data-fig="r17" data-h="340"></div></div>
-      <div class="card c6"><h3>Emociones por fuente</h3><p class="sub">Emoción dominante de cada texto (ira, asco, miedo, tristeza, alegría, sorpresa).</p><div class="plot" data-fig="r18" data-h="340"></div></div>
-      <div class="card c6"><h3>Agresividad e insultos</h3><p class="sub">% de textos con agresión o insultos por fuente, con IC 95%.</p><div class="plot" data-fig="r19" data-h="340"></div></div>
-      <div class="card c6"><h3>YouTube según la línea editorial del canal</h3><p class="sub">Qué narrativa domina en los comentarios de cada tipo de canal.</p><div class="plot" data-fig="r14" data-h="340"></div></div>
-      <div class="card c7"><h3>Agenda de medios vs agenda de redes</h3><p class="sub">Arriba de la diagonal: las redes hablan del político más de lo que lo cubren los medios.</p><div class="plot" data-fig="r20" data-h="500"></div></div>
-      <div class="card c5"><h3>Quién aparece con quién</h3><p class="sub">Red de co-menciones entre políticos.</p><div class="plot" data-fig="r21" data-h="500"></div></div>
+      <div class="card c12"><h3>Narrativas en el tiempo</h3><div class="plot" data-fig="r2" data-h="420"></div></div>
+      <div class="card c6"><h3>Tono neto diario</h3><div class="plot" data-fig="r17" data-h="340"></div></div>
+      <div class="card c6"><h3>Emociones por fuente</h3><div class="plot" data-fig="r18" data-h="340"></div></div>
+      <div class="card c6"><h3>Agresividad e insultos</h3><div class="plot" data-fig="r19" data-h="340"></div></div>
+      <div class="card c6"><h3>YouTube según la línea editorial del canal</h3><div class="plot" data-fig="r14" data-h="340"></div></div>
+      <div class="card c7"><h3>Agenda de medios vs agenda de redes</h3><div class="plot" data-fig="r20" data-h="500"></div></div>
+      <div class="card c5"><h3>Quién aparece con quién</h3><div class="plot" data-fig="r21" data-h="500"></div></div>
       <div class="card c6"><h3>Dónde circula cada narrativa</h3><div class="plot" data-fig="r3"></div></div>
       <div class="card c6"><h3>Con qué narrativa aparece cada político</h3><div class="plot" data-fig="r5"></div></div>
       <div class="card c6"><h3>Menciones diarias de los más nombrados</h3><div class="plot" data-fig="r4" data-h="380"></div></div>
-      <div class="card c6"><h3>Quién empuja la conversación</h3><p class="sub">Cuentas más activas (seudonimizadas).</p><div class="plot" data-fig="r12"></div></div>
+      <div class="card c6"><h3>Quién empuja la conversación</h3><div class="plot" data-fig="r12"></div></div>
       <div class="card c6"><h3>Hashtags que viajan juntos</h3><div class="plot" data-fig="r9" data-h="440" data-empty="Pocos hashtags en las fuentes actuales (YouTube y medios casi no los usan)."></div></div>
       <div class="card c6"><h3>Sitios más enlazados</h3><div class="plot" data-fig="r10"></div></div>
     </div>
@@ -233,7 +235,7 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
   <!-- ======================= BÚSQUEDAS ======================= -->
   <section class="tab" id="t-busquedas">
     <div class="g">
-      <div class="card c12"><h3>Qué busca la gente en Google</h3><p class="sub">Google Trends mide búsquedas de toda la población conectada, no solo de quienes publican. Índice 0-100 comparable solo dentro de cada grupo.</p><div class="plot" data-fig="r13"></div></div>
+      <div class="card c12"><h3>Qué busca la gente en Google</h3><div class="plot" data-fig="r13"></div></div>
       <div class="card c12"><h3>Reparto de búsquedas por provincia</h3><div class="plot" data-fig="r15"></div></div>
     </div>
   </section>
@@ -241,10 +243,9 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
   <!-- ======================= INTEGRIDAD ======================= -->
   <section class="tab" id="t-integridad">
     <div class="g">
-      <div class="card c7"><h3>Verificaciones recientes <span class="tag">Chequeado · AFP Factual · Aos Fatos · Lupa</span></h3><p class="sub">Chequeos publicados por verificadores en los últimos 30 días, marcados con el político que nombran.</p><div class="feed" id="fcs"></div></div>
-      <div class="card c5"><h3>Posible coordinación entre cuentas</h3><p class="sub">Textos casi idénticos de cuentas distintas en menos de 60 minutos, repetido al menos 2 veces.</p><div class="plot" data-fig="r7" data-h="420" data-empty="No se detectaron grupos de 3 o más cuentas coordinadas en este período: la conversación observada parece orgánica."></div></div>
-      <div class="card c12"><h3>Exposición digital de instituciones <span class="tag">solo fuentes pasivas</span></h3><p class="sub">Subdominios visibles (crt.sh), protección contra suplantación de correo (SPF/DMARC), servicios indexados (Shodan InternetDB) y brechas catalogadas. No se escanea nada y no se publica qué hosts ni qué vulnerabilidades.</p><div id="sema"></div></div>
-      <div class="card c12"><h3>Riesgo reputacional por político</h3><p class="sub">% de menciones junto a términos de riesgo (corrupción, filtración, fraude…), con IC 95%.</p><div class="plot" data-fig="r6"></div></div>
+      <div class="card c7"><h3>Verificaciones recientes <span class="tag">Chequeado · AFP Factual · Aos Fatos · Lupa</span></h3><div class="feed" id="fcs"></div></div>
+      <div class="card c5"><h3>Posible coordinación entre cuentas</h3><div class="plot" data-fig="r7" data-h="420" data-empty="No se detectaron grupos de 3 o más cuentas coordinadas en este período: la conversación observada parece orgánica."></div></div>
+      <div class="card c12"><h3>Riesgo reputacional por político</h3><div class="plot" data-fig="r6"></div></div>
     </div>
   </section>
 
@@ -252,7 +253,7 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
   <section class="tab" id="t-encuesta">
     <div class="kpis" id="kpis-enc"></div>
     <div class="g">
-      <div class="card c12"><h3>Qué problema prioriza cada identidad</h3><p class="sub">% dentro de cada identidad declarada.</p><div class="plot" data-src="survey" data-fig="g24" data-h="600"></div></div>
+      <div class="card c12"><h3>Qué problema prioriza cada identidad</h3><div class="plot" data-src="survey" data-fig="g24" data-h="600"></div></div>
       <div class="card c6"><h3>Evaluación de dirigentes por identidad</h3><div class="plot" data-src="survey" data-fig="g21" data-h="540"></div></div>
       <div class="card c6"><h3>Medios e identidades: afinidad relativa</h3><div class="plot" data-src="survey" data-fig="g23" data-h="540"></div></div>
       <div class="card c12"><h3>Identidades declaradas según fuente de información</h3><div class="plot" data-src="survey" data-fig="g12" data-h="470"></div></div>
@@ -274,7 +275,7 @@ footer{color:var(--dim);font-size:12px;max-width:1560px;margin:0 auto;padding:0 
           <tr><td>X</td><td>16%</td><td>Pago (USD 200/mes)</td></tr>
           <tr><td>WhatsApp</td><td>99%</td><td>No (privado)</td></tr>
         </tbody></table>
-        <p class="sub" style="margin-top:8px">Alcance publicitario según DataReportal 2025; WhatsApp: Infobip 2026. Mastodon y Bluesky se excluyen: su público no representa a la población.</p></div>
+        <p class="note">Alcance publicitario según DataReportal 2025; WhatsApp: Infobip 2026. Mastodon y Bluesky se excluyen: su público no representa a la población.</p></div>
       <div class="card c6"><h3>Método y límites</h3>
         <ul style="color:var(--muted);padding-left:18px;margin:6px 0 0">
           <li><b>Tono, emoción y agresividad</b>: <span id="nlp-m">modelos pysentimiento (RoBERTuito/BERTweet, entrenados con tuits en español y portugués)</span>. Son estimaciones automáticas: la ironía y el sarcasmo se clasifican mal.</li>
@@ -310,9 +311,9 @@ const merge=(a,b)=>{const o=JSON.parse(JSON.stringify(a));for(const k in b){o[k]
 const P=(el,data,lay)=>Plotly.react(el,data,merge(BASE,lay||{}),CFG);
 
 Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',window.ACTORS),J('radar/data/live.json',window.LIVE),
-  J('radar/data/exposure.json',window.EXPOSURE),J('data/charts.json',window.SURVEY),J('data/manifest.json',window.MANIFEST),J('radar/data/positions.json',window.POSITIONS)])
+  Promise.resolve(null),J('data/charts.json',window.SURVEY),J('data/manifest.json',window.MANIFEST),J('radar/data/positions.json',window.POSITIONS)])
 .then(([R,A,L,E,S,M,POS])=>{
-  const s=R?R.summary:{},F=R?R.figures:{},ACT=A?A.actors:[],DAYS=A?A.days:[],alerts=L?L.alerts:[],feed=L?L.feed:[];
+  const s=R?R.summary:{},F=R?R.figures:{},ACT=A?A.actors:[],DAYS=A?A.days:[],alerts=L?L.alerts.filter(a=>a.tipo!=='Exposición digital'):[],feed=L?L.feed:[];
   const byName=Object.fromEntries(ACT.map(a=>[a.name,a]));
   // ---------- barra superior ----------
   const upd=R?new Date(R.updated_at):null,hrs=upd?(Date.now()-upd)/36e5:999;
@@ -327,7 +328,7 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
   const dailyTotal=(()=>{if(!F.r1)return[];const m={};F.r1.data.forEach(t=>t.x.forEach((x,i)=>m[x]=(m[x]||0)+(t.y[i]||0)));return Object.keys(m).sort().map(k=>m[k])})();
   const spark=(arr,color)=>{if(!arr||arr.length<2)return'';const w=84,h=30,mx=Math.max(...arr,1);const pts=arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-2-(v/mx)*(h-4)).toFixed(1)}`).join(' ');
     return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" points="${pts}"/></svg>`};
-  const alta=alerts.filter(a=>a.nivel==='alta').length,red=E&&E.domains?E.domains.filter(d=>d.semaforo==='rojo').length:0,tone=s.tone||{};
+  const alta=alerts.filter(a=>a.nivel==='alta').length,tone=s.tone||{};
   const withM=ACT.filter(a=>a.n>0);
   const K=[
     ['Textos analizados',fmt(s.posts),`${fmt(s.social_posts)} comentarios · ${fmt(s.news)} titulares`,spark(dailyTotal.slice(-30),'#3987e5')],
@@ -335,7 +336,7 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
     ['Tono general',tone.NEG!=null?`${tone.NEG}%`:'—','de textos negativos · '+(tone.POS!=null?tone.POS+'% positivos':''),''],
     ['Alertas altas',alta,`${alerts.length} alertas en total`,'',alta?'alert':''],
     ['Verificaciones',fmt(s.factchecks||0),'chequeos publicados en 30 días',''],
-    ['Instituciones en rojo',E?`${red}/${E.domains.length}`:'—','exposición digital pasiva','',red?'alert':''],
+    ['Medios',fmt(s.outlets),'con titulares en 30 días',''],
   ];
   $('#kpis').innerHTML=K.map(([l,v,d,sp,c])=>`<div class="kpi ${c||''}"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d}</div>${sp||''}</div>`).join('');
   // ---------- alertas ----------
@@ -424,22 +425,22 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
     if(!a.n){box.innerHTML=`<div class="card"><div class="prof">${av(a)}<div><h2>${esc(a.name)}</h2><div class="k">${esc(a.espacio)} · ${a.pais}</div></div></div><div class="empty">Sin menciones en los últimos 30 días en las fuentes monitoreadas. Sus noticias se buscan en cada corrida diaria.</div></div>`;return}
     const tn=a.tone?Math.round(a.tone.POS-a.tone.NEG):null;
     const mini=[['Menciones',fmt(a.n),`${fmt(a.n_social)} comentarios · ${fmt(a.n_news)} titulares`],['Share of voice',a.share+'%','de todas las menciones'],
-      ['Últimos 7 días',fmt(a.last7),a.delta==null?'sin base previa':`${a.delta>0?'+':''}${a.delta}% vs. semana anterior`],
+      ['Últimos 7 días',fmt(a.last7),a.delta==null?(s.weekly_ok===false&&s.history_since?'comparación semanal desde el '+new Date(new Date(s.history_since).getTime()+14*864e5).toLocaleDateString('es-AR',{day:'numeric',month:'numeric'}):'sin base previa'):`${a.delta>0?'+':''}${a.delta}% vs. semana anterior`],
       ['Tono neto',tn==null?'—':(tn>0?'+':'')+tn,`base: ${a.tone_base}`],['Agresividad',a.agresivo+'%','comentarios con insultos'],['Riesgo',a.risk+'%',`± ${a.risk_ci} (IC 95%)`]];
     box.innerHTML=`<div class="g">
       <div class="card c8"><div class="prof">${av(a)}<div><h2>${esc(a.name)}</h2><div class="k">${esc(a.espacio)} · ${a.pais==='AR'?'Argentina':'Brasil'} · alias: ${a.alias.map(esc).join(', ')}${PP[a.name]?` · <a href="#" data-cubego="${esc(a.name)}">ver en el cubo político →</a>`:''}</div></div></div>
         <div class="minis">${mini.map(([l,v,d])=>`<div class="mini"><div class="l">${l}</div><div class="v">${v}</div><div class="l">${d}</div></div>`).join('')}</div>
         <ul class="brief">${brief(a).map(x=>`<li>${x}</li>`).join('')}</ul></div>
       <div class="card c4"><h3>Presión reputacional</h3><div class="plot" id="p-gauge" style="height:190px"></div><div id="p-parts"></div></div>
-      <div class="card c8"><h3>Menciones diarias ${sel.length>1?'<span class="tag">comparación</span>':''}</h3><p class="sub">Comentarios en redes + titulares de medios por día.</p><div class="plot" id="p-daily" style="height:300px"></div></div>
-      <div class="card c4"><h3>Emociones</h3><p class="sub">% de los textos con emoción reconocible.</p><div class="plot" id="p-emo" style="height:300px"></div></div>
-      <div class="card c6"><h3>Tono ${sel.length>1?'comparado':''}</h3><p class="sub">Negativo / neutro / positivo, en comentarios (o en todo si hay pocos).</p><div class="plot" id="p-tone" style="height:${120+50*cmp.length}px"></div></div>
-      <div class="card c6"><h3>Con qué narrativas aparece</h3><p class="sub">% de sus menciones con narrativa asignada.</p><div id="p-narr"></div></div>
-      <div class="card c4"><h3>Palabras propias</h3><p class="sub">Términos que aparecen mucho más junto a ${esc(a.name.split(' ').slice(-1)[0])} que en el resto.</p><div class="words" id="p-words"></div></div>
-      <div class="card c4"><h3>Aparece junto a</h3><p class="sub">Políticos nombrados en los mismos textos.</p><div id="p-co"></div></div>
-      <div class="card c4"><h3>Según la línea del canal de YouTube</h3><p class="sub">Tono de los comentarios que lo nombran.</p><div id="p-lines"></div></div>
+      <div class="card c8"><h3>Menciones diarias ${sel.length>1?'<span class="tag">comparación</span>':''}</h3><div class="plot" id="p-daily" style="height:300px"></div></div>
+      <div class="card c4"><h3>Emociones</h3><div class="plot" id="p-emo" style="height:300px"></div></div>
+      <div class="card c6"><h3>Tono ${sel.length>1?'comparado':''}</h3><div class="plot" id="p-tone" style="height:${120+50*cmp.length}px"></div></div>
+      <div class="card c6"><h3>Con qué narrativas aparece</h3><div id="p-narr"></div></div>
+      <div class="card c4"><h3>Palabras propias</h3><div class="words" id="p-words"></div></div>
+      <div class="card c4"><h3>Aparece junto a</h3><div id="p-co"></div></div>
+      <div class="card c4"><h3>Según la línea del canal de YouTube</h3><div id="p-lines"></div></div>
       <div class="card c6"><h3>Últimos titulares</h3><ul class="list" id="p-heads"></ul></div>
-      <div class="card c6"><h3>Verificaciones y provincias</h3><p class="sub">Chequeos que lo nombran y provincias mencionadas junto a él.</p><ul class="list" id="p-fc"></ul><div id="p-prov" style="margin-top:10px"></div></div>
+      <div class="card c6"><h3>Verificaciones y provincias</h3><ul class="list" id="p-fc"></ul><div id="p-prov" style="margin-top:10px"></div></div>
     </div>`;
     // gauge
     if(a.pressure!=null){P($('#p-gauge'),[{type:'indicator',mode:'gauge+number',value:a.pressure,number:{font:{size:40,color:C.txt}},
@@ -469,7 +470,7 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
     $('#p-words').innerHTML=ws.length?ws.map(w=>`<span style="font-size:${12+12*w.s/wm}px;opacity:${.55+.45*w.s/wm}">${esc(w.w)}</span>`).join(''):'<div class="empty">Pocos textos.</div>';
     // co-menciones
     const cm=Math.max(...(a.co||[]).map(c=>c.n),1);
-    $('#p-co').innerHTML=(a.co||[]).length?a.co.map(c=>`<div class="hbar" style="cursor:pointer" data-add="${esc(c.a)}"><span>${esc(c.a)}</span><div class="meter"><i style="width:${c.n/cm*100}%;background:#9085e9"></i></div><span class="num">${c.n}</span></div>`).join('')+'<p class="sub" style="margin-top:6px">Tocá un nombre para sumarlo a la comparación.</p>':'<div class="empty">Sin co-menciones.</div>';
+    $('#p-co').innerHTML=(a.co||[]).length?a.co.map(c=>`<div class="hbar" style="cursor:pointer" data-add="${esc(c.a)}"><span>${esc(c.a)}</span><div class="meter"><i style="width:${c.n/cm*100}%;background:#9085e9"></i></div><span class="num">${c.n}</span></div>`).join('')+'':'<div class="empty">Sin co-menciones.</div>';
     // líneas editoriales
     const li=a.lines?Object.entries(a.lines):[];
     $('#p-lines').innerHTML=li.length?`<table class="rank"><thead><tr><th>Línea</th><th class="num">n</th><th>Tono</th><th class="num">Agr.</th></tr></thead><tbody>${li.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${v.n}</td><td>${tbar({NEG:v.neg,NEU:Math.max(0,100-v.neg-v.pos),POS:v.pos})}</td><td class="num">${v.agresivo}%</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Sin comentarios de YouTube que lo nombren.</div>';
@@ -516,7 +517,7 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
         <div class="h"><span class="num" style="color:var(--txt)">#${i+1}</span>${esc(p.meta.espacio)} · ${esc(p.distrito)}<span style="margin-left:auto" class="num">cercanía ${aff}%</span></div>
         <div class="t">${esc(p.name)}</div>
         <div class="x">${AX.map(([k,l])=>`<span class="ax">${l.slice(0,3).toUpperCase()} ${dd(me,p,k)}</span>`).join('')}${co?` · nombrados juntos ${co.n} veces`:''}</div></div>`}).join('')+
-      `<p class="sub" style="margin-top:8px">Diferencias respecto de ${esc(me.name.split(' ').slice(-1)[0])}: + = más a la derecha en economía, más conservador o más institucional. Cercanía = 100 − distancia normalizada.</p>`
+      `<p class="note">Diferencias respecto de ${esc(me.name.split(' ').slice(-1)[0])}: + = más a la derecha en economía, más conservador o más institucional. Cercanía = 100 − distancia normalizada.</p>`
       :'<div class="empty">Elegí un político.</div>';
     // tabla de criterios
     $('#pos-meth').innerHTML=`${esc(POS.metodo)} Escalas: <span class="ax">ECO</span>${esc(POS.escala.eco)} · <span class="ax">SOC</span>${esc(POS.escala.soc)} · <span class="ax">POL</span>${esc(POS.escala.pol)}. ${esc(POS.validacion||'')}`;
@@ -538,9 +539,6 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
   // ---------- integridad ----------
   const col={verde:'#0ca30c',amarillo:'#fab219',rojo:'#d03b3b'};
   const mail=m=>m.dmarc_policy==='reject'||m.dmarc_policy==='quarantine'?`Protegido (DMARC ${m.dmarc_policy})`:(m.dmarc?'DMARC solo monitorea':'Sin DMARC')+(m.spf?'':' · sin SPF');
-  if(E&&E.domains){const ord={rojo:0,amarillo:1,verde:2},ds=[...E.domains].sort((a,b)=>ord[a.semaforo]-ord[b.semaforo]);
-    $('#sema').innerHTML=`<div style="overflow-x:auto"><table class="t"><thead><tr><th>Institución</th><th>Subdominios</th><th>Correo</th><th>Servicios indexados</th><th>IP con CVE conocidos</th><th>Semáforo</th></tr></thead><tbody>${ds.map(d=>`<tr><td><b style="color:var(--txt)">${esc(d.name)}</b><br><span style="font-size:12px">${esc(d.domain)} · ${esc(d.tipo)}</span></td><td class="num">${d.subdomains==null?'sin dato':d.subdomains}</td><td>${mail(d.mail)}</td><td>${d.services.open_ports} puertos · ${d.services.risky_services} sensibles</td><td class="num">${d.services.hosts_with_known_cves} de ${d.services.ips}</td><td><span class="dot" style="background:${col[d.semaforo]}"></span> ${d.semaforo}</td></tr>`).join('')}</tbody></table></div><p class="sub" style="margin-top:8px">Semáforo: DMARC solo monitorea (1) o no existe (2), sin SPF (1), servicios sensibles expuestos (1), IP con vulnerabilidades conocidas (2). Verde 0, amarillo 1-2, rojo 3+.</p>`;
-  } else $('#sema').innerHTML='<div class="empty">Sin datos todavía.</div>';
   // ---------- método ----------
   const nm=s.nlp_method||{};if(!nm.modelo&&nm.lexico)$('#nlp-m').textContent='diccionarios de palabras en español y portugués (los modelos pysentimiento se activan en la corrida diaria)';
   $('#chips').innerHTML=(s.platforms||[]).map(p=>`<span class="chip">● ${esc(p)}</span>`).join('')+'<span class="chip">● Google Trends (foto con fecha)</span><span class="chip">● Verificadores</span>';

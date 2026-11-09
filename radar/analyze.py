@@ -688,6 +688,20 @@ def pressure(neg_pct, agr_pct, risk_pct, delta):
     return round(sum(parts.values())), {k: round(v, 1) for k, v in parts.items()}
 
 
+HISTORY_OK = [True]
+
+
+def history_since(store_dir: Path, last_day) -> str | None:
+    """Fecha de la primera recolección. Si hay menos de 14 días de historial, no se calculan variaciones semanales
+    (las fuentes devuelven solo lo reciente y la semana previa quedaría artificialmente vacía)."""
+    f = store_dir / "first_run.txt"
+    if not f.exists():
+        return None
+    first = pd.Timestamp(f.read_text(encoding="utf8").strip())
+    HISTORY_OK[0] = (last_day.tz_localize(None) if last_day.tzinfo else last_day) - first >= pd.Timedelta(days=14)
+    return first.strftime("%Y-%m-%d")
+
+
 def actor_profiles(df, men, fc, days):
     """Perfil público y agregado de cada político configurado (para el buscador del tablero)."""
     meta = CONFIG.get("actor_meta", {})
@@ -713,7 +727,7 @@ def actor_profiles(df, men, fc, days):
         soc, news = m[m["kind"] == "post"], m[m["kind"] == "news"]
         last7 = int((m["day"] > last - pd.Timedelta(days=7)).sum())
         prev7 = int(((m["day"] <= last - pd.Timedelta(days=7)) & (m["day"] > last - pd.Timedelta(days=14))).sum())
-        delta = round((last7 - prev7) / prev7 * 100) if prev7 >= 3 else None
+        delta = round((last7 - prev7) / prev7 * 100) if prev7 >= 3 and HISTORY_OK[0] else None
         daily_s = soc.groupby("day").size().reindex(days, fill_value=0)
         daily_n = news.groupby("day").size().reindex(days, fill_value=0)
         tone_src = soc if len(soc) >= 10 else m
@@ -816,12 +830,6 @@ def live_layer(df, fc, men, profiles, spikes, coord):
     if coord.get("grupos"):
         alerts.append({"nivel": "alta", "tipo": "Coordinación", "fecha": last.strftime("%Y-%m-%d"),
                        "titulo": f"{coord['grupos']} grupos de cuentas con mensajes casi idénticos", "detalle": f"{coord['cuentas']} cuentas involucradas"})
-    exp = HERE / "data" / "exposure.json"
-    if exp.exists():
-        for d in json.loads(exp.read_text(encoding="utf8")).get("domains", []):
-            if d.get("semaforo") == "rojo":
-                alerts.append({"nivel": "baja", "tipo": "Exposición digital", "fecha": "", "titulo": f"{d['name']}: semáforo rojo",
-                               "detalle": f"DMARC {d['mail']['dmarc_policy']} · SPF {'sí' if d['mail']['spf'] else 'no'}"})
     rank = {"alta": 0, "media": 1, "baja": 2}
     alerts.sort(key=lambda x: x["fecha"], reverse=True)
     alerts.sort(key=lambda x: rank[x["nivel"]])
@@ -861,6 +869,7 @@ def main():
     men = mentions(df)
     figs["r20"], figs["r21"] = agenda_figures(men, df)
     days = pd.date_range(max(df["day"].min(), df["day"].max() - pd.Timedelta(days=CONFIG["window_days"] - 1)), df["day"].max(), freq="D")
+    since = history_since(store.parent, df["day"].max())
     profiles = actor_profiles(df, men, fc, days)
     feed, alerts = live_layer(df, fc, men, profiles, spikes, coord)
     nlp_method = df["metodo_nlp"].value_counts().to_dict()
@@ -877,6 +886,7 @@ def main():
             "tone": {k: pct(df["tono"].eq(k).mean()) for k in ["NEG", "NEU", "POS"]},
             "agresivo": pct(df.loc[df["kind"] == "post", "agresivo"].mean()) if (df["kind"] == "post").any() else None,
             "nlp_method": {k: int(v) for k, v in nlp_method.items()}, "factchecks": int(len(fc)),
+            "history_since": since, "weekly_ok": bool(HISTORY_OK[0]),
         },
         "figures": {k: fig_json(v) for k, v in figs.items() if v is not None},
     }

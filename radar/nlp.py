@@ -19,7 +19,7 @@ from pathlib import Path
 
 MAX_NEW = int(os.environ.get("RADAR_NLP_MAX", "6000"))
 # Tiempo máximo de modelos por corrida; lo que no llega se clasifica con diccionarios y se reintenta al día siguiente
-BUDGET = float(os.environ.get("RADAR_NLP_SECONDS", "900"))
+BUDGET = float(os.environ.get("RADAR_NLP_SECONDS", "1800"))
 DEADLINE = [0.0]
 
 POS = set("""
