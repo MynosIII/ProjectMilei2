@@ -55,6 +55,8 @@ jobs:
             cp radar/index.html _site/radar/
             cp radar/data/*.json _site/radar/data/
           fi
+          # Módulo de reclamos vecinales (San Isidro), si existe
+          if [ -d sanisidro ]; then cp -R sanisidro _site/; fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

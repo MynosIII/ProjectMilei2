@@ -14,9 +14,13 @@ import gzip
 import json
 import os
 import re
+import time
 from pathlib import Path
 
-MAX_NEW = int(os.environ.get("RADAR_NLP_MAX", "9000"))
+MAX_NEW = int(os.environ.get("RADAR_NLP_MAX", "6000"))
+# Tiempo máximo de modelos por corrida; lo que no llega se clasifica con diccionarios y se reintenta al día siguiente
+BUDGET = float(os.environ.get("RADAR_NLP_SECONDS", "900"))
+DEADLINE = [0.0]
 
 POS = set("""
 bien buen bueno buena buenos buenas excelente genial gran grande mejor mejores logro logros exito exitos
@@ -101,34 +105,37 @@ def _analyzers():
     return out or None
 
 
-def _predict(an, texts, batch=64):
-    res = []
-    for i in range(0, len(texts), batch):
-        r = an.predict(texts[i:i + batch])
-        res += r if isinstance(r, list) else [r]
-    return res
+def _out(r):
+    return r if isinstance(r, list) else [r]
 
 
-def model_labels(rows: list[dict], analyzers: dict) -> list[dict]:
-    """rows: [{"text", "lang"}] -> etiquetas con método 'modelo' (o léxico donde falte la tarea)."""
+def model_labels(rows: list[dict], analyzers: dict, batch: int = 64) -> list[dict]:
+    """rows: [{"text", "clean", "lang"}] -> etiquetas. Cada lote recibe las tres tareas juntas, así un texto queda
+    entero con modelo o entero con diccionario (y se reintenta en la próxima corrida si se acabó el tiempo)."""
     out = [lexicon(r["clean"]) for r in rows]
+    DEADLINE[0] = time.time() + BUDGET
     for lang in ("es", "pt"):
         idx = [i for i, r in enumerate(rows) if r["lang"] == lang]
-        if not idx:
+        if not idx or (lang, "sentiment") not in analyzers:
             continue
-        texts = [rows[i]["text"][:500] for i in idx]
-        if (lang, "sentiment") in analyzers:
-            for i, p in zip(idx, _predict(analyzers[(lang, "sentiment")], texts)):
+        done = 0
+        for k in range(0, len(idx), batch):
+            if time.time() > DEADLINE[0]:
+                break
+            ids = idx[k:k + batch]
+            texts = [rows[i]["text"][:500] for i in ids]
+            for i, p in zip(ids, _out(analyzers[(lang, "sentiment")].predict(texts))):
                 out[i]["tono"] = p.output
                 out[i]["metodo"] = "modelo"
-        if (lang, "emotion") in analyzers:
-            for i, p in zip(idx, _predict(analyzers[(lang, "emotion")], texts)):
-                out[i]["emocion"] = EMO_MAP.get(p.output, "otra")
-        if (lang, "hate_speech") in analyzers:
-            for i, p in zip(idx, _predict(analyzers[(lang, "hate_speech")], texts)):
-                labels = p.output if isinstance(p.output, list) else [p.output]
-                out[i]["agresivo"] = bool({"aggressive", "hateful"} & set(labels)) or out[i]["agresivo"]
-        print(f"nlp: {len(idx)} textos en {lang} clasificados con modelo", flush=True)
+            if (lang, "emotion") in analyzers:
+                for i, p in zip(ids, _out(analyzers[(lang, "emotion")].predict(texts))):
+                    out[i]["emocion"] = EMO_MAP.get(p.output, "otra")
+            if (lang, "hate_speech") in analyzers:
+                for i, p in zip(ids, _out(analyzers[(lang, "hate_speech")].predict(texts))):
+                    labels = p.output if isinstance(p.output, list) else [p.output]
+                    out[i]["agresivo"] = bool({"aggressive", "hateful"} & set(labels))
+            done += len(ids)
+        print(f"nlp: {done} de {len(idx)} textos en {lang} clasificados con modelo", flush=True)
     return out
 
 
@@ -156,7 +163,10 @@ def label(df, cache_path: Path) -> "pd.DataFrame":  # noqa: F821
     want = "modelo" if analyzers else "lexico"
     langs = [guess_lang(c, l) for c, l in zip(df["clean"], df["lang"])]
     todo = [i for i, pid in enumerate(df["id"]) if pid not in cache or (want == "modelo" and cache[pid]["metodo"] != "modelo")]
-    todo = todo[:MAX_NEW] if want == "modelo" else todo
+    if want == "modelo":  # lo más reciente primero
+        order = df["ts"].rank(method="first", ascending=False).to_numpy() if "ts" in df else None
+        todo = sorted(todo, key=lambda i: order[i]) if order is not None else todo
+        todo = todo[:MAX_NEW]
     rows = [{"text": df["text"].iat[i] or "", "clean": df["clean"].iat[i], "lang": langs[i]} for i in todo]
     labels = model_labels(rows, analyzers) if analyzers else [lexicon(r["clean"]) for r in rows]
     for i, lab in zip(todo, labels):
