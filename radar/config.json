@@ -1,0 +1,52 @@
+{
+  "project": "Radar de conversación política",
+  "window_days": 30,
+  "timezone": "America/Argentina/Buenos_Aires",
+  "actors": {
+    "Javier Milei": ["milei", "javier milei", "@jmilei"],
+    "Karina Milei": ["karina milei", "karina"],
+    "Axel Kicillof": ["kicillof"],
+    "Cristina Kirchner": ["cristina", "cfk", "kirchner"],
+    "Patricia Bullrich": ["bullrich", "pato bullrich"],
+    "Victoria Villarruel": ["villarruel"],
+    "Mauricio Macri": ["macri"],
+    "Luiz Inácio Lula": ["lula"],
+    "Jair Bolsonaro": ["bolsonaro"]
+  },
+  "risk_terms": [
+    "corrupción", "corrupcion", "coima", "coimas", "fraude", "denuncia", "imputado", "imputada",
+    "escándalo", "escandalo", "filtración", "filtracion", "filtrado", "audio", "audios", "hackeo",
+    "hackeado", "leak", "datos personales", "causa judicial", "procesado", "lavado",
+    "corrupção", "vazamento", "vazou", "escândalo", "denúncia", "fake news", "desinformación",
+    "desinformacion", "operación", "opereta", "trolls", "bots"
+  ],
+  "sources": {
+    "mastodon": {
+      "instances": ["mastodon.social", "mas.to"],
+      "tags": ["argentina", "milei", "politicaargentina", "brasil", "lula", "bolsonaro"],
+      "pages_per_tag": 5
+    },
+    "bluesky": {
+      "queries": ["milei", "kicillof", "cristina kirchner", "bullrich", "villarruel", "lula", "bolsonaro", "#argentina política"],
+      "pages_per_query": 5
+    },
+    "reddit": {
+      "subreddits": ["argentina", "RepublicaArgentina", "brasil"],
+      "pages": 4
+    },
+    "google_news": {
+      "feeds": [
+        {"q": "Milei", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
+        {"q": "Kicillof OR Cristina Kirchner", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
+        {"q": "Bullrich OR Villarruel OR Macri", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
+        {"q": "desinformación elecciones Argentina", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
+        {"q": "Lula OR Bolsonaro", "hl": "pt-BR", "gl": "BR", "ceid": "BR:pt-419"}
+      ]
+    },
+    "gdelt": {
+      "queries": ["Milei sourcecountry:AR", "(Kicillof OR Kirchner) sourcecountry:AR", "desinformación sourcelang:spanish", "Bolsonaro sourcecountry:BR"],
+      "timespan": "7d",
+      "max_records": 250
+    }
+  }
+}

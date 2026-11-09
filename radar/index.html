@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar de conversación política</title>
+<meta name="description" content="Social listening de la conversación política pública: narrativas, picos, actores expuestos y señales de coordinación entre cuentas.">
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#0b111c;color:#e9eef6;font:16px Arial,sans-serif}
+aside{position:fixed;width:260px;height:100vh;overflow:auto;top:0;left:0;background:#101827;padding:24px 18px;border-right:1px solid #273247}
+aside strong{font-size:22px}aside a{display:block;color:#aebdd2;text-decoration:none;font-size:13px;line-height:1.5;padding:9px 0;border-bottom:1px solid #202b3c}
+aside a:hover{color:#55d5ba}main{margin-left:260px;max-width:1500px;padding:38px 40px}
+h1{font-size:42px;letter-spacing:-1px;max-width:980px;margin:16px 0}h2{font-size:25px;line-height:1.25;margin:10px 0}
+.eyebrow{color:#55d5ba;font-size:12px;letter-spacing:2px;text-transform:uppercase}p,li{color:#b7c6db;line-height:1.6;max-width:1050px}
+.kpis{display:flex;gap:18px;flex-wrap:wrap;margin:28px 0}.kpi{padding:18px 24px;background:#111a28;border-left:3px solid #55d5ba;min-width:170px}
+.kpi b{display:block;font-size:30px;margin-bottom:6px}.kpi span{font-size:13px;color:#b7c6db}
+.kpi.alert{border-left-color:#ef6f6c}
+section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top:1px solid #27384e;scroll-margin-top:25px}
+.plot{width:100%;min-width:680px}a{color:#55d5ba}
+.banner{background:#3a2a10;border:1px solid #f2b84b;color:#f6d79a;padding:12px 16px;margin:18px 0;border-radius:4px}
+.findings{background:#111a28;border-left:3px solid #f2b84b;padding:6px 26px;margin:24px 0}
+.findings li{margin:8px 0}.how{font-size:14px}footer{padding:35px 0;color:#91a6c1;font-size:13px}
+@media(max-width:1000px){aside{display:none}main{margin:0;padding:18px 16px}h1{font-size:32px}section{padding:12px}.kpi{min-width:130px}}
+</style>
+</head>
+<body>
+<aside>
+  <div class="eyebrow">Social listening</div><strong>Radar</strong>
+  <nav>
+    <a href="#hallazgos">Hallazgos</a><a href="#r1">Volumen y picos</a><a href="#r2">Narrativas en el tiempo</a><a href="#r3">Narrativas por plataforma</a>
+    <a href="#r4">Menciones por actor</a><a href="#r5">Actor × narrativa</a><a href="#r6">Riesgo reputacional</a>
+    <a href="#r7">Posible coordinación</a><a href="#r8">Mensajes repetidos</a><a href="#r9">Hashtags</a><a href="#r10">Sitios enlazados</a>
+    <a href="#r11">Cobertura</a><a href="#metodo">Método y límites</a><a href="../">← Encuesta ProjectMilei2</a>
+  </nav>
+</aside>
+<main>
+  <div class="eyebrow">Radar de conversación política · Argentina y Brasil</div>
+  <h1>Qué se dice, quién lo amplifica y dónde hay señales de coordinación</h1>
+  <p id="sub">Cargando datos…</p>
+  <div id="banner"></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="findings" id="hallazgos"><h2>Hallazgos automáticos</h2><ul id="flist"></ul></div>
+
+  <section id="r1"><h2>Volumen diario y picos</h2>
+    <p class="how">Un pico es un día con volumen muy por encima de su semana previa (z robusto &gt; 3 sobre mediana y desvío absoluto). Las etiquetas son las palabras más distintivas de ese día frente al resto.</p><div class="plot" id="plot-r1"></div></section>
+  <section id="r2"><h2>Narrativas en el tiempo</h2>
+    <p class="how">Narrativas detectadas sin etiquetas previas (TF-IDF + factorización NMF). Cada nombre son sus términos principales. Sirve para ver qué relato gana o pierde espacio día a día.</p><div class="plot" id="plot-r2"></div></section>
+  <section id="r3"><h2>Narrativas por plataforma</h2>
+    <p class="how">Dónde circula cada relato: lo que domina en medios no siempre es lo que domina en redes.</p><div class="plot" id="plot-r3"></div></section>
+  <section id="r4"><h2>Menciones por actor</h2><div class="plot" id="plot-r4"></div></section>
+  <section id="r5"><h2>Con qué narrativa aparece cada actor</h2>
+    <p class="how">Porcentaje de las menciones de cada actor que pertenecen a cada narrativa. Muestra el encuadre con el que se habla de cada dirigente.</p><div class="plot" id="plot-r5"></div></section>
+  <section id="r6"><h2>Exposición reputacional</h2>
+    <p class="how">Porcentaje de menciones que aparecen junto a términos de riesgo (corrupción, denuncia, filtración, audios, hackeo, fraude, etc.), con intervalo de confianza del 95%. Es una medida de exposición, no de culpa: incluye defensas y desmentidas.</p><div class="plot" id="plot-r6"></div></section>
+  <section id="r7"><h2>Posible coordinación entre cuentas</h2>
+    <p class="how">Dos cuentas se unen si publicaron textos casi idénticos (similitud ≥ 0,9) con menos de 60 minutos de diferencia, en al menos 2 mensajes distintos. Se muestran grupos de 3 o más cuentas. Es una señal para revisar a mano, no una prueba de automatización.</p><div class="plot" id="plot-r7"></div></section>
+  <section id="r8"><h2>Mensajes repetidos de esos grupos</h2><div class="plot" id="plot-r8"></div></section>
+  <section id="r9"><h2>Hashtags que viajan juntos</h2><div class="plot" id="plot-r9"></div></section>
+  <section id="r10"><h2>Sitios más enlazados</h2>
+    <p class="how">Qué fuentes usa la conversación para respaldarse. Útil para detectar sitios poco conocidos que ganan tracción.</p><div class="plot" id="plot-r10"></div></section>
+  <section id="r11"><h2>Cobertura</h2><div class="plot" id="plot-r11"></div></section>
+
+  <section id="metodo"><h2>Método y límites</h2>
+    <ul>
+      <li><b>Fuentes:</b> publicaciones públicas de Bluesky, Mastodon y Reddit, y titulares de Google News y GDELT. No incluye X/Twitter, TikTok, Instagram ni WhatsApp (requieren acceso pago o no son públicos).</li>
+      <li><b>No es una muestra de la población:</b> quienes publican en redes son más jóvenes y más politizados. Para estimar opinión se cruza con la <a href="../">encuesta</a>.</li>
+      <li><b>Privacidad:</b> las cuentas se muestran con un seudónimo; los textos completos no se publican, salvo los mensajes repetidos por grupos coordinados.</li>
+      <li><b>Actualización:</b> GitHub Actions recolecta y recalcula una vez por día; se conservan los últimos 30 días.</li>
+    </ul>
+  </section>
+  <footer id="foot"></footer>
+</main>
+<script src="../assets/plotly.min.js"></script>
+<script>
+const fmt=n=>Number(n).toLocaleString('es-AR');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('./data/radar.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
+  const s=d.summary;
+  document.getElementById('sub').textContent=`${fmt(s.posts)} publicaciones y titulares entre ${s.from} y ${s.to} · fuentes: ${s.platforms.join(', ')}.`;
+  if(d.label)document.getElementById('banner').innerHTML=`<div class="banner">Atención: esta versión usa ${esc(d.label)}.</div>`;
+  const k=[[fmt(s.social_posts),'publicaciones en redes'],[fmt(s.accounts),'cuentas distintas'],[fmt(s.news),'titulares de medios'],
+           [s.narratives.length,'narrativas detectadas'],[s.spikes.length,'picos de conversación'],[s.coordination.cuentas,'cuentas en posibles grupos coordinados',true]];
+  document.getElementById('kpis').innerHTML=k.map(([v,l,a])=>`<div class="kpi${a&&v>0?' alert':''}"><b>${v}</b><span>${l}</span></div>`).join('');
+  const f=[];
+  if(s.narratives.length){const t=s.narratives.reduce((a,n)=>a+n.publicaciones,0);const n=s.narratives[0];
+    f.push(`La narrativa más grande es <b>${esc(n.narrativa)}</b>: ${fmt(n.publicaciones)} publicaciones (${Math.round(100*n.publicaciones/t)}% de las clasificadas).`);}
+  s.spikes.slice(-3).reverse().forEach(p=>f.push(`Pico el <b>${p.day}</b>: ${fmt(p.posts)} publicaciones (z = ${p.z}), impulsado por <i>${esc(p.terms.slice(0,4).join(', '))}</i>.`));
+  if(s.actors.length){const top=[...s.actors].sort((a,b)=>b.riesgo_pct-a.riesgo_pct)[0];
+    f.push(`<b>${esc(s.actors[0].actor)}</b> concentra más menciones (${fmt(s.actors[0].menciones)}); el más expuesto a términos de riesgo es <b>${esc(top.actor)}</b> (${top.riesgo_pct}% de sus menciones).`);}
+  if(s.coordination.grupos>0){const e=s.coordination_examples[0];
+    f.push(`Se detectaron <b>${s.coordination.grupos} grupo(s)</b> con ${s.coordination.cuentas} cuentas que repiten mensajes casi idénticos en minutos. Ejemplo: “${esc(e.mensaje.slice(0,120))}…” (${e.cuentas} cuentas, ${esc(e.plataforma)}).`);}
+  else f.push('No se detectaron grupos de cuentas que repitan mensajes de forma coordinada en este período.');
+  document.getElementById('flist').innerHTML=f.map(x=>`<li>${x}</li>`).join('');
+  document.getElementById('foot').textContent=`Actualizado: ${new Date(d.updated_at).toLocaleString('es-AR')}. Análisis exploratorio de conversación pública; no representa a la población.`;
+  const drawn=new Set();
+  const draw=sec=>{const id=sec.id,fig=d.figures[id];if(drawn.has(id))return;drawn.add(id);
+    if(!fig){document.getElementById('plot-'+id).innerHTML='<p>Sin datos suficientes en este período.</p>';return;}
+    Plotly.newPlot('plot-'+id,fig.data,fig.layout,{responsive:true,displaylogo:false,toImageButtonOptions:{format:'png',scale:2}});};
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)draw(e.target)}),{rootMargin:'600px'});
+  document.querySelectorAll('section[id^="r"]').forEach(x=>obs.observe(x));
+}).catch(e=>{document.getElementById('sub').textContent='No se pudieron cargar los datos: '+e.message;});
+</script>
+</body>
+</html>
