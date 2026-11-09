@@ -3,48 +3,204 @@
   "window_days": 30,
   "timezone": "America/Argentina/Buenos_Aires",
   "actors": {
-    "Javier Milei": ["milei", "javier milei", "@jmilei"],
-    "Karina Milei": ["karina milei", "karina"],
-    "Axel Kicillof": ["kicillof"],
-    "Cristina Kirchner": ["cristina", "cfk", "kirchner"],
-    "Patricia Bullrich": ["bullrich", "pato bullrich"],
-    "Victoria Villarruel": ["villarruel"],
-    "Mauricio Macri": ["macri"],
-    "Luiz Inácio Lula": ["lula"],
-    "Jair Bolsonaro": ["bolsonaro"]
+    "Javier Milei": [
+      "milei",
+      "javier milei",
+      "@jmilei"
+    ],
+    "Karina Milei": [
+      "karina milei",
+      "karina"
+    ],
+    "Axel Kicillof": [
+      "kicillof"
+    ],
+    "Cristina Kirchner": [
+      "cristina",
+      "cfk",
+      "kirchner"
+    ],
+    "Patricia Bullrich": [
+      "bullrich",
+      "pato bullrich"
+    ],
+    "Victoria Villarruel": [
+      "villarruel"
+    ],
+    "Mauricio Macri": [
+      "macri"
+    ],
+    "Luiz Inácio Lula": [
+      "lula"
+    ],
+    "Jair Bolsonaro": [
+      "bolsonaro"
+    ]
   },
   "risk_terms": [
-    "corrupción", "corrupcion", "coima", "coimas", "fraude", "denuncia", "imputado", "imputada",
-    "escándalo", "escandalo", "filtración", "filtracion", "filtrado", "audio", "audios", "hackeo",
-    "hackeado", "leak", "datos personales", "causa judicial", "procesado", "lavado",
-    "corrupção", "vazamento", "vazou", "escândalo", "denúncia", "fake news", "desinformación",
-    "desinformacion", "operación", "opereta", "trolls", "bots"
+    "corrupción",
+    "corrupcion",
+    "coima",
+    "coimas",
+    "fraude",
+    "denuncia",
+    "imputado",
+    "imputada",
+    "escándalo",
+    "escandalo",
+    "filtración",
+    "filtracion",
+    "filtrado",
+    "audio",
+    "audios",
+    "hackeo",
+    "hackeado",
+    "leak",
+    "datos personales",
+    "causa judicial",
+    "procesado",
+    "lavado",
+    "corrupção",
+    "vazamento",
+    "vazou",
+    "escândalo",
+    "denúncia",
+    "fake news",
+    "desinformación",
+    "desinformacion",
+    "operación",
+    "opereta",
+    "trolls",
+    "bots"
   ],
   "sources": {
     "mastodon": {
-      "instances": ["mastodon.social", "mas.to"],
-      "tags": ["argentina", "milei", "politicaargentina", "brasil", "lula", "bolsonaro"],
-      "pages_per_tag": 5
+      "instances": [
+        "mastodon.social",
+        "mas.to"
+      ],
+      "tags": [
+        "argentina",
+        "milei",
+        "politicaargentina",
+        "peronismo",
+        "kirchner",
+        "kicillof",
+        "noticiasargentina",
+        "buenosaires",
+        "elecciones",
+        "brasil",
+        "lula",
+        "bolsonaro",
+        "politicabrasileira",
+        "stf",
+        "desinformacion",
+        "fakenews"
+      ],
+      "pages_per_tag": 8
     },
     "bluesky": {
-      "queries": ["milei", "kicillof", "cristina kirchner", "bullrich", "villarruel", "lula", "bolsonaro", "#argentina política"],
+      "queries": [
+        "milei",
+        "kicillof",
+        "cristina kirchner",
+        "bullrich",
+        "villarruel",
+        "lula",
+        "bolsonaro",
+        "#argentina política"
+      ],
       "pages_per_query": 5
     },
     "reddit": {
-      "subreddits": ["argentina", "RepublicaArgentina", "brasil"],
+      "subreddits": [
+        "argentina",
+        "RepublicaArgentina",
+        "brasil"
+      ],
       "pages": 4
     },
     "google_news": {
       "feeds": [
-        {"q": "Milei", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
-        {"q": "Kicillof OR Cristina Kirchner", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
-        {"q": "Bullrich OR Villarruel OR Macri", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
-        {"q": "desinformación elecciones Argentina", "hl": "es-419", "gl": "AR", "ceid": "AR:es-419"},
-        {"q": "Lula OR Bolsonaro", "hl": "pt-BR", "gl": "BR", "ceid": "BR:pt-419"}
+        {
+          "q": "Milei",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "Kicillof OR Cristina Kirchner",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "Bullrich OR Villarruel OR Macri",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "desinformación elecciones Argentina",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "Lula OR Bolsonaro",
+          "hl": "pt-BR",
+          "gl": "BR",
+          "ceid": "BR:pt-419"
+        },
+        {
+          "q": "Karina Milei OR LLA OR \"La Libertad Avanza\"",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "Congreso Argentina presupuesto OR reforma",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "inflación OR salarios OR jubilados Argentina",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "filtración OR hackeo OR audios política Argentina",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "redes sociales campaña trolls Argentina",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "desinformação eleições Brasil",
+          "hl": "pt-BR",
+          "gl": "BR",
+          "ceid": "BR:pt-419"
+        },
+        {
+          "q": "Tarcísio OR Haddad OR STF",
+          "hl": "pt-BR",
+          "gl": "BR",
+          "ceid": "BR:pt-419"
+        }
       ]
     },
     "gdelt": {
-      "queries": ["Milei sourcecountry:AR", "(Kicillof OR Kirchner) sourcecountry:AR", "desinformación sourcelang:spanish", "Bolsonaro sourcecountry:BR"],
+      "queries": [
+        "Milei sourcecountry:AR",
+        "desinformación sourcelang:spanish"
+      ],
       "timespan": "7d",
       "max_records": 250
     }

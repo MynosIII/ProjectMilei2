@@ -224,7 +224,7 @@ def gdelt(cfg):
             out.append(record("GDELT", a["url"], a.get("domain", ""), a.get("title", ""), created, a["url"], 0,
                               [a["url"]], qtext, kind="news", outlet=a.get("domain", ""),
                               lang={"Spanish": "es", "Portuguese": "pt"}.get(a.get("language", ""), "xx")))
-        time.sleep(12)  # GDELT limita fuerte: ~1 consulta cada 5-10 s
+        time.sleep(20)  # GDELT limita fuerte: ~1 consulta cada 5-10 s
     return out
 
 
