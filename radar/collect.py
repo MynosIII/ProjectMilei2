@@ -228,7 +228,42 @@ def gdelt(cfg):
     return out
 
 
-COLLECTORS = {"mastodon": mastodon, "bluesky": bluesky, "reddit": reddit, "google_news": google_news, "gdelt": gdelt}
+def rss(cfg):
+    """RSS/Atom de medios. En feeds generales se guardan solo notas políticas (actores o palabras clave)."""
+    terms = [t.lower() for t in cfg.get("keywords", [])]
+    for alias in CONFIG["actors"].values():
+        terms += [a.lower().lstrip("@") for a in alias if len(a) > 4]
+    atom = "{http://www.w3.org/2005/Atom}"
+    out = []
+    for f in cfg["feeds"]:
+        try:
+            root = ET.fromstring(get(f["url"], headers={"Accept": "application/rss+xml, application/xml, */*"}))
+        except Exception as e:  # un medio caído no frena a los demás
+            print(json.dumps({"rss_feed": f["name"], "error": str(e)[:120]}, ensure_ascii=False), flush=True)
+            continue
+        items = list(root.iter("item")) or list(root.iter(atom + "entry"))
+        for it in items:
+            title = it.findtext("title") or it.findtext(atom + "title") or ""
+            desc = it.findtext("description") or it.findtext(atom + "summary") or ""
+            link = it.findtext("link") or ""
+            if not link:
+                el = it.find(atom + "link")
+                link = el.get("href", "") if el is not None else ""
+            date = it.findtext("pubDate") or it.findtext(atom + "updated") or it.findtext(atom + "published") or ""
+            try:
+                created = iso(parsedate_to_datetime(date)) if "," in date else iso(datetime.fromisoformat(date.replace("Z", "+00:00")))
+            except (TypeError, ValueError):
+                continue
+            text = f"{clean(title)}. {clean(desc)[:400]}"
+            if not f.get("politics_only") and not any(t in text.lower() for t in terms):
+                continue
+            out.append(record("RSS medios", link or title, f["name"], text, created, link, 0, [link] if link else [],
+                              f["name"], kind="news", outlet=f["name"], lang=f.get("lang")))
+        time.sleep(0.5)
+    return out
+
+
+COLLECTORS = {"mastodon": mastodon, "bluesky": bluesky, "reddit": reddit, "google_news": google_news, "rss": rss, "gdelt": gdelt}
 
 
 # ---------------------------------------------------------------- almacén

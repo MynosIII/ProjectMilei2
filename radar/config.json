@@ -203,6 +203,108 @@
       ],
       "timespan": "7d",
       "max_records": 250
+    },
+    "rss": {
+      "feeds": [
+        {
+          "name": "Chequeado",
+          "url": "https://chequeado.com/feed/",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "Folha",
+          "url": "https://feeds.folha.uol.com.br/poder/rss091.xml",
+          "lang": "pt",
+          "politics_only": true
+        },
+        {
+          "name": "g1",
+          "url": "https://g1.globo.com/rss/g1/politica/",
+          "lang": "pt",
+          "politics_only": true
+        },
+        {
+          "name": "TN",
+          "url": "https://tn.com.ar/arc/outboundfeeds/rss/?outputType=xml",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "Ámbito",
+          "url": "https://www.ambito.com/rss/pages/politica.xml",
+          "lang": "es",
+          "politics_only": true
+        },
+        {
+          "name": "Clarín",
+          "url": "https://www.clarin.com/rss/politica/",
+          "lang": "es",
+          "politics_only": true
+        },
+        {
+          "name": "El Cronista",
+          "url": "https://www.cronista.com/files/rss/news.xml",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "El Destape",
+          "url": "https://www.eldestapeweb.com/adjuntos/177/rss/home.xml",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "Infobae",
+          "url": "https://www.infobae.com/arc/outboundfeeds/rss/",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "La Nación",
+          "url": "https://www.lanacion.com.ar/arc/outboundfeeds/rss/?outputType=xml",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "La Política Online",
+          "url": "https://www.lapoliticaonline.com/files/rss/politica.xml",
+          "lang": "es",
+          "politics_only": true
+        },
+        {
+          "name": "Página/12",
+          "url": "https://www.pagina12.com.ar/arc/outboundfeeds/rss/",
+          "lang": "es",
+          "politics_only": false
+        },
+        {
+          "name": "Perfil",
+          "url": "https://www.perfil.com/feed",
+          "lang": "es",
+          "politics_only": false
+        }
+      ],
+      "keywords": [
+        "gobierno",
+        "congreso",
+        "senado",
+        "diputados",
+        "elecciones",
+        "eleição",
+        "eleições",
+        "ministro",
+        "ministra",
+        "presidente",
+        "casa rosada",
+        "peronismo",
+        "libertad avanza",
+        "oposición",
+        "kirchnerismo",
+        "gobernador",
+        "stf",
+        "planalto"
+      ]
     }
   }
 }

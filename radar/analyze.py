@@ -405,7 +405,7 @@ def coverage(df, status):
     c = df.groupby("platform").agg(publicaciones=("id", "size"), cuentas=("who", "nunique"), desde=("ts", "min"), hasta=("ts", "max"))
     rows = [[p, int(r.publicaciones), int(r.cuentas), r.desde.strftime("%d/%m"), r.hasta.strftime("%d/%m")] for p, r in c.iterrows()]
     st = {s["source"]: ("ok" if s["ok"] else "falló: " + s.get("error", "")[:60]) for s in (status or {}).get("sources", [])}
-    names = {"mastodon": "Mastodon", "bluesky": "Bluesky", "reddit": "Reddit", "google_news": "Google News", "gdelt": "GDELT"}
+    names = {"mastodon": "Mastodon", "bluesky": "Bluesky", "reddit": "Reddit", "google_news": "Google News", "rss": "RSS medios", "gdelt": "GDELT"}
     for k, v in st.items():
         for r in rows:
             if r[0] == names.get(k):
