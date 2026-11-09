@@ -96,10 +96,11 @@ def main():
         r = {"name": item["name"], "domain": dom, "tipo": item.get("tipo", "")}
         try:
             subs = subdomains(dom)
-        except Exception as e:
-            subs = set()
+        except Exception as e:  # crt.sh falla seguido: se informa "sin dato", no 0
+            subs = None
             r["error_crtsh"] = str(e)[:100]
-        r["subdomains"] = len(subs)
+        r["subdomains"] = len(subs) if subs is not None else None
+        subs = subs or set()
         try:
             r["mail"] = mail_protection(dom)
         except Exception as e:

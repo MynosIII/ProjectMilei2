@@ -86,7 +86,7 @@
    "domain": "pjn.gov.ar",
    "tipo": "Judicial",
    "error_crtsh": "HTTP Error 404: Not Found",
-   "subdomains": 0,
+   "subdomains": null,
    "mail": {
     "spf": true,
     "spf_strict": true,
@@ -107,7 +107,7 @@
    "domain": "electoral.gob.ar",
    "tipo": "Electoral",
    "error_crtsh": "HTTP Error 404: Not Found",
-   "subdomains": 0,
+   "subdomains": null,
    "mail": {
     "spf": false,
     "spf_strict": false,
@@ -168,7 +168,7 @@
    "domain": "buenosaires.gob.ar",
    "tipo": "Ciudad",
    "error_crtsh": "The read operation timed out",
-   "subdomains": 0,
+   "subdomains": null,
    "mail": {
     "spf": true,
     "spf_strict": true,
