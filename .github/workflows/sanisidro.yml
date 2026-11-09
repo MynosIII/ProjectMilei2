@@ -1,0 +1,55 @@
+name: San Isidro reclamos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 11 * * *'
+  push:
+    branches: [claude/san-isidro-reclamos]
+    paths: ['sanisidro/*.py', 'sanisidro/config.json', '.github/workflows/sanisidro.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sanisidro
+  cancel-in-progress: false
+
+jobs:
+  collect-and-analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # Los textos recolectados no se suben al repositorio: viven en la caché del workflow.
+      - name: Restore store
+        uses: actions/cache/restore@v4
+        with:
+          path: sanisidro/.store
+          key: sanisidro-store-${{ github.run_id }}
+          restore-keys: sanisidro-store-
+      - name: Collect public sources
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python sanisidro/collect.py
+      - name: Save store
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: sanisidro/.store
+          key: sanisidro-store-${{ github.run_id }}
+      - name: Analyze
+        run: python sanisidro/analyze.py
+      - name: Commit aggregates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sanisidro/data/sanisidro.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'San Isidro: actualizar agregados de reclamos'
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
