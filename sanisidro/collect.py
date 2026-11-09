@@ -153,46 +153,57 @@ def google_news():
 
 
 # ---------------------------------------------------------------- OpenStreetMap
-OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter",
+            "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+BBOX = "-34.545,-58.605,-34.435,-58.475"  # partido de San Isidro con margen; se recorta con el polígono del partido
 POI = {
-    "salud": '["amenity"~"^(hospital|clinic|doctors)$"]',
-    "educacion": '["amenity"~"^(school|kindergarten|college|university)$"]',
-    "seguridad": '["amenity"~"^(police|fire_station)$"]',
-    "verdes": '["leisure"~"^(park|playground|garden)$"]',
-    "paradas": '["highway"="bus_stop"]',
-    "estaciones": '["railway"~"^(station|halt)$"]',
-    "camaras": '["man_made"="surveillance"]',
+    "salud": ("amenity", {"hospital", "clinic", "doctors"}),
+    "educacion": ("amenity", {"school", "kindergarten", "college", "university"}),
+    "seguridad": ("amenity", {"police", "fire_station"}),
+    "verdes": ("leisure", {"park", "playground", "garden"}),
+    "paradas": ("highway", {"bus_stop"}),
+    "estaciones": ("railway", {"station", "halt"}),
+    "camaras": ("man_made", {"surveillance"}),
 }
-
-
-def overpass(q):
-    last = None
-    for ep in OVERPASS:
-        try:
-            return json.loads(get(ep, data=urllib.parse.urlencode({"data": q}).encode(), timeout=180).decode("utf8"))
-        except Exception as e:
-            last = e
-            log(overpass=ep, error=str(e)[:120])
-    raise last
+QUERY = f"""[out:json][timeout:120][bbox:{BBOX}];
+relation["boundary"="administrative"]["admin_level"~"^(5|6|7|8|9|10)$"];out geom tags;
+(nwr["amenity"~"^(hospital|clinic|doctors|school|kindergarten|college|university|police|fire_station)$"];
+ nwr["leisure"~"^(park|playground|garden)$"];node["highway"="bus_stop"];nwr["railway"~"^(station|halt)$"];
+ node["man_made"="surveillance"];);out center tags;"""
 
 
 def osm():
-    area = 'area["boundary"="administrative"]["name"~"San Isidro$"]["admin_level"~"^(5|6)$"]->.p;'
-    bounds = overpass(f'[out:json][timeout:150];{area}'
-                      '(relation(area.p)["boundary"="administrative"]["admin_level"~"^(7|8|9|10)$"];'
-                      'relation["boundary"="administrative"]["name"~"San Isidro$"]["admin_level"~"^(5|6)$"](-34.56,-58.62,-34.42,-58.46););out geom tags;')
-    pois = {}
-    for k, sel in POI.items():
+    data, last = None, None
+    for ep in OVERPASS:
         try:
-            d = overpass(f'[out:json][timeout:120];{area}(node{sel}(area.p);way{sel}(area.p););out center tags;')
-            pois[k] = [[e.get("lat") or e["center"]["lat"], e.get("lon") or e["center"]["lon"], e.get("tags", {}).get("name", "")]
-                       for e in d.get("elements", []) if "lat" in e or "center" in e]
+            data = json.loads(get(ep, data=urllib.parse.urlencode({"data": QUERY}).encode(), retries=0, timeout=150).decode("utf8"))
+            break
         except Exception as e:
-            log(osm_poi=k, error=str(e)[:120])
-        time.sleep(2)
-    GEO.write_text(json.dumps({"boundaries": bounds.get("elements", []), "pois": pois,
-                               "fetched_at": iso(datetime.now(timezone.utc))}, ensure_ascii=False), encoding="utf8")
-    return len(bounds.get("elements", [])), {k: len(v) for k, v in pois.items()}
+            last = e
+            log(overpass=ep, error=str(e)[:120])
+    if data is None:
+        raise last
+    bounds, pois = [], {k: [] for k in POI}
+    for e in data.get("elements", []):
+        tags = e.get("tags", {})
+        if e["type"] == "relation" and tags.get("boundary") == "administrative" and "members" in e:
+            bounds.append(e)
+            continue
+        lat, lon = e.get("lat") or (e.get("center") or {}).get("lat"), e.get("lon") or (e.get("center") or {}).get("lon")
+        if lat is None:
+            continue
+        for k, (key, vals) in POI.items():
+            if tags.get(key) in vals:
+                pois[k].append([lat, lon, tags.get("name", "")])
+    GEO.write_text(json.dumps({"boundaries": bounds, "pois": pois, "fetched_at": iso(datetime.now(timezone.utc))},
+                              ensure_ascii=False), encoding="utf8")
+    return len(bounds), {k: len(v) for k, v in pois.items()}
+
+
+def save(known):
+    cutoff = iso(datetime.now(timezone.utc) - timedelta(days=CONFIG["window_days"] + 30))
+    keep = [r for r in known.values() if r.get("created_at", "") >= cutoff]
+    STORE.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in keep) + "\n", encoding="utf8")
 
 
 def main():
@@ -216,16 +227,16 @@ def main():
         except Exception as e:
             status[name] = {"ok": False, "error": str(e)[:200]}
         log(source=name, **status[name])
+    save(known)  # guardar antes de OSM, que es la fuente más lenta
+    status_path = HERE / ".store" / "status.json"
+    status_path.write_text(json.dumps(status, ensure_ascii=False), encoding="utf8")
     try:
         nb, npoi = osm()
         status["openstreetmap"] = {"ok": nb > 0, "boundaries": nb, "pois": npoi}
     except Exception as e:
         status["openstreetmap"] = {"ok": GEO.exists(), "error": str(e)[:200]}
     log(source="openstreetmap", **status["openstreetmap"])
-    cutoff = iso(datetime.now(timezone.utc) - timedelta(days=CONFIG["window_days"] + 30))
-    keep = [r for r in known.values() if r.get("created_at", "") >= cutoff]
-    STORE.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in keep) + "\n", encoding="utf8")
-    (HERE / ".store" / "status.json").write_text(json.dumps(status, ensure_ascii=False), encoding="utf8")
+    status_path.write_text(json.dumps(status, ensure_ascii=False), encoding="utf8")
 
 
 if __name__ == "__main__":

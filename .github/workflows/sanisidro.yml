@@ -18,7 +18,7 @@ concurrency:
 jobs:
   collect-and-analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,7 +34,7 @@ jobs:
       - name: Collect public sources
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python sanisidro/collect.py
+        run: timeout 900 python sanisidro/collect.py || echo "recolección cortada por tiempo"
       - name: Save store
         if: always()
         uses: actions/cache/save@v4

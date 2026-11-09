@@ -22,6 +22,10 @@ GEO = HERE / ".store" / "osm.json"
 STATUS = HERE / ".store" / "status.json"
 OUT = HERE / "data" / "sanisidro.json"
 LOCS = list(CONFIG["localidades"])
+STOP = set("""que los las del por con una para como mas pero sus les este esta esto eso esa son hay fue ser muy todo todos
+todas nos ese hace hacer sin sobre entre cuando donde porque tambien solo ya asi aca alli ahi tiene tienen estan esta
+era han ser cada otro otra otros nada algo uno dos tan bien mal donde quien cual desde hasta hoy aqui ver van vez del
+the and you jaja jajaja jajajaja gente san isidro video""".split())
 
 
 def fold(s: str) -> str:
@@ -265,20 +269,29 @@ def main():
             "equipamiento": dict(poi_loc.get(loc, {})),
         })
 
-    # Fragmentos de ejemplo (sin autor), balanceados por tema y priorizando apoyo
-    ejemplos, seen_txt = [], set()
+    # Sin textos de usuarios: de los comentarios solo se publican frases frecuentes (agregadas, mínimo 3 apariciones).
+    # Los ejemplos con texto son solo titulares de medios.
+    def frases(rs, n=12):
+        c = Counter()
+        for r in rs:
+            toks = [w for w in re.findall(r"[a-zñ]{3,}", fold(r["text"])) if w not in STOP]
+            grams = set(toks) | {a + " " + b for a, b in zip(toks, toks[1:])}
+            c.update(grams)
+        out = [(g, k) for g, k in c.most_common(200) if k >= 3 and (" " in g or k >= 5)]
+        bi = [x for x in out if " " in x[0]][: n // 2 + 2]
+        uni = [x for x in out if " " not in x[0]][: n - len(bi)]
+        return sorted(bi + uni, key=lambda x: -x[1])
+    vec = [r for r in reclamos if r["kind"] == "comment"]
+    frases_tema = {t: frases([r for r in vec if t in r["temas"]]) for t in temas}
+    frases_loc = {l: frases([r for r in vec if r["loc"] == l]) for l in LOCS}
+    ejemplos = []
     for t in temas:
-        pool = sorted([r for r in reclamos if t in r["temas"]], key=lambda r: -(r.get("engagement") or 0))
-        for r in pool[:14]:
-            key = fold(r["text"])[:80]
-            if key in seen_txt:
+        pool = sorted([r for r in reclamos if t in r["temas"] and r["kind"] == "news"], key=lambda r: r["created_at"], reverse=True)
+        for r in pool[:10]:
+            if any(e["url"] == r.get("url") for e in ejemplos):
                 continue
-            seen_txt.add(key)
-            ejemplos.append({"tema": t, "temas": r["temas"], "localidad": r["loc"], "inferida": r["loc_inferida"],
-                             "fuente": "Comentario en YouTube" if r["kind"] == "comment" else (r.get("outlet") or "Medio"),
-                             "fecha": r["created_at"][:10], "texto": excerpt(r["text"]),
-                             "url": f"https://www.youtube.com/watch?v={r['video_id']}" if r["kind"] == "comment" else r.get("url", ""),
-                             "contexto": r.get("video_title", ""), "apoyo": int(r.get("engagement") or 0)})
+            ejemplos.append({"tema": t, "temas": r["temas"], "localidad": r["loc"], "fuente": r.get("outlet") or "Medio",
+                             "fecha": r["created_at"][:10], "texto": excerpt(r["text"]), "url": r.get("url", "")})
 
     videos = Counter(r["video_id"] for r in reclamos if r["kind"] == "comment")
     vinfo = {i["video_id"]: i for i in items if i["kind"] == "video"}
@@ -308,6 +321,8 @@ def main():
         "equipamiento_puntos": poi_pts,
         "politicos": pol,
         "ejemplos": ejemplos,
+        "frases_tema": frases_tema,
+        "frases_localidad": frases_loc,
         "videos": top_videos,
         "titulares": titulares,
         "metodo": {

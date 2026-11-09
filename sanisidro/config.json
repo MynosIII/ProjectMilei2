@@ -46,7 +46,7 @@
     "Barrio Jardín": "San Isidro"
   },
   "temas": {
-    "Inseguridad": ["insegur", "robo", "robaron", "roban", "asalt", "chorro", "delinc", "motochorr", "entradera", "tiroteo", "balacera", "baleado", "arrebat", "saqueo", "patrullero", "policía", "policia", "secuestr", "narco", "droga", "transa"],
+    "Inseguridad": ["insegur", "seguridad", "robo", "robaron", "roban", "asalt", "chorro", "delinc", "motochorr", "entradera", "tiroteo", "balacera", "baleado", "arrebat", "saqueo", "patrullero", "policía", "policia", "secuestr", "narco", "droga", "transa"],
     "Calles y veredas": ["bache", "pozo", "asfalto", "repavim", "vereda", "cordón", "empedrado", "calle rota", "calles rotas", "adoquín"],
     "Inundaciones y desagües": ["inund", "anegad", "desagüe", "desague", "pluvial", "zanja", "arroyo", "alcantarill", "se llueve", "lluvia", "temporal", "tormenta", "sudestada"],
     "Tránsito y estacionamiento": ["tránsito", "transito", "embotell", "estacionam", "semáforo", "semaforo", "multa", "fotomulta", "acoplado", "accidente", "choque", "lomo de burro", "velocidad", "acarreo", "grúa", "grua"],
