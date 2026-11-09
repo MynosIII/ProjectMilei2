@@ -320,7 +320,106 @@
       "language": "es",
       "days": 14,
       "videos_per_query": 8,
-      "comments_per_video": 100
+      "comments_per_video": 100,
+      "channels": [
+        {
+          "name": "LA NACION (incluye LN+)",
+          "channel_id": "UCba3hpU7EFBSk817y9qZkiA",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Todo Noticias (TN)",
+          "channel_id": "UCj6PcyLvpnIRT_2W_mwa9Aw",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Clarín",
+          "channel_id": "UCjMGMWnToRcQRqmyVB4R2xQ",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Infobae",
+          "channel_id": "UCvsU0EGXN7Su7MfNqcTGNHg",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "A24",
+          "channel_id": "UCR9120YBAqMfntqgRTKmkjQ",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Radio Mitre",
+          "channel_id": "UCYvINPByAdCcpA0sWrF3I_w",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Canal 26",
+          "channel_id": "UCrpMfcQNog595v5gAS-oUsQ",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Crónica TV",
+          "channel_id": "UCT7KFGv6s2a-rh2Jq8ZdM1g",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Blender",
+          "channel_id": "UC6pJGaMdx5Ter_8zYbLoRgA",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Luzu TV",
+          "channel_id": "UCTHaNTsP7hsVgBxARZTuajw",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "OLGA",
+          "channel_id": "UC7mJ2EDXFomeDIRFu5FtEbA",
+          "linea": "centro/independiente"
+        },
+        {
+          "name": "Neura Media",
+          "channel_id": "UC-40U87JsevMIMn7PMw4jPw",
+          "linea": "oficialista/libertaria"
+        },
+        {
+          "name": "Carajo",
+          "channel_id": "UC4mdhKZXjrKoq5aVG6juHEg",
+          "linea": "oficialista/libertaria"
+        },
+        {
+          "name": "Derecha Diario TV",
+          "channel_id": "UCicmqOz0mgEUY_NqgEbWy1A",
+          "linea": "oficialista/libertaria"
+        },
+        {
+          "name": "C5N",
+          "channel_id": "UCFgk2Q2mVO1BklRQhSv6p0w",
+          "linea": "opositora/peronista"
+        },
+        {
+          "name": "El Destape",
+          "channel_id": "UC5wAqJ9NF0fpGH9dVf3h6HA",
+          "linea": "opositora/peronista"
+        },
+        {
+          "name": "GELATINA",
+          "channel_id": "UCWSfXECGo1qK_H7SXRaUSMg",
+          "linea": "opositora/peronista"
+        },
+        {
+          "name": "Futurock FM",
+          "channel_id": "UCgn6r0aGRBnEQm02tE_jzbw",
+          "linea": "opositora/peronista"
+        },
+        {
+          "name": "Radio 10",
+          "channel_id": "UCJozD5RVug7EZdTjqkGISYQ",
+          "linea": "opositora/peronista"
+        }
+      ],
+      "channel_query": "Milei|gobierno|Congreso|elecciones|Kicillof|Cristina|Bullrich|peronismo|economía",
+      "videos_per_channel": 4
     }
   },
   "trends": {

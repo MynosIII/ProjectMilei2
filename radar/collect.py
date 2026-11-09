@@ -274,10 +274,12 @@ def youtube(cfg):
     # Búsquedas por tema + canales de todo el espectro (cada uno rotulado con su línea editorial)
     jobs = [({"q": q, "regionCode": cfg.get("region", "AR"), "relevanceLanguage": cfg.get("language", "es"), "order": "viewCount"}, "")
             for q in cfg["queries"]]
-    jobs += [({"channelId": ch["channel_id"], "order": "date"}, ch.get("linea", "")) for ch in cfg.get("channels", [])]
+    # En canales se filtra por palabras políticas (algunos son de entretenimiento)
+    jobs += [({"channelId": ch["channel_id"], "order": "date", "q": cfg.get("channel_query", ""),
+               "maxResults": cfg.get("videos_per_channel", 4)}, ch.get("linea", "")) for ch in cfg.get("channels", [])]
     for extra, linea in jobs:
         params = {"part": "snippet", "type": "video", "publishedAfter": since, "maxResults": cfg.get("videos_per_query", 8), "key": key, **extra}
-        q = extra.get("q") or "canal"
+        q = "canal" if "channelId" in extra else extra["q"]
         for v in get_json(api + "search?" + urllib.parse.urlencode(params)).get("items", []):
             vid = v["id"]["videoId"]
             if vid in seen:
