@@ -418,6 +418,9 @@ def trends(path: Path, extra=()):
     if not rows:
         return None, None
     t = pd.DataFrame(rows)
+    # Un término en 0 durante todo el período suele ser un dato faltante de Trends, no ausencia de búsquedas: se omite
+    mx = t[t["series"] == "time"].groupby(["group", "term"])["value"].max()
+    t = t[~t.set_index(["group", "term"]).index.isin(mx[mx == 0].index)]
     ts = t[t["series"] == "time"]
     if "timeframe" in ts and ts["timeframe"].nunique() > 1:  # el período más corto, más legible
         ts = ts[ts["timeframe"] == sorted(ts["timeframe"].unique(), key=lambda x: ("12" in x, x))[0]]
