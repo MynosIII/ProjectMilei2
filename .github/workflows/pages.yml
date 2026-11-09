@@ -48,18 +48,8 @@ jobs:
       - name: Stage only public website files
         run: |
           mkdir _site
-          cp index.html dashboard.html .nojekyll _site/
+          cp index.html .nojekyll _site/
           cp -R assets data _site/
-          if [ -f radar/data/radar.json ]; then
-            mkdir -p _site/radar/data
-            cp radar/index.html _site/radar/
-            cp radar/data/*.json _site/radar/data/
-          fi
-          # Módulo de reclamos vecinales (San Isidro), si existe
-          if [ -f sanisidro/index.html ]; then
-            mkdir -p _site/sanisidro
-            cp -R sanisidro/index.html sanisidro/data _site/sanisidro/
-          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

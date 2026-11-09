@@ -7,5 +7,3 @@ datos_pjm*.json
 source.json
 fresh_source.json
 *.zip
-radar/.store/
-sanisidro/.store/
