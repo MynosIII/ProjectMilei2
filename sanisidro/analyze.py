@@ -66,7 +66,12 @@ def classify(item):
     temas = [k for k, r in TEMAS.items() if r.search(t)]
     marker = bool(RECLAMO.search(t))
     pos, neg = len(POS.findall(t)), len(NEG.findall(t))
-    return {"temas": temas, "reclamo": bool(temas) and (marker or neg > pos), "pos": pos, "neg": neg,
+    # Un comentario con tema cuenta como reclamo salvo que sea claramente elogioso; una nota exige tono de queja.
+    if item.get("kind") == "comment":
+        es_reclamo = bool(temas) and (marker or neg >= pos)
+    else:
+        es_reclamo = bool(temas) and (marker or neg > pos)
+    return {"temas": temas, "reclamo": es_reclamo, "pos": pos, "neg": neg,
             "locs": localidades_en(t), "pols": [k for k, r in POLS.items() if r.search(t)]}
 
 
@@ -327,7 +332,7 @@ def main():
         "titulares": titulares,
         "metodo": {
             "temas": CONFIG["temas"], "marcadores_reclamo": CONFIG["marcadores_reclamo"],
-            "regla": "Un texto es reclamo si menciona al menos un tema y contiene un marcador de queja o más términos negativos que positivos.",
+            "regla": "Un comentario es reclamo si menciona al menos un tema y no es claramente elogioso (tiene un marcador de queja o no más términos positivos que negativos). Una nota de medio es reclamo si menciona un tema y tiene un marcador de queja o tono negativo.",
             "localidad": "Se busca el nombre de la localidad o de un barrio/lugar conocido; si un comentario no nombra ninguna, hereda la del video cuando el video nombra una sola (se marca como inferida).",
         },
     }

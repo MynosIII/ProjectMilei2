@@ -85,7 +85,7 @@ def youtube():
             items = get_json(api + "search?" + urllib.parse.urlencode(params)).get("items", [])
         except urllib.error.HTTPError as e:
             log(youtube_query=q, error=e.code)
-            if e.code == 403:  # cuota agotada
+            if e.code in (403, 429):  # cuota agotada o límite de ritmo: seguir mañana
                 break
             continue
         for v in items:
@@ -166,7 +166,7 @@ POI = {
     "camaras": ("man_made", {"surveillance"}),
 }
 QUERY = f"""[out:json][timeout:120][bbox:{BBOX}];
-relation["boundary"="administrative"]["admin_level"~"^(5|6|7|8|9|10)$"];out geom tags;
+relation["boundary"="administrative"]["admin_level"~"^(5|6|7|8|9|10)$"];out geom;
 (nwr["amenity"~"^(hospital|clinic|doctors|school|kindergarten|college|university|police|fire_station)$"];
  nwr["leisure"~"^(park|playground|garden)$"];node["highway"="bus_stop"];nwr["railway"~"^(station|halt)$"];
  node["man_made"="surveillance"];);out center tags;"""
