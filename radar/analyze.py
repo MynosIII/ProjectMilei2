@@ -419,7 +419,7 @@ def coverage(df, status):
                                          fill_color=BG, font=dict(color=TXT), align="left", line_color=GRID),
                              cells=dict(values=list(map(list, zip(*rows))), fill_color=PANEL, font=dict(color=MUTED), align="left", height=28,
                                         line_color=GRID)))
-    fig.update_layout(**layout("Cobertura por fuente", height=130 + 32 * len(rows)))
+    fig.update_layout(**layout("Cobertura por fuente", height=150 + 48 * len(rows)))
     return fig
 
 
