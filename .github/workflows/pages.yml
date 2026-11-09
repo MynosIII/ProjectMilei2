@@ -50,6 +50,11 @@ jobs:
           mkdir _site
           cp index.html .nojekyll _site/
           cp -R assets data _site/
+          if [ -f radar/data/radar.json ]; then
+            mkdir -p _site/radar/data
+            cp radar/index.html _site/radar/
+            cp radar/data/*.json _site/radar/data/
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
