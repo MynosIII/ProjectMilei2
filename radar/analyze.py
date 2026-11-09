@@ -37,7 +37,9 @@ HERE = Path(__file__).resolve().parent
 CONFIG = json.loads((HERE / "config.json").read_text(encoding="utf8"))
 TZ = CONFIG.get("timezone", "America/Argentina/Buenos_Aires")
 SALT = os.environ.get("RADAR_SALT", "radar-demo")
-PALETTE = ["#55d5ba", "#7aa7ff", "#f2b84b", "#ef6f6c", "#b48ef0", "#5fc3e4", "#9bd46a", "#f08bc0", "#c9a27e", "#8f9bb3"]
+# Paleta categórica validada para fondo oscuro (orden fijo; no se recicla más allá de 8 series)
+PALETTE = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#9085e9", "#e66767", "#5fb3c9"]
+TONE_COLORS = {"NEG": "#e66767", "NEU": "#5d6470", "POS": "#3987e5"}
 BG, PANEL, GRID, TXT, MUTED = "#0b111c", "#111a28", "#223047", "#e9eef6", "#b7c6db"
 
 STOP = set("""
@@ -109,6 +111,7 @@ def load(path: Path, extra=()) -> pd.DataFrame:
             if not f.name.startswith("trends"):  # las series de Google Trends no son publicaciones
                 rows += read_jsonl(f)
     df = pd.DataFrame(rows).drop_duplicates(subset="id", keep="last")
+    df = df[~df["platform"].isin(CONFIG.get("exclude_platforms", []))]
     for col, default in [("hashtags", None), ("domains", None), ("outlet", ""), ("engagement", 0), ("kind", "post")]:
         if col not in df:
             df[col] = default
@@ -174,7 +177,7 @@ def narratives(df, k=None):
     vec = TfidfVectorizer(stop_words=list(STOP), token_pattern=r"(?u)\b[a-z]{4,}\b", ngram_range=(1, 2),
                           min_df=max(3, len(df) // 2000), max_df=0.4, max_features=20000, sublinear_tf=True)
     X = vec.fit_transform(docs)
-    k = k or int(np.clip(len(df) // 250, 4, 10))
+    k = k or int(np.clip(len(df) // 250, 4, 8))
     model = NMF(n_components=k, init="nndsvda", random_state=20261109, max_iter=400)
     W = model.fit_transform(X)
     terms = np.array(vec.get_feature_names_out())
@@ -214,19 +217,34 @@ def narratives(df, k=None):
 
 # ------------------------------------------------------------- 3. actores y riesgo
 
-def actors(df):
-    pats = {a: re.compile(r"(?<![a-z])(?:" + "|".join(re.escape(norm(x)) for x in alias) + r")(?![a-z])")
-            for a, alias in CONFIG["actors"].items()}
-    risk = re.compile(r"(?<![a-z])(?:" + "|".join(re.escape(norm(x)) for x in CONFIG["risk_terms"]) + r")(?![a-z])")
-    df = df.assign(risk=df["clean"].str.contains(risk))
+def alias_pattern(aliases):
+    return re.compile(r"(?<![a-z])(?:" + "|".join(re.escape(norm(x)) for x in aliases) + r")(?![a-z])")
+
+
+RISK = alias_pattern(CONFIG["risk_terms"])
+
+
+def mentions(df) -> pd.DataFrame:
+    """Una fila por (publicación, político mencionado). En textos en portugués, los políticos argentinos solo cuentan
+    con alias de nombre completo (evita falsos positivos como 'massa' = 'genial' en portugués)."""
+    meta = CONFIG.get("actor_meta", {})
+    pt = df["lang2"].eq("pt") if "lang2" in df else pd.Series(False, index=df.index)
     rows = []
-    for a, p in pats.items():
-        m = df["clean"].str.contains(p)
-        if m.sum():
+    for a, alias in CONFIG["actors"].items():
+        m = df["clean"].str.contains(alias_pattern(alias))
+        if meta.get(a, {}).get("pais") == "AR":
+            safe = [x for x in alias if " " in x or norm(x) == "milei"]
+            m &= ~pt | (df["clean"].str.contains(alias_pattern(safe)) if safe else False)
+        if m.any():
             rows.append(df.loc[m].assign(actor=a))
-    if not rows:
+    return pd.concat(rows) if rows else pd.DataFrame(columns=list(df.columns) + ["actor"])
+
+
+def actors(df):
+    df = df.assign(risk=df["clean"].str.contains(RISK))
+    men = mentions(df)
+    if men.empty:
         return None, None, None, []
-    men = pd.concat(rows)
     top = men["actor"].value_counts().index[:8].tolist()
     men = men[men["actor"].isin(top)]
 
@@ -424,9 +442,9 @@ def trends(path: Path, extra=()):
     # Un término en 0 durante todo el período suele ser un dato faltante de Trends, no ausencia de búsquedas: se omite
     mx = ts.groupby(["group", "term"])["value"].max()
     ts = ts[~ts.set_index(["group", "term"]).index.isin(mx[mx == 0].index)]
-    groups = [g for g in ["actores", "economia", "agenda"] if g in set(ts["group"])] or sorted(ts["group"].unique())
+    groups = [g for g in ["actores", "actores2", "economia", "agenda"] if g in set(ts["group"])] or sorted(ts["group"].unique())
     from plotly.subplots import make_subplots
-    names = {"actores": "Dirigentes", "economia": "Economía", "agenda": "Agenda"}
+    names = {"actores": "Dirigentes", "actores2": "Dirigentes (2)", "economia": "Economía", "agenda": "Agenda"}
     fig = make_subplots(rows=len(groups), cols=1, shared_xaxes=True, vertical_spacing=0.07,
                         subplot_titles=[names.get(g, g) + " (100 = máximo del grupo)" for g in groups])
     for k, g in enumerate(groups, 1):
@@ -502,6 +520,312 @@ def coverage(df, status):
 
 # ------------------------------------------------------------- principal
 
+# ------------------------------------------------------------- 7. tono, emociones y agresividad
+
+TONE_NAMES = {"NEG": "negativo", "NEU": "neutro", "POS": "positivo"}
+EMOTIONS = ["ira", "asco", "miedo", "tristeza", "alegria", "sorpresa"]
+EMO_NAMES = {"ira": "Ira", "asco": "Asco", "miedo": "Miedo", "tristeza": "Tristeza", "alegria": "Alegría", "sorpresa": "Sorpresa"}
+
+
+def source_label(df) -> pd.Series:
+    linea = df["linea"].fillna("") if "linea" in df else pd.Series("", index=df.index)
+    return pd.Series(np.where(linea != "", "YouTube · " + linea.astype(str), df["platform"]), index=df.index)
+
+
+def tone_figures(df):
+    d = df.assign(fuente=source_label(df))
+    order = d["fuente"].value_counts()
+    order = order[order >= 30].index.tolist()
+    if not order:
+        return None, None, None, None
+    t = d[d["fuente"].isin(order)].groupby(["fuente", "tono"]).size().unstack(fill_value=0).reindex(columns=["NEG", "NEU", "POS"], fill_value=0)
+    pct = t.div(t.sum(axis=1), axis=0).mul(100)
+    pct = pct.assign(neto=pct["POS"] - pct["NEG"]).sort_values("neto")
+    f_tone = go.Figure()
+    for k in ["NEG", "NEU", "POS"]:
+        f_tone.add_bar(y=pct.index, x=pct[k].round(1), name=TONE_NAMES[k], orientation="h", marker_color=TONE_COLORS[k],
+                       marker_line=dict(color=PANEL, width=2), customdata=t.loc[pct.index, k],
+                       hovertemplate="%{y}<br>" + TONE_NAMES[k] + ": %{x:.1f}% (n=%{customdata})<extra></extra>")
+    f_tone.update_layout(**layout("Tono por fuente (% de publicaciones)", height=140 + 40 * len(pct), barmode="stack",
+                                  xaxis_title="%", xaxis_range=[0, 100], margin=dict(l=230, r=30, t=70, b=60)))
+
+    # Tono neto diario: redes vs medios (promedio móvil de 3 días)
+    d["grupo"] = np.where(d["kind"] == "post", "Redes (comentarios)", "Medios (titulares)")
+    daily = d.groupby(["day", "grupo"])["tono"].apply(lambda s: (s.eq("POS").mean() - s.eq("NEG").mean()) * 100).unstack()
+    daily = daily.rolling(3, min_periods=1).mean()
+    f_net = go.Figure()
+    for i, g in enumerate(daily.columns):
+        f_net.add_scatter(x=daily.index, y=daily[g].round(1), name=g, mode="lines", line=dict(width=2, color=PALETTE[i]))
+    f_net.add_hline(y=0, line=dict(color=MUTED, width=1, dash="dot"))
+    f_net.update_layout(**layout("Tono neto diario (% positivo − % negativo, promedio de 3 días)", yaxis_title="puntos"))
+
+    e = d[d["emocion"].isin(EMOTIONS) & d["fuente"].isin(order)]
+    f_emo = None
+    if len(e) >= 30:
+        h = e.groupby(["fuente", "emocion"]).size().unstack(fill_value=0).reindex(columns=EMOTIONS, fill_value=0)
+        hp = h.div(h.sum(axis=1).replace(0, np.nan), axis=0).mul(100).fillna(0)
+        f_emo = go.Figure(go.Heatmap(z=hp.values.round(1), x=[EMO_NAMES[c] for c in hp.columns], y=hp.index, text=h.values,
+                                     colorscale=[[0, "#1b2230"], [1, "#d95926"]],
+                                     hovertemplate="%{y}<br>%{x}: %{z:.1f}% (n=%{text})<extra></extra>", colorbar=dict(title="%")))
+        f_emo.update_layout(**layout("Emoción dominante por fuente (% de los textos con emoción)", height=140 + 44 * len(hp),
+                                     margin=dict(l=230, r=30, t=70, b=60)))
+
+    a = d[d["fuente"].isin(order)].groupby("fuente")["agresivo"].agg(["mean", "size"])
+    a["pct"] = a["mean"] * 100
+    a["ci"] = 1.96 * np.sqrt(a["mean"] * (1 - a["mean"]) / a["size"]) * 100
+    a = a.sort_values("pct")
+    f_agr = go.Figure(go.Bar(x=a["pct"].round(1), y=a.index, orientation="h", marker_color="#d55181",
+                             error_x=dict(type="data", array=a["ci"].round(1), color=MUTED), customdata=a["size"],
+                             hovertemplate="%{y}: %{x:.1f}% (n=%{customdata})<extra></extra>"))
+    f_agr.update_layout(**layout("Agresividad e insultos: % de textos agresivos por fuente (barra = IC 95%)", height=140 + 40 * len(a),
+                                 xaxis_title="% de textos", margin=dict(l=230, r=40, t=70, b=60)))
+    return f_tone, axes(f_net), f_emo, axes(f_agr)
+
+
+# ------------------------------------------------------------- 8. perfiles de políticos, agenda y capa OSINT
+
+PROVINCES = {  # nombre: (lat, lon, alias normalizados)
+    "Buenos Aires": (-36.6, -60.0, ["provincia de buenos aires", "bonaerense", "conurbano", "la plata", "mar del plata", "bahia blanca", "la matanza"]),
+    "CABA": (-34.61, -58.44, ["caba", "ciudad de buenos aires", "porteno", "portenos", "legislatura portena"]),
+    "Catamarca": (-28.47, -65.78, ["catamarca", "catamarqueno"]),
+    "Chaco": (-26.4, -60.8, ["chaco", "chaqueno", "resistencia chaco"]),
+    "Chubut": (-43.8, -68.5, ["chubut", "comodoro rivadavia", "trelew"]),
+    "Córdoba": (-31.4, -64.2, ["cordoba", "cordobes", "cordobeses"]),
+    "Corrientes": (-28.7, -57.8, ["de corrientes", "en corrientes", "correntino", "correntinos"]),
+    "Entre Ríos": (-32.0, -59.2, ["entre rios", "entrerriano", "entrerrianos"]),
+    "Formosa": (-24.9, -59.9, ["formosa", "formoseno"]),
+    "Jujuy": (-23.3, -65.8, ["jujuy", "jujeno"]),
+    "La Pampa": (-37.1, -65.4, ["la pampa", "pampeano"]),
+    "La Rioja": (-29.7, -67.2, ["la rioja", "riojano"]),
+    "Mendoza": (-34.6, -68.6, ["mendoza", "mendocino", "mendocinos"]),
+    "Misiones": (-26.9, -54.6, ["misiones", "misionero", "posadas"]),
+    "Neuquén": (-38.6, -70.0, ["neuquen", "neuquino", "vaca muerta"]),
+    "Río Negro": (-40.4, -67.2, ["rio negro", "rionegrino", "bariloche"]),
+    "Salta": (-24.8, -65.4, ["de salta", "en salta", "salteno", "saltenos"]),
+    "San Juan": (-30.9, -68.9, ["san juan", "sanjuanino"]),
+    "San Luis": (-33.8, -66.0, ["san luis", "puntano"]),
+    "Santa Cruz": (-48.8, -69.6, ["santa cruz", "santacruceno", "rio gallegos"]),
+    "Santa Fe": (-30.7, -60.9, ["santa fe", "santafesino", "rosario"]),
+    "Santiago del Estero": (-27.8, -63.3, ["santiago del estero", "santiagueno"]),
+    "Tierra del Fuego": (-54.3, -67.7, ["tierra del fuego", "ushuaia", "fueguino"]),
+    "Tucumán": (-26.9, -65.4, ["tucuman", "tucumano"]),
+}
+PROV_PATS = {p: alias_pattern(v[2]) for p, v in PROVINCES.items()}
+WORD4 = re.compile(r"(?<![a-z0-9])[a-z]{4,}(?![a-z0-9])")
+
+
+def headline(text: str) -> str:
+    """Solo el título (las fuentes RSS traen título + bajada)."""
+    return str(text).strip().split("\n")[0][:220]
+
+
+def ci95(p, n):
+    return float(1.96 * np.sqrt(p * (1 - p) / n) * 100) if n else None
+
+
+def pct(x):
+    return round(float(x) * 100, 1)
+
+
+def agenda_figures(men, df):
+    """Agenda de medios vs agenda de redes y red de co-menciones entre políticos."""
+    if men.empty:
+        return None, None
+    news = men[men["kind"] == "news"]["actor"].value_counts()
+    soc = men[men["kind"] == "post"]["actor"].value_counts()
+    t = pd.DataFrame({"news": news, "social": soc}).fillna(0)
+    t = t[(t["news"] + t["social"]) >= 5]
+    if t.empty:
+        return None, None
+    t["news_pct"] = t["news"] / max(t["news"].sum(), 1) * 100
+    t["soc_pct"] = t["social"] / max(t["social"].sum(), 1) * 100
+    meta = CONFIG.get("actor_meta", {})
+    t["pais"] = [meta.get(a, {}).get("pais", "") for a in t.index]
+    hi = max(t["news_pct"].max(), t["soc_pct"].max()) * 1.1
+    f = go.Figure()
+    f.add_scatter(x=[0, hi], y=[0, hi], mode="lines", line=dict(color=MUTED, dash="dot", width=1), hoverinfo="skip", showlegend=False)
+    for i, (pais, g) in enumerate(t.groupby("pais")):
+        f.add_scatter(x=g["news_pct"].round(1), y=g["soc_pct"].round(1), mode="markers+text", name={"AR": "Argentina", "BR": "Brasil"}.get(pais, pais),
+                      text=[a.split()[-1] for a in g.index], textposition="top center", textfont=dict(size=11, color=MUTED),
+                      marker=dict(size=np.clip(np.sqrt(g["news"] + g["social"]) * 1.6, 9, 46), color=PALETTE[i], line=dict(color=PANEL, width=2)),
+                      customdata=np.c_[g.index, g["news"], g["social"]],
+                      hovertemplate="%{customdata[0]}<br>medios: %{x:.1f}% (n=%{customdata[1]})<br>redes: %{y:.1f}% (n=%{customdata[2]})<extra></extra>")
+    f.update_layout(**layout("Agenda de medios vs agenda de redes: arriba de la diagonal, las redes hablan más de lo que cubren los medios",
+                             height=560, xaxis_title="% de las menciones en medios", yaxis_title="% de las menciones en redes"))
+
+    pairs = Counter()
+    for _, g in men.groupby(level=0)["actor"]:
+        for a, b in combinations(sorted(set(g)), 2):
+            pairs[(a, b)] += 1
+    edges = [(a, b, w) for (a, b), w in pairs.items() if w >= 3]
+    f_net = None
+    if edges:
+        G = nx.Graph()
+        G.add_weighted_edges_from(edges)
+        pos = nx.spring_layout(G, seed=7, weight="weight", k=0.9)
+        f_net = go.Figure()
+        top = max(w for *_, w in edges)
+        for a, b, w in edges:
+            f_net.add_scatter(x=[pos[a][0], pos[b][0]], y=[pos[a][1], pos[b][1]], mode="lines", hoverinfo="skip", showlegend=False,
+                              line=dict(width=0.6 + 5 * w / top, color="#3a4458"))
+        nodes = list(G.nodes)
+        size = men["actor"].value_counts()
+        f_net.add_scatter(x=[pos[n][0] for n in nodes], y=[pos[n][1] for n in nodes], mode="markers+text", showlegend=False,
+                          text=nodes, textposition="top center", textfont=dict(size=11),
+                          marker=dict(size=[float(np.clip(np.sqrt(size.get(n, 1)) * 1.5, 10, 50)) for n in nodes],
+                                      color=[PALETTE[0] if meta.get(n, {}).get("pais") == "AR" else PALETTE[1] for n in nodes],
+                                      line=dict(color=PANEL, width=2)),
+                          customdata=[int(size.get(n, 0)) for n in nodes], hovertemplate="%{text}: %{customdata} menciones<extra></extra>")
+        f_net.update_layout(**layout("Quién aparece con quién: red de co-menciones (grosor = textos que nombran a ambos)", height=620,
+                                     xaxis=dict(visible=False), yaxis=dict(visible=False)))
+    return axes(f), f_net
+
+
+def pressure(neg_pct, agr_pct, risk_pct, delta):
+    """Índice de presión reputacional 0-100: combinación simple y explicable de cuatro señales."""
+    parts = {"tono negativo": min(neg_pct / 60, 1) * 35, "agresividad": min(agr_pct / 20, 1) * 20,
+             "términos de riesgo": min(risk_pct / 15, 1) * 25, "aceleración": min(max(delta or 0, 0) / 200, 1) * 20}
+    return round(sum(parts.values())), {k: round(v, 1) for k, v in parts.items()}
+
+
+def actor_profiles(df, men, fc, days):
+    """Perfil público y agregado de cada político configurado (para el buscador del tablero)."""
+    meta = CONFIG.get("actor_meta", {})
+    df = df.assign(risk=df["clean"].str.contains(RISK))
+    if not men.empty:
+        men = men.assign(risk=men["clean"].str.contains(RISK))
+    words = [set(w for w in WORD4.findall(c) if w not in STOP) for c in df["clean"]]
+    total_words = Counter(w for ws in words for w in ws)
+    pos_of = {ix: i for i, ix in enumerate(df.index)}
+    last = df["day"].max()
+    fc_men = mentions(fc) if not fc.empty else pd.DataFrame(columns=["actor"])
+    total_mentions = max(len(men), 1)
+    by_ix = men.groupby(level=0)["actor"].agg(set).to_dict() if not men.empty else {}
+    out = []
+    for a, alias in CONFIG["actors"].items():
+        m = men[men["actor"] == a] if not men.empty else men
+        n = int(len(m))
+        info = {"name": a, "pais": meta.get(a, {}).get("pais", ""), "espacio": meta.get(a, {}).get("espacio", ""), "alias": alias, "n": n}
+        if n == 0:
+            out.append(info)
+            continue
+        soc, news = m[m["kind"] == "post"], m[m["kind"] == "news"]
+        last7 = int((m["day"] > last - pd.Timedelta(days=7)).sum())
+        prev7 = int(((m["day"] <= last - pd.Timedelta(days=7)) & (m["day"] > last - pd.Timedelta(days=14))).sum())
+        delta = round((last7 - prev7) / prev7 * 100) if prev7 >= 3 else None
+        daily_s = soc.groupby("day").size().reindex(days, fill_value=0)
+        daily_n = news.groupby("day").size().reindex(days, fill_value=0)
+        tone_src = soc if len(soc) >= 10 else m
+        tone = {k: pct(tone_src["tono"].eq(k).mean()) for k in ["NEG", "NEU", "POS"]}
+        tone_news = {k: pct(news["tono"].eq(k).mean()) for k in ["NEG", "NEU", "POS"]} if len(news) else None
+        emo = tone_src["emocion"][tone_src["emocion"].isin(EMOTIONS)]
+        emotions = {e: pct(emo.eq(e).mean()) for e in EMOTIONS} if len(emo) >= 5 else None
+        agr = pct(tone_src["agresivo"].mean())
+        risk = pct(m["risk"].mean())
+        idx, parts = pressure(tone["NEG"], agr, risk, delta)
+        narr = m.loc[m["narrative"] != "Sin narrativa clara", "narrative"].value_counts()
+        own = set(re.findall(r"[a-z]{4,}", " ".join(norm(x) for x in alias + [a])))
+        mine = Counter(w for ix in m.index.unique() for w in words[pos_of[ix]])
+        nm, nall = len(m.index.unique()), len(df)
+        score = {w: (c / nm) / ((total_words[w] - c + 1) / max(nall - nm, 1)) for w, c in mine.items() if c >= 3 and w not in own}
+        co = Counter()
+        for ix in m.index.unique():
+            co.update(by_ix.get(ix, set()) - {a})
+        lines = None
+        if "linea" in soc and soc["linea"].fillna("").ne("").any():
+            y = soc[soc["linea"].fillna("") != ""]
+            lines = {l: {"n": int(len(g)), "neg": pct(g["tono"].eq("NEG").mean()), "pos": pct(g["tono"].eq("POS").mean()),
+                         "agresivo": pct(g["agresivo"].mean())} for l, g in y.groupby("linea") if len(g) >= 5}
+        prov = {p: int(m["clean"].str.contains(pat).sum()) for p, pat in PROV_PATS.items()}
+        heads = news.sort_values("ts", ascending=False).drop_duplicates("clean").head(8)
+        f = fc_men[fc_men["actor"] == a].sort_values("ts", ascending=False).head(5) if len(fc_men) else fc_men
+        info.update({
+            "n_social": int(len(soc)), "n_news": int(len(news)), "share": round(n / total_mentions * 100, 1),
+            "last7": last7, "prev7": prev7, "delta": delta,
+            "daily_social": daily_s.astype(int).tolist(), "daily_news": daily_n.astype(int).tolist(),
+            "tone": tone, "tone_base": "redes" if len(soc) >= 10 else "todas", "tone_news": tone_news, "emotions": emotions,
+            "agresivo": agr, "risk": risk, "risk_ci": round(ci95(m["risk"].mean(), n), 1),
+            "pressure": idx if n >= 10 else None, "pressure_parts": parts if n >= 10 else None,
+            "narratives": [{"n": k, "pct": pct(v / max(narr.sum(), 1))} for k, v in narr.head(5).items()],
+            "words": [{"w": w, "s": round(v, 1)} for w, v in sorted(score.items(), key=lambda x: -x[1])[:12]],
+            "co": [{"a": b, "n": c} for b, c in co.most_common(6)],
+            "platforms": {k: int(v) for k, v in m["platform"].value_counts().items()},
+            "lines": lines, "provinces": {k: v for k, v in sorted(prov.items(), key=lambda x: -x[1]) if v},
+            "headlines": [{"t": headline(r.text), "o": r.who, "u": r.url, "d": r.ts.strftime("%Y-%m-%d %H:%M"), "tono": r.tono} for r in heads.itertuples()],
+            "factchecks": [{"t": headline(r.text), "o": r.outlet or r.author, "u": r.url, "d": r.ts.strftime("%Y-%m-%d")} for r in f.itertuples()],
+        })
+        out.append(info)
+    return out
+
+
+def province_map(df):
+    es = df[df["lang2"] != "pt"] if "lang2" in df else df
+    rows = []
+    for p, (lat, lon, _) in PROVINCES.items():
+        m = es["clean"].str.contains(PROV_PATS[p])
+        n = int(m.sum())
+        if n:
+            sub = es[m]
+            rows.append({"p": p, "lat": lat, "lon": lon, "n": n, "news": int((sub["kind"] == "news").sum()),
+                         "neg": pct(sub["tono"].eq("NEG").mean()), "net": round((sub["tono"].eq("POS").mean() - sub["tono"].eq("NEG").mean()) * 100, 1),
+                         "top": distinctive_terms(sub["clean"], es.loc[~m, "clean"], 3)})
+    return rows
+
+
+def live_layer(df, fc, men, profiles, spikes, coord):
+    """Feed de titulares (públicos) y alertas automáticas, al estilo de un monitor OSINT."""
+    news = pd.concat([df[df["kind"] == "news"], fc]).sort_values("ts", ascending=False).drop_duplicates("clean").head(80)
+    tag = {}
+    for ix, a in zip(men.index, men["actor"]):
+        tag.setdefault(ix, set()).add(a)
+    fc_tag = {}
+    if len(fc):
+        fm = mentions(fc)
+        for ix, a in zip(fm.index, fm["actor"]):
+            fc_tag.setdefault(ix, set()).add(a)
+    feed = []
+    for r in news.itertuples():
+        is_fc = r.kind == "factcheck"
+        feed.append({"d": r.ts.strftime("%Y-%m-%d %H:%M"), "o": (r.outlet or r.author) if is_fc else r.who, "t": headline(r.text), "u": r.url,
+                     "k": "verificación" if is_fc else "noticia", "tono": getattr(r, "tono", "NEU") if not is_fc else "",
+                     "a": sorted((fc_tag if is_fc else tag).get(r.Index, set()))[:4]})
+    alerts = []
+    last = df["day"].max()
+    for s in spikes:
+        if pd.Timestamp(s["day"]) > last - pd.Timedelta(days=7):
+            alerts.append({"nivel": "media", "tipo": "Pico de conversación", "fecha": s["day"],
+                           "titulo": f"{s['posts']} publicaciones en un día (z={s['z']})", "detalle": "Términos: " + ", ".join(s["terms"][:5])})
+    for p in profiles:
+        if not p.get("n"):
+            continue
+        if p.get("delta") is not None and p["last7"] >= 15 and p["delta"] >= 100:
+            alerts.append({"nivel": "alta" if p["delta"] >= 200 else "media", "tipo": "Aceleración", "actor": p["name"], "fecha": last.strftime("%Y-%m-%d"),
+                           "titulo": f"{p['name']}: menciones +{p['delta']}% en 7 días", "detalle": f"{p['prev7']} → {p['last7']} menciones"})
+        if p["n_social"] >= 30 and p["tone"]["NEG"] >= 60:
+            alerts.append({"nivel": "media", "tipo": "Tono negativo", "actor": p["name"], "fecha": last.strftime("%Y-%m-%d"),
+                           "titulo": f"{p['name']}: {p['tone']['NEG']}% de comentarios negativos", "detalle": f"n={p['n_social']} comentarios"})
+        if p["n_social"] >= 30 and p["agresivo"] >= 15:
+            alerts.append({"nivel": "media", "tipo": "Agresividad", "actor": p["name"], "fecha": last.strftime("%Y-%m-%d"),
+                           "titulo": f"{p['name']}: {p['agresivo']}% de comentarios agresivos", "detalle": "insultos o ataques personales"})
+        for f in p.get("factchecks", [])[:2]:
+            if pd.Timestamp(f["d"]) > last - pd.Timedelta(days=10):
+                alerts.append({"nivel": "alta", "tipo": "Verificación", "actor": p["name"], "fecha": f["d"], "titulo": f"Chequeo publicado: {f['t'][:120]}",
+                               "detalle": f["o"], "url": f["u"]})
+    if coord.get("grupos"):
+        alerts.append({"nivel": "alta", "tipo": "Coordinación", "fecha": last.strftime("%Y-%m-%d"),
+                       "titulo": f"{coord['grupos']} grupos de cuentas con mensajes casi idénticos", "detalle": f"{coord['cuentas']} cuentas involucradas"})
+    exp = HERE / "data" / "exposure.json"
+    if exp.exists():
+        for d in json.loads(exp.read_text(encoding="utf8")).get("domains", []):
+            if d.get("semaforo") == "rojo":
+                alerts.append({"nivel": "baja", "tipo": "Exposición digital", "fecha": "", "titulo": f"{d['name']}: semáforo rojo",
+                               "detalle": f"DMARC {d['mail']['dmarc_policy']} · SPF {'sí' if d['mail']['spf'] else 'no'}"})
+    rank = {"alta": 0, "media": 1, "baja": 2}
+    alerts.sort(key=lambda x: x["fecha"], reverse=True)
+    alerts.sort(key=lambda x: rank[x["nivel"]])
+    return feed, alerts
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(HERE / ".store" / "posts.jsonl.gz"))
@@ -513,6 +837,12 @@ def main():
     status_path = store.parent / "collect_status.json"
     status = json.loads(status_path.read_text(encoding="utf8")) if status_path.exists() else None
     df = load(store, args.extra)
+    # Chequeos de verificadores: se analizan aparte (no son conversación)
+    fc = df[df["kind"] == "factcheck"].copy()
+    df = df[df["kind"] != "factcheck"].copy()
+    import nlp
+    df = nlp.label(df, store.parent / "nlp.jsonl.gz")
+    fc = fc.assign(lang2=[nlp.guess_lang(c, l) for c, l in zip(fc["clean"], fc["lang"])])
     figs = {}
     figs["r1"], spikes = volume(df)
     df, figs["r2"], figs["r3"], narr_table = narratives(df)
@@ -525,6 +855,13 @@ def main():
     # Series de Google Trends: del recolector o importadas (agregados públicos, se versionan en radar/data/trends/)
     figs["r13"], figs["r15"] = trends(store.parent / "trends.json", list(args.extra) + [str(HERE / "data" / "trends")])
     figs["r14"] = editorial_lines(df)
+    figs["r16"], figs["r17"], figs["r18"], figs["r19"] = tone_figures(df)
+    men = mentions(df)
+    figs["r20"], figs["r21"] = agenda_figures(men, df)
+    days = pd.date_range(max(df["day"].min(), df["day"].max() - pd.Timedelta(days=CONFIG["window_days"] - 1)), df["day"].max(), freq="D")
+    profiles = actor_profiles(df, men, fc, days)
+    feed, alerts = live_layer(df, fc, men, profiles, spikes, coord)
+    nlp_method = df["metodo_nlp"].value_counts().to_dict()
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "label": args.label,
@@ -535,11 +872,21 @@ def main():
             "from": df["ts"].min().strftime("%Y-%m-%d"), "to": df["ts"].max().strftime("%Y-%m-%d"),
             "narratives": narr_table, "spikes": spikes, "actors": actor_summary, "coordination": coord,
             "coordination_examples": coord_groups[:5], "concentration": conc,
+            "tone": {k: pct(df["tono"].eq(k).mean()) for k in ["NEG", "NEU", "POS"]},
+            "agresivo": pct(df.loc[df["kind"] == "post", "agresivo"].mean()) if (df["kind"] == "post").any() else None,
+            "nlp_method": {k: int(v) for k, v in nlp_method.items()}, "factchecks": int(len(fc)),
         },
         "figures": {k: fig_json(v) for k, v in figs.items() if v is not None},
     }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf8")
+    # Perfiles por político (buscador del tablero) y capa "en vivo": titulares públicos, alertas y mapa por provincia
+    Path(args.out).with_name("actors.json").write_text(json.dumps({
+        "updated_at": out["updated_at"], "days": [d.strftime("%Y-%m-%d") for d in days], "actors": profiles},
+        ensure_ascii=False, separators=(",", ":")), encoding="utf8")
+    Path(args.out).with_name("live.json").write_text(json.dumps({
+        "updated_at": out["updated_at"], "feed": feed, "alerts": alerts, "provinces": province_map(df)},
+        ensure_ascii=False, separators=(",", ":")), encoding="utf8")
     print(f"{len(df)} publicaciones · {len(out['figures'])} figuras · {len(narr_table)} narrativas · "
           f"{len(spikes)} picos · coordinación: {coord}")
 
