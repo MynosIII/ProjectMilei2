@@ -418,12 +418,12 @@ def trends(path: Path, extra=()):
     if not rows:
         return None, None
     t = pd.DataFrame(rows)
-    # Un término en 0 durante todo el período suele ser un dato faltante de Trends, no ausencia de búsquedas: se omite
-    mx = t[t["series"] == "time"].groupby(["group", "term"])["value"].max()
-    t = t[~t.set_index(["group", "term"]).index.isin(mx[mx == 0].index)]
     ts = t[t["series"] == "time"]
     if "timeframe" in ts and ts["timeframe"].nunique() > 1:  # el período más corto, más legible
         ts = ts[ts["timeframe"] == sorted(ts["timeframe"].unique(), key=lambda x: ("12" in x, x))[0]]
+    # Un término en 0 durante todo el período suele ser un dato faltante de Trends, no ausencia de búsquedas: se omite
+    mx = ts.groupby(["group", "term"])["value"].max()
+    ts = ts[~ts.set_index(["group", "term"]).index.isin(mx[mx == 0].index)]
     groups = [g for g in ["actores", "economia", "agenda"] if g in set(ts["group"])] or sorted(ts["group"].unique())
     from plotly.subplots import make_subplots
     names = {"actores": "Dirigentes", "economia": "Economía", "agenda": "Agenda"}
