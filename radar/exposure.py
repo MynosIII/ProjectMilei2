@@ -82,7 +82,7 @@ def light(r: dict) -> str:
     score += 0 if r["mail"]["spf"] else 1
     score += 2 if r["services"]["hosts_with_known_cves"] else 0
     score += 1 if r["services"]["risky_services"] else 0
-    return "verde" if score <= 1 else ("amarillo" if score <= 3 else "rojo")
+    return "verde" if score == 0 else ("amarillo" if score <= 2 else "rojo")
 
 
 def main():

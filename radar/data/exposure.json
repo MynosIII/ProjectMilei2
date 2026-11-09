@@ -19,7 +19,7 @@
     "hosts_with_known_cves": 0
    },
    "breaches_catalog": -1,
-   "semaforo": "amarillo"
+   "semaforo": "rojo"
   },
   {
    "name": "Argentina.gob.ar",
@@ -121,7 +121,7 @@
     "hosts_with_known_cves": 0
    },
    "breaches_catalog": -1,
-   "semaforo": "amarillo"
+   "semaforo": "rojo"
   },
   {
    "name": "ARCA (ex AFIP)",
@@ -161,7 +161,7 @@
     "hosts_with_known_cves": 2
    },
    "breaches_catalog": -1,
-   "semaforo": "amarillo"
+   "semaforo": "rojo"
   },
   {
    "name": "Ciudad de Buenos Aires",
@@ -182,7 +182,7 @@
     "hosts_with_known_cves": 0
    },
    "breaches_catalog": -1,
-   "semaforo": "verde"
+   "semaforo": "amarillo"
   }
  ]
 }
