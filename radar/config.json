@@ -12,29 +12,129 @@
       "karina milei",
       "karina"
     ],
-    "Axel Kicillof": [
-      "kicillof"
-    ],
-    "Cristina Kirchner": [
-      "cristina",
-      "cfk",
-      "kirchner"
+    "Victoria Villarruel": [
+      "villarruel"
     ],
     "Patricia Bullrich": [
       "bullrich",
       "pato bullrich"
     ],
-    "Victoria Villarruel": [
-      "villarruel"
+    "Luis Caputo": [
+      "luis caputo",
+      "toto caputo",
+      "caputo"
+    ],
+    "Manuel Adorni": [
+      "adorni"
+    ],
+    "Sandra Pettovello": [
+      "pettovello"
+    ],
+    "Federico Sturzenegger": [
+      "sturzenegger"
+    ],
+    "José Luis Espert": [
+      "espert"
+    ],
+    "Guillermo Francos": [
+      "guillermo francos"
     ],
     "Mauricio Macri": [
+      "mauricio macri",
       "macri"
     ],
+    "Jorge Macri": [
+      "jorge macri"
+    ],
+    "Diego Santilli": [
+      "santilli"
+    ],
+    "Horacio Rodríguez Larreta": [
+      "larreta",
+      "rodriguez larreta"
+    ],
+    "Cristina Kirchner": [
+      "cristina kirchner",
+      "cristina fernandez",
+      "cristina",
+      "cfk",
+      "kirchner"
+    ],
+    "Axel Kicillof": [
+      "kicillof",
+      "kicilof"
+    ],
+    "Máximo Kirchner": [
+      "maximo kirchner"
+    ],
+    "Sergio Massa": [
+      "sergio massa",
+      "massa"
+    ],
+    "Juan Grabois": [
+      "grabois"
+    ],
+    "Leandro Santoro": [
+      "santoro"
+    ],
+    "Martín Llaryora": [
+      "llaryora"
+    ],
+    "Maximiliano Pullaro": [
+      "pullaro"
+    ],
+    "Juan Schiaretti": [
+      "schiaretti"
+    ],
+    "Facundo Manes": [
+      "facundo manes"
+    ],
+    "Martín Lousteau": [
+      "lousteau"
+    ],
+    "Myriam Bregman": [
+      "bregman"
+    ],
     "Luiz Inácio Lula": [
-      "lula"
+      "lula",
+      "luiz inacio"
+    ],
+    "Fernando Haddad": [
+      "haddad"
+    ],
+    "Geraldo Alckmin": [
+      "alckmin"
     ],
     "Jair Bolsonaro": [
+      "jair bolsonaro",
       "bolsonaro"
+    ],
+    "Michelle Bolsonaro": [
+      "michelle bolsonaro"
+    ],
+    "Eduardo Bolsonaro": [
+      "eduardo bolsonaro"
+    ],
+    "Flávio Bolsonaro": [
+      "flavio bolsonaro"
+    ],
+    "Nikolas Ferreira": [
+      "nikolas ferreira",
+      "nikolas"
+    ],
+    "Tarcísio de Freitas": [
+      "tarcisio"
+    ],
+    "Romeu Zema": [
+      "zema"
+    ],
+    "Ronaldo Caiado": [
+      "caiado"
+    ],
+    "Alexandre de Moraes": [
+      "alexandre de moraes",
+      "moraes",
+      "xandao"
     ]
   },
   "risk_terms": [
@@ -97,7 +197,8 @@
         "desinformacion",
         "fakenews"
       ],
-      "pages_per_tag": 8
+      "pages_per_tag": 8,
+      "enabled": false
     },
     "bluesky": {
       "queries": [
@@ -110,7 +211,8 @@
         "bolsonaro",
         "#argentina política"
       ],
-      "pages_per_query": 5
+      "pages_per_query": 5,
+      "enabled": false
     },
     "reddit": {
       "subreddits": [
@@ -190,6 +292,37 @@
         },
         {
           "q": "Tarcísio OR Haddad OR STF",
+          "hl": "pt-BR",
+          "gl": "BR",
+          "ceid": "BR:pt-419"
+        }
+      ],
+      "per_actor": true,
+      "factcheck_feeds": [
+        {
+          "q": "site:chequeado.com",
+          "when": "30d",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "site:factual.afp.com",
+          "when": "30d",
+          "hl": "es-419",
+          "gl": "AR",
+          "ceid": "AR:es-419"
+        },
+        {
+          "q": "site:aosfatos.org",
+          "when": "30d",
+          "hl": "pt-BR",
+          "gl": "BR",
+          "ceid": "BR:pt-419"
+        },
+        {
+          "q": "site:lupa.uol.com.br",
+          "when": "30d",
           "hl": "pt-BR",
           "gl": "BR",
           "ceid": "BR:pt-419"
@@ -430,7 +563,7 @@
       "Kicillof",
       "Cristina Kirchner",
       "Bullrich",
-      "Villarruel"
+      "Massa"
     ]
   },
   "exposure": {
@@ -483,5 +616,163 @@
         "tipo": "Ciudad"
       }
     ]
-  }
+  },
+  "actor_meta": {
+    "Javier Milei": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Karina Milei": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Victoria Villarruel": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Patricia Bullrich": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Luis Caputo": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Manuel Adorni": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Sandra Pettovello": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Federico Sturzenegger": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "José Luis Espert": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Guillermo Francos": {
+      "pais": "AR",
+      "espacio": "La Libertad Avanza"
+    },
+    "Mauricio Macri": {
+      "pais": "AR",
+      "espacio": "PRO"
+    },
+    "Jorge Macri": {
+      "pais": "AR",
+      "espacio": "PRO"
+    },
+    "Diego Santilli": {
+      "pais": "AR",
+      "espacio": "PRO"
+    },
+    "Horacio Rodríguez Larreta": {
+      "pais": "AR",
+      "espacio": "PRO"
+    },
+    "Cristina Kirchner": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Axel Kicillof": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Máximo Kirchner": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Sergio Massa": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Juan Grabois": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Leandro Santoro": {
+      "pais": "AR",
+      "espacio": "Peronismo"
+    },
+    "Martín Llaryora": {
+      "pais": "AR",
+      "espacio": "Provincias Unidas"
+    },
+    "Maximiliano Pullaro": {
+      "pais": "AR",
+      "espacio": "Provincias Unidas"
+    },
+    "Juan Schiaretti": {
+      "pais": "AR",
+      "espacio": "Provincias Unidas"
+    },
+    "Facundo Manes": {
+      "pais": "AR",
+      "espacio": "UCR"
+    },
+    "Martín Lousteau": {
+      "pais": "AR",
+      "espacio": "UCR"
+    },
+    "Myriam Bregman": {
+      "pais": "AR",
+      "espacio": "Izquierda"
+    },
+    "Luiz Inácio Lula": {
+      "pais": "BR",
+      "espacio": "PT"
+    },
+    "Fernando Haddad": {
+      "pais": "BR",
+      "espacio": "PT"
+    },
+    "Geraldo Alckmin": {
+      "pais": "BR",
+      "espacio": "PSB"
+    },
+    "Jair Bolsonaro": {
+      "pais": "BR",
+      "espacio": "PL"
+    },
+    "Michelle Bolsonaro": {
+      "pais": "BR",
+      "espacio": "PL"
+    },
+    "Eduardo Bolsonaro": {
+      "pais": "BR",
+      "espacio": "PL"
+    },
+    "Flávio Bolsonaro": {
+      "pais": "BR",
+      "espacio": "PL"
+    },
+    "Nikolas Ferreira": {
+      "pais": "BR",
+      "espacio": "PL"
+    },
+    "Tarcísio de Freitas": {
+      "pais": "BR",
+      "espacio": "Republicanos"
+    },
+    "Romeu Zema": {
+      "pais": "BR",
+      "espacio": "Novo"
+    },
+    "Ronaldo Caiado": {
+      "pais": "BR",
+      "espacio": "União Brasil"
+    },
+    "Alexandre de Moraes": {
+      "pais": "BR",
+      "espacio": "STF"
+    }
+  },
+  "exclude_platforms": [
+    "Mastodon",
+    "Bluesky"
+  ]
 }

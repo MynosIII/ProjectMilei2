@@ -55,6 +55,11 @@ jobs:
             cp radar/index.html _site/radar/
             cp radar/data/*.json _site/radar/data/
           fi
+          # Módulo de reclamos vecinales (San Isidro), si existe
+          if [ -f sanisidro/index.html ]; then
+            mkdir -p _site/sanisidro
+            cp -R sanisidro/index.html sanisidro/data _site/sanisidro/
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

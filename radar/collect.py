@@ -184,11 +184,28 @@ def reddit(cfg):
     return out
 
 
+NEWS_LOCALE = {"AR": {"hl": "es-419", "gl": "AR", "ceid": "AR:es-419"}, "BR": {"hl": "pt-BR", "gl": "BR", "ceid": "BR:pt-419"}}
+
+
+def actor_feeds(cfg):
+    """Una búsqueda de Google News por cada político configurado (nombre completo entre comillas)."""
+    if not cfg.get("per_actor"):
+        return []
+    meta = CONFIG.get("actor_meta", {})
+    return [dict(q=f'"{name}"', **NEWS_LOCALE.get(meta.get(name, {}).get("pais", "AR"), NEWS_LOCALE["AR"]))
+            for name in CONFIG.get("actors", {})]
+
+
 def google_news(cfg):
-    out = []
-    for f in cfg["feeds"]:
-        url = "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": f["q"] + " when:7d", "hl": f["hl"], "gl": f["gl"], "ceid": f["ceid"]})
-        root = ET.fromstring(get(url))
+    out, failed = [], 0
+    feeds = cfg["feeds"] + actor_feeds(cfg) + [dict(f, kind="factcheck") for f in cfg.get("factcheck_feeds", [])]
+    for f in feeds:
+        url = "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": f["q"] + " when:" + f.get("when", "7d"), "hl": f["hl"], "gl": f["gl"], "ceid": f["ceid"]})
+        try:
+            root = ET.fromstring(get(url))
+        except Exception:  # una búsqueda caída no frena las demás
+            failed += 1
+            continue
         for it in root.iter("item"):
             title = it.findtext("title", "")
             src = it.find("source")
@@ -201,8 +218,10 @@ def google_news(cfg):
             except (TypeError, ValueError):
                 continue
             out.append(record("Google News", it.findtext("guid", "") or it.findtext("link", ""), outlet, title, created,
-                              it.findtext("link", ""), 0, [src_url] if src_url else [], f["q"], kind="news", outlet=outlet, lang=f["hl"]))
+                              it.findtext("link", ""), 0, [src_url] if src_url else [], f["q"], kind=f.get("kind", "news"), outlet=outlet, lang=f["hl"]))
         time.sleep(1)
+    if failed == len(feeds):
+        raise RuntimeError("todas las búsquedas de Google News fallaron")
     return out
 
 
@@ -364,10 +383,15 @@ def main():
     store.parent.mkdir(parents=True, exist_ok=True)
     rows = load(store)
     before = len(rows)
+    first = store.parent / "first_run.txt"  # inicio del historial: las comparaciones semana a semana necesitan 14 días
+    if not first.exists():
+        first.write_text(datetime.now(timezone.utc).strftime("%Y-%m-%d"), encoding="utf8")
     cutoff = iso(datetime.now(timezone.utc) - timedelta(days=CONFIG["window_days"]))
     status = []
     for name, fn in COLLECTORS.items():
         if args.only and name not in args.only:
+            continue
+        if name not in CONFIG["sources"] or not CONFIG["sources"][name].get("enabled", True):
             continue
         t0 = time.time()
         try:
