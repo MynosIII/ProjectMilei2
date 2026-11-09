@@ -742,7 +742,7 @@ def actor_profiles(df, men, fc, days):
         own = ALIAS_WORDS
         mine = Counter(w for ix in m.index.unique() for w in words[pos_of[ix]])
         nm, nall = len(m.index.unique()), len(df)
-        score = {w: (c / nm) / ((total_words[w] - c + 1) / max(nall - nm, 1)) for w, c in mine.items() if c >= 3 and w not in own}
+        score = {w: (c / nm) / ((total_words[w] - c + 1) / max(nall - nm, 1)) * np.log1p(c) for w, c in mine.items() if c >= 4 and w not in own}
         co = Counter()
         for ix in m.index.unique():
             co.update(by_ix.get(ix, set()) - {a})
@@ -789,7 +789,8 @@ def province_map(df):
 
 def live_layer(df, fc, men, profiles, spikes, coord):
     """Feed de titulares (públicos) y alertas automáticas, al estilo de un monitor OSINT."""
-    news = pd.concat([df[df["kind"] == "news"].sort_values("ts", ascending=False).drop_duplicates("clean").head(70),
+    tagged = df.index.isin(men.index)  # solo titulares que nombran a algún político monitoreado
+    news = pd.concat([df[(df["kind"] == "news") & tagged].sort_values("ts", ascending=False).drop_duplicates("clean").head(70),
                       fc.sort_values("ts", ascending=False).drop_duplicates("clean").head(40)]).sort_values("ts", ascending=False)
     tag = {}
     for ix, a in zip(men.index, men["actor"]):
@@ -820,7 +821,7 @@ def live_layer(df, fc, men, profiles, spikes, coord):
         if p["n_social"] >= 30 and p["tone"]["NEG"] >= 60:
             alerts.append({"nivel": "media", "tipo": "Tono negativo", "actor": p["name"], "fecha": last.strftime("%Y-%m-%d"),
                            "titulo": f"{p['name']}: {p['tone']['NEG']}% de comentarios negativos", "detalle": f"n={p['n_social']} comentarios"})
-        if p["n_social"] >= 30 and p["agresivo"] >= 15:
+        if p["n_social"] >= 30 and p["agresivo"] >= 35:
             alerts.append({"nivel": "media", "tipo": "Agresividad", "actor": p["name"], "fecha": last.strftime("%Y-%m-%d"),
                            "titulo": f"{p['name']}: {p['agresivo']}% de comentarios agresivos", "detalle": "insultos o ataques personales"})
         for f in p.get("factchecks", [])[:2]:

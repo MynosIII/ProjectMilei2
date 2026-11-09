@@ -354,11 +354,12 @@ Promise.all([J('radar/data/radar.json',window.RADAR),J('radar/data/actors.json',
   const pressCol=v=>v>=60?'#d03b3b':v>=40?'#ec835a':v>=20?'#c98500':'#5d6470';
   const tbar=t=>t?`<div class="tbar" title="neg ${t.NEG}% · neu ${t.NEU}% · pos ${t.POS}%"><i style="flex:${t.NEG};background:${C.neg}"></i><i style="flex:${t.NEU};background:${C.neu}"></i><i style="flex:${t.POS};background:${C.pos}"></i></div>`:'';
   const dl=d=>d==null?'<span class="num" style="color:var(--dim)">—</span>':`<span class="num ${d>0?'up':'down'}">${d>0?'▲':'▼'} ${Math.abs(d)}%</span>`;
+  const wk=s.weekly_ok!==false;
   const ranked=ACT.filter(a=>a.pressure!=null).sort((a,b)=>b.pressure-a.pressure).slice(0,10);
-  $('#press').innerHTML=ranked.length?`<div style="overflow-x:auto"><table class="rank"><thead><tr><th>Político</th><th>Presión</th><th class="num">Menciones</th><th>7 días</th><th>Tono</th></tr></thead><tbody>${ranked.map(a=>`<tr class="click" data-go="${esc(a.name)}">
+  $('#press').innerHTML=ranked.length?`<div style="overflow-x:auto"><table class="rank"><thead><tr><th>Político</th><th>Presión</th><th class="num">Menciones</th>${wk?'<th>7 días</th>':''}<th>Tono</th></tr></thead><tbody>${ranked.map(a=>`<tr class="click" data-go="${esc(a.name)}">
     <td><div class="who">${av(a)}<div>${esc(a.name)}<small>${esc(a.espacio)} · ${a.pais}</small></div></div></td>
     <td><div style="display:flex;align-items:center;gap:8px"><b class="num" style="width:26px">${a.pressure}</b><div class="meter" style="flex:1"><i style="width:${a.pressure}%;background:${pressCol(a.pressure)}"></i></div></div></td>
-    <td class="num">${fmt(a.n)}</td><td>${dl(a.delta)}</td><td>${tbar(a.tone)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Sin datos suficientes.</div>';
+    <td class="num">${fmt(a.n)}</td>${wk?`<td>${dl(a.delta)}</td>`:''}<td>${tbar(a.tone)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Sin datos suficientes.</div>';
   // ---------- mapa ----------
   const drawMap=()=>{const pv=L?L.provinces:[];if(!pv.length){$('#map').innerHTML='<div class="empty">Sin menciones de provincias todavía.</div>';return}
     const mx=Math.max(...pv.map(p=>p.n));
