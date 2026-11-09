@@ -448,6 +448,8 @@ def trends(path: Path, extra=()):
         if "timeframe" in reg and reg["timeframe"].nunique() > 1:
             reg = reg[reg["timeframe"] == sorted(reg["timeframe"].unique(), key=lambda x: ("12" in x, x))[0]]
         piv = reg.pivot_table(index="region", columns="term", values="value", aggfunc="mean").fillna(0)
+        order = [x for x in ts.loc[ts["group"] == "actores", "term"].unique() if x in piv.columns]  # mismos colores que la serie
+        piv = piv[order + [c for c in piv.columns if c not in order]]
         share = piv.div(piv.sum(axis=1).replace(0, np.nan), axis=0).mul(100).fillna(0)
         lead = share.columns[0] if "Milei" not in share.columns else "Milei"
         share = share.sort_values(lead)
