@@ -178,7 +178,7 @@ function findings(){
   if(t.length)f.push(`<b>${esc(t[0].tema)}</b> concentra ${Math.round(t[0].reclamos/D.totales.reclamos*100)}% de los reclamos detectados${t[1]?`, seguido por <b>${esc(t[1].tema)}</b> y <b>${esc((t[2]||{}).tema||'')}</b>`:''}.`);
   const gap=t.map(x=>({...x,g:x.reclamos/(D.totales.reclamos||1)-x.agenda_medios/(D.totales.noticias||1)})).sort((a,b)=>b.g-a.g)[0];
   if(gap&&gap.g>0.03)f.push(`<b>${esc(gap.tema)}</b> pesa más en lo que reclaman los vecinos que en la agenda de los medios: tema sub-cubierto.`);
-  locs().filter(l=>l.reclamos).forEach(l=>{if(l.tema_top[0])f.push(`En <b>${esc(l.nombre)}</b> el reclamo principal es <b>${esc(l.tema_top[0][0])}</b> (${l.tema_top[0][1]} textos).`);});
+  locs().filter(l=>l.reclamos).forEach(l=>{if(l.tema_top[0])f.push(`En <b>${esc(l.nombre)}</b> el reclamo principal es <b>${esc(l.tema_top[0][0])}</b> (${l.tema_top[0][1]} ${l.tema_top[0][1]===1?"texto":"textos"}).`);});
   const p=Object.entries(D.politicos).sort((a,b)=>b[1].menciones-a[1].menciones)[0];
   if(p)f.push(`<b>${esc(p[0])}</b> es el dirigente más nombrado en la conversación local (${p[1].menciones} menciones, ${p[1].negativas} con tono negativo).`);
   $('#find').innerHTML=(f.length?f:['Sin datos suficientes todavía.']).slice(0,7).map(x=>'<li>'+x+'</li>').join('');
