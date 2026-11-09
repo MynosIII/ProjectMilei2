@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar vecinal San Isidro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta name="description" content="Qué reclaman los vecinos de San Isidro, por tema y por localidad: comentarios públicos de YouTube, medios y OpenStreetMap.">
+<style>
+:root{--bg:#0b0d12;--panel:#13161d;--panel2:#1a1e27;--line:#272c38;--txt:#eef0f4;--muted:#a6adbb;--dim:#717887;--acc:#3987e5;--warn:#c98500;--bad:#e66767;--blue:#3987e5;--aqua:#199e70;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;max-width:1500px;margin:0 auto;padding:14px 24px 0}
+.brand{font-weight:bold;font-size:19px}.brand span{color:var(--acc)}.brand small{color:var(--dim);font-weight:normal;font-size:12px;margin-left:8px;letter-spacing:.08em}
+.back{color:var(--muted);font-size:13px;text-decoration:none;border:1px solid var(--line);padding:3px 10px;border-radius:12px}
+.meta{color:var(--dim);font-size:12px;margin-left:auto;font-family:var(--mono)}
+nav{display:flex;gap:4px;max-width:1500px;margin:0 auto;padding:10px 24px 0;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:9px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--txt);border-bottom-color:var(--acc)}
+main{max-width:1500px;margin:0 auto;padding:22px 24px 40px}
+.tab{display:none}.tab.on{display:block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc);padding:14px 16px}.kpi b{display:block;font-size:26px}
+.kpi b.t{font-size:19px;line-height:1.25;padding:4px 0}.kpi span{color:var(--muted);font-size:12.5px}.kpi.w{border-left-color:var(--warn)}.kpi.r{border-left-color:var(--bad)}.kpi.b{border-left-color:var(--aqua)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
+.card.full{grid-column:1/-1}.card h3{margin:0 0 4px;font-size:16px}.card p{margin:0 0 8px;color:var(--muted);font-size:13px}
+.osint{position:relative;background:var(--panel2);border:1px solid var(--line)}
+.osint::before{content:"GEO · AMBA NORTE · 34°28′S 58°31′O";position:absolute;top:8px;left:12px;font:11px var(--mono);color:var(--dim);letter-spacing:.08em;z-index:2}
+.find{background:var(--panel);border-left:3px solid var(--warn);padding:6px 22px;margin-bottom:18px}.find li{margin:7px 0;color:var(--muted)}.find b{color:var(--txt)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;color:var(--muted);vertical-align:top}th{color:var(--txt);font-weight:normal}
+td.n,th.n{text-align:right;font-family:var(--mono);color:var(--txt)}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:3px 10px;margin:3px 4px 3px 0;font-size:12.5px;color:var(--muted);background:none;cursor:pointer}
+.chip.on{border-color:var(--acc);color:var(--txt);background:#16263d}
+.chip.ok::before{content:"● ";color:#0ca30c}.chip.no::before{content:"● ";color:var(--bad)}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 10px}
+select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);padding:6px 8px;font-size:13px}
+.ficha h4{margin:0;font-size:20px}.ficha .sub{color:var(--dim);font:12px var(--mono);margin-bottom:10px}
+.bar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:5px 0}.bar i{display:block;height:8px;background:var(--acc)}
+.bar span:first-child{width:170px;flex:none}
+.voces{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.voz{background:var(--panel2);border-left:3px solid var(--warn);padding:12px 14px;font-size:13.5px}
+.voz q{display:block;color:var(--txt);margin-bottom:8px}.voz .m{color:var(--dim);font-size:12px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);margin-right:4px}
+a{color:var(--acc)}footer{color:var(--dim);font-size:12px;max-width:1500px;margin:0 auto;padding:0 24px 30px}
+.empty{color:var(--dim);font-size:13px;padding:30px 0;text-align:center}
+.warnbox{border:1px solid #5a4520;background:#1f1a0e;color:#f0d9a0;padding:10px 14px;font-size:13px;margin-bottom:16px}
+@media(max-width:1000px){.grid,.mapgrid{grid-template-columns:1fr}.top,nav,main{padding-left:16px;padding-right:16px}.meta{margin-left:0;width:100%}.bar span:first-child{width:120px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <a class="back" href="../dashboard.html">← Tablero</a>
+    <div class="brand">Radar vecinal · <span>San Isidro</span><small>RECLAMOS POR LOCALIDAD</small></div>
+    <div class="meta" id="meta">Cargando…</div>
+  </div>
+  <nav id="tabs">
+    <button data-t="mapa" class="on">Mapa</button><button data-t="temas">Temas</button>
+    <button data-t="voces">Qué dicen</button><button data-t="dirigentes">Dirigentes</button><button data-t="fuentes">Fuentes y método</button>
+  </nav>
+</header>
+<main>
+  <div id="warn"></div>
+  <div class="kpis" id="kpis"></div>
+
+  <section class="tab on" id="t-mapa">
+    <div class="find"><ul id="find"></ul></div>
+    <div class="mapgrid">
+      <div class="card osint">
+        <div class="ctrl" style="margin-top:18px">
+          <label>Colorear por <select id="metric"></select></label>
+          <span id="layers"></span>
+        </div>
+        <div id="map" style="height:600px"></div>
+        <p style="margin-top:6px">Límites de localidades: OpenStreetMap. Hacé clic en una localidad para ver su ficha.</p>
+      </div>
+      <div class="card ficha" id="ficha"></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-temas">
+    <div class="grid">
+      <div class="card"><h3>Qué reclama la gente vs. qué cubren los medios</h3><p>Reclamos detectados por tema (vecinos y notas con tono de queja) frente a la cantidad de notas de medios que tocan el tema.</p><div id="g-temas" style="height:520px"></div></div>
+      <div class="card"><h3>Perfil de reclamos por localidad</h3><p>Reparto de los reclamos de cada localidad entre temas (% de la fila). Clic en una celda para leer los textos.</p><div id="g-matriz" style="height:520px"></div></div>
+      <div class="card full"><h3>Evolución semanal de los principales reclamos</h3><p>Cantidad de reclamos por semana, seis temas con más volumen.</p><div id="g-serie" style="height:360px"></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-voces">
+    <div class="card full" style="margin-bottom:16px">
+      <h3>Qué dicen los vecinos</h3>
+      <p>Palabras y frases que más se repiten en los comentarios de reclamo (agregadas, mínimo 3 apariciones; no se publican textos individuales). Abajo, titulares de medios con tono de reclamo.</p>
+      <div class="ctrl" id="f-tema"></div><div class="ctrl" id="f-loc"></div>
+      <div id="frases" style="margin:8px 0 16px"></div>
+      <div class="voces" id="voces"></div>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>Videos con más reclamos en comentarios</h3><table id="t-videos"></table></div>
+      <div class="card"><h3>Últimos titulares sobre San Isidro</h3><table id="t-news"></table></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-dirigentes">
+    <div class="grid">
+      <div class="card"><h3>Dirigentes mencionados en la conversación local</h3><p>Menciones con tono positivo y negativo (léxico simple). Tono neutro o mixto no se grafica.</p><div id="g-pol" style="height:420px"></div></div>
+      <div class="card"><h3>Dónde se los nombra</h3><p>Menciones por localidad (texto que nombra una sola localidad).</p><div id="g-polloc" style="height:420px"></div></div>
+      <div class="card full"><h3>Con qué reclamos aparece cada dirigente</h3><table id="t-pol"></table></div>
+    </div>
+  </section>
+
+  <section class="tab" id="t-fuentes">
+    <div class="grid">
+      <div class="card"><h3>Estado de las fuentes</h3><div id="status"></div>
+        <p style="margin-top:12px">Ventana de análisis: <span id="win"></span>. Se actualiza todos los días desde GitHub Actions.</p></div>
+      <div class="card"><h3>Por qué no hay Facebook ni Instagram</h3>
+        <p>Meta no ofrece una API abierta para buscar publicaciones o comentarios de grupos y páginas (la Content Library es solo para investigadores aprobados) y scrapear sus sitios viola sus términos. Por eso el radar usa fuentes públicas y gratuitas: comentarios de YouTube (API oficial), notas de medios (Google News RSS) y OpenStreetMap. Los grupos vecinales de Facebook se podrían sumar solo con exportaciones hechas por sus administradores.</p></div>
+      <div class="card"><h3>Cómo se clasifica</h3><p id="regla"></p><p id="regla-loc"></p>
+        <p>Es un clasificador por palabras clave, auditable y sin modelos cerrados: puede confundir ironías o textos ajenos al municipio. Los números indican dónde mirar, no son una encuesta representativa.</p></div>
+      <div class="card"><h3>Diccionario de temas</h3><table id="t-dic"></table></div>
+    </div>
+  </section>
+</main>
+<footer>Datos: YouTube Data API v3, Google News, © colaboradores de OpenStreetMap (ODbL), INDEC Censo 2022. Solo se publican agregados: los comentarios no se guardan en el repositorio.</footer>
+<script src="../assets/plotly.min.js"></script>
+<script>
+(function(){
+const C={bg:'#0b0d12',panel:'#13161d',line:'#272c38',txt:'#eef0f4',muted:'#a6adbb',dim:'#717887',acc:'#199e70',warn:'#c98500',bad:'#e66767',blue:'#3987e5'};
+const PAL=['#3987e5','#d95926','#199e70','#c98500','#d55181','#9085e9','#e66767','#5fb3c9','#8aa1c1','#b38f3e','#5c9e5c','#c47fb0','#6f7fd6','#a6adbb','#d9a05b'];
+const LAYERS={salud:['Salud','#e66767'],educacion:['Educación','#3987e5'],seguridad:['Policía/bomberos','#c98500'],verdes:['Plazas','#199e70'],estaciones:['Estaciones','#9085e9'],paradas:['Paradas','#5fb3c9'],camaras:['Cámaras','#d95926']};
+const base=(extra)=>Object.assign({paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:C.muted,family:'Inter, system-ui, sans-serif',size:12},margin:{l:10,r:10,t:10,b:30},hoverlabel:{bgcolor:'#1a1e27',bordercolor:C.line,font:{color:C.txt}}},extra||{});
+const cfg={displayModeBar:false,responsive:true};
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>n==null?'–':Number(n).toLocaleString('es-AR');
+let D, sel=null, metric='reclamos', layersOn=new Set(['salud','seguridad']), fTema=null, fLoc=null;
+
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.t));
+  window.dispatchEvent(new Event('resize'));
+});
+
+fetch('data/sanisidro.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;render();}).catch(e=>{$('#meta').textContent='No se pudieron cargar los datos';console.error(e);});
+
+function locs(){return D.localidades;}
+function pop(l){return l.poblacion&&l.poblacion.valor;}
+function val(l){
+  if(metric==='reclamos')return l.reclamos;
+  if(metric==='densidad')return pop(l)?l.reclamos/pop(l)*10000:null;
+  if(metric==='menciones')return l.menciones;
+  if(metric.startsWith('eq:')){const k=metric.slice(3);return pop(l)?(l.equipamiento[k]||0)/pop(l)*10000:(l.equipamiento[k]||0);}
+  const i=D.matriz.temas.indexOf(metric), r=D.matriz.localidades.indexOf(l.nombre);return D.matriz.valores[r][i];
+}
+function color(t){ // t en [0,1]: azul oscuro -> verde agua -> ámbar -> rojo
+  const st=[[0,[30,38,52]],[.35,[33,84,150]],[.65,[57,135,229]],[.85,[201,133,0]],[1,[230,103,103]]];
+  for(let i=1;i<st.length;i++)if(t<=st[i][0]){const a=st[i-1],b=st[i],k=(t-a[0])/(b[0]-a[0]);return 'rgb('+a[1].map((v,j)=>Math.round(v+(b[1][j]-v)*k)).join(',')+')';}
+  return 'rgb(230,103,103)';
+}
+
+function render(){
+  const T=D.totales;
+  $('#meta').textContent='Actualizado '+new Date(D.updated_at).toLocaleString('es-AR')+' · ventana '+D.window_days+' días';
+  if(!T.textos)$('#warn').innerHTML='<div class="warnbox">Todavía no hay textos recolectados. La primera corrida del recolector diario completa el tablero.</div>';
+  const top=D.temas[0]||{}, lmax=[...locs()].sort((a,b)=>b.reclamos-a.reclamos)[0]||{};
+  const pct=T.reclamos?Math.round(T.reclamos_con_localidad/T.reclamos*100):0;
+  $('#kpis').innerHTML=[
+    ['',fmt(T.reclamos),'reclamos detectados'],['b',fmt(T.comentarios),'comentarios de YouTube analizados'],
+    ['b',fmt(T.noticias),'notas de '+fmt(T.medios)+' medios'],['w',esc(top.tema||'–'),'tema más reclamado ('+fmt(top.reclamos)+')'],
+    ['r',esc(lmax.nombre||'–'),'localidad con más reclamos ('+fmt(lmax.reclamos)+')'],['',pct+'%','de los reclamos con localidad identificada']
+  ].map(k=>`<div class="kpi ${k[0]}"><b class="${/^[\d.,%–]+$/.test(k[1])?'':'t'}">${k[1]}</b><span>${k[2]}</span></div>`).join('');
+  findings(); mapControls(); drawMap(); ficha(sel||lmax.nombre); temas(); voces(); tablas(); dirigentes(); fuentes();
+}
+
+function findings(){
+  const f=[], t=D.temas.filter(x=>x.reclamos);
+  if(t.length)f.push(`<b>${esc(t[0].tema)}</b> concentra ${Math.round(t[0].reclamos/D.totales.reclamos*100)}% de los reclamos detectados${t[1]?`, seguido por <b>${esc(t[1].tema)}</b> y <b>${esc((t[2]||{}).tema||'')}</b>`:''}.`);
+  const gap=t.map(x=>({...x,g:x.reclamos/(D.totales.reclamos||1)-x.agenda_medios/(D.totales.noticias||1)})).sort((a,b)=>b.g-a.g)[0];
+  if(gap&&gap.g>0.03)f.push(`<b>${esc(gap.tema)}</b> pesa más en lo que reclaman los vecinos que en la agenda de los medios: tema sub-cubierto.`);
+  locs().filter(l=>l.reclamos).forEach(l=>{if(l.tema_top[0])f.push(`En <b>${esc(l.nombre)}</b> el reclamo principal es <b>${esc(l.tema_top[0][0])}</b> (${l.tema_top[0][1]} ${l.tema_top[0][1]===1?"texto":"textos"}).`);});
+  const p=Object.entries(D.politicos).sort((a,b)=>b[1].menciones-a[1].menciones)[0];
+  if(p)f.push(`<b>${esc(p[0])}</b> es el dirigente más nombrado en la conversación local (${p[1].menciones} menciones, ${p[1].negativas} con tono negativo).`);
+  $('#find').innerHTML=(f.length?f:['Sin datos suficientes todavía.']).slice(0,7).map(x=>'<li>'+x+'</li>').join('');
+}
+
+function mapControls(){
+  const hasPop=locs().some(pop);
+  const opts=[['reclamos','Reclamos (total)'],...(hasPop?[['densidad','Reclamos cada 10.000 hab.']]:[]),['menciones','Menciones (todo texto)'],
+    ...D.matriz.temas.map(t=>[t,'Tema: '+t]),...Object.entries(LAYERS).map(([k,v])=>['eq:'+k,'Equipamiento: '+v[0]+(hasPop?' c/10.000 hab.':'')])];
+  $('#metric').innerHTML=opts.map(o=>`<option value="${esc(o[0])}">${esc(o[1])}</option>`).join('');
+  $('#metric').value=metric; $('#metric').onchange=e=>{metric=e.target.value;drawMap();};
+  $('#layers').innerHTML=Object.entries(LAYERS).filter(([k])=>(D.equipamiento_puntos[k]||[]).length).map(([k,v])=>`<button class="chip ${layersOn.has(k)?'on':''}" data-k="${k}"><span style="color:${v[1]}">●</span> ${v[0]}</button>`).join('');
+  $('#layers').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;layersOn.has(k)?layersOn.delete(k):layersOn.add(k);b.classList.toggle('on');drawMap();});
+}
+
+function drawMap(){
+  const L=locs(), vs=L.map(val), mx=Math.max(1e-9,...vs.filter(v=>v!=null)), tr=[], ann=[];
+  const hasPoly=L.some(l=>l.poligono.length);
+  (D.partido_poligono||[]).forEach(r=>tr.push({x:r.map(p=>p[0]),y:r.map(p=>p[1]),mode:'lines',line:{color:'#eef0f4',width:2,dash:'dot'},hoverinfo:'skip',showlegend:false}));
+  L.forEach((l,i)=>{
+    const v=vs[i], fc=v==null?'#1a1e27':color(v/mx), lab=v==null?'s/d':(metric==='densidad'||metric.startsWith('eq:')&&pop(l)?v.toFixed(1):fmt(Math.round(v)));
+    const hov=`<b>${esc(l.nombre)}</b><br>${esc($('#metric').selectedOptions[0].text)}: ${lab}<br>Reclamos: ${l.reclamos}<extra></extra>`;
+    if(l.poligono.length){l.poligono.forEach(r=>tr.push({x:r.map(p=>p[0]),y:r.map(p=>p[1]),fill:'toself',fillcolor:fc,mode:'lines',line:{color:l.nombre===sel?'#ffffff':'#0b0d12',width:l.nombre===sel?2.5:1.2},hovertemplate:hov,name:l.nombre,customdata:r.map(()=>l.nombre),showlegend:false,hoveron:'fills'}));}
+    else tr.push({x:[l.centro[1]],y:[l.centro[0]],mode:'markers',marker:{size:18+40*Math.sqrt((v||0)/mx),color:fc,line:{color:'#0b0d12',width:1}},hovertemplate:hov,customdata:[l.nombre],showlegend:false});
+    ann.push({x:l.centro[1],y:l.centro[0],text:`<b>${esc(l.nombre)}</b><br>${lab}`,showarrow:false,font:{color:'#ffffff',size:12},bgcolor:'#0b0d12',bordercolor:'#272c38',borderpad:2});
+  });
+  layersOn.forEach(k=>{const p=D.equipamiento_puntos[k]||[];if(p.length)tr.push({x:p.map(q=>q[0]),y:p.map(q=>q[1]),mode:'markers',marker:{size:k==='paradas'?3:5,color:LAYERS[k][1],line:{color:'#0b0d12',width:.5}},name:LAYERS[k][0],hoverinfo:'name',showlegend:true});});
+  const ax={showgrid:true,gridcolor:'#1a1e27',zeroline:false,showticklabels:true,tickfont:{size:9,color:'#717887',family:'JetBrains Mono, monospace'},ticks:'',dtick:.02};
+  Plotly.react('map',tr,base({margin:{l:40,r:10,t:10,b:30},xaxis:{...ax,tickformat:'.2f'},yaxis:{...ax,tickformat:'.2f',scaleanchor:'x',scaleratio:1.21},annotations:ann,legend:{orientation:'h',y:-.06,font:{size:11}},dragmode:'pan',hovermode:'closest'}),cfg);
+  const el=$('#map'); el.removeAllListeners&&el.removeAllListeners('plotly_click');
+  el.on('plotly_click',e=>{const n=e.points[0]&&e.points[0].customdata;if(n&&D.localidades.some(l=>l.nombre===n)){sel=n;ficha(n);drawMap();}});
+}
+
+function ficha(n){
+  const l=locs().find(x=>x.nombre===n); if(!l){$('#ficha').innerHTML='<div class="empty">Elegí una localidad</div>';return;}
+  sel=n;
+  const r=D.matriz.localidades.indexOf(n), row=D.matriz.valores[r], tot=row.reduce((a,b)=>a+b,0)||1;
+  const tops=D.matriz.temas.map((t,i)=>[t,row[i]]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).slice(0,7), mx=tops[0]?tops[0][1]:1;
+  const eq=Object.entries(LAYERS).map(([k,v])=>`<tr><td>${v[0]}</td><td class="n">${fmt(l.equipamiento[k]||0)}</td><td class="n">${pop(l)?((l.equipamiento[k]||0)/pop(l)*10000).toFixed(1):'–'}</td></tr>`).join('');
+  const pols=Object.entries(D.politicos).map(([k,v])=>[k,v.por_localidad[n]||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  $('#ficha').innerHTML=`<h4>${esc(l.nombre)}</h4><div class="sub">CP ${esc(l.cp)} · ${l.area_km2?l.area_km2+' km²':'área s/d'} · ${pop(l)?fmt(pop(l))+' hab. ('+esc(l.poblacion.fecha||'OSM')+')':'población por localidad s/d'}</div>
+  <div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:10px"><div class="kpi"><b>${fmt(l.reclamos)}</b><span>reclamos${l.inferidos?' ('+l.inferidos+' inferidos)':''}</span></div><div class="kpi b"><b>${fmt(l.menciones)}</b><span>textos que la nombran</span></div></div>
+  <p style="color:var(--txt);margin:8px 0 4px">Qué reclaman</p>${tops.length?tops.map(x=>`<div class="bar"><span>${esc(x[0])}</span><i style="width:${Math.max(4,x[1]/mx*150)}px;background:${PAL[D.matriz.temas.indexOf(x[0])%PAL.length]}"></i><span>${x[1]} · ${Math.round(x[1]/tot*100)}%</span></div>`).join(''):'<div class="empty" style="padding:8px 0">Sin reclamos localizados todavía</div>'}
+  <p style="color:var(--txt);margin:14px 0 4px">Equipamiento urbano (OSM)</p><table><tr><th></th><th class="n">Total</th><th class="n">c/10.000 hab.</th></tr>${eq}</table>
+  ${pols.length?`<p style="color:var(--txt);margin:14px 0 4px">Dirigentes nombrados acá</p>`+pols.map(p=>`<span class="tag">${esc(p[0])} · ${p[1]}</span>`).join(''):''}
+  <p style="margin-top:12px"><a href="#" id="ver-voces">Leer reclamos de ${esc(l.nombre)} →</a></p>`;
+  $('#ver-voces').onclick=e=>{e.preventDefault();fLoc=n;fTema=null;voces();document.querySelector('[data-t=voces]').click();};
+}
+
+function temas(){
+  const t=D.temas.filter(x=>x.reclamos||x.agenda_medios).reverse();
+  Plotly.react('g-temas',[
+    {type:'bar',orientation:'h',y:t.map(x=>x.tema),x:t.map(x=>x.reclamos),name:'Reclamos',marker:{color:C.warn},hovertemplate:'%{y}: %{x} reclamos<extra></extra>'},
+    {type:'bar',orientation:'h',y:t.map(x=>x.tema),x:t.map(x=>x.agenda_medios),name:'Notas de medios',marker:{color:C.blue},hovertemplate:'%{y}: %{x} notas<extra></extra>'}
+  ],base({barmode:'group',margin:{l:200,r:10,t:10,b:30},legend:{orientation:'h',y:-.08},xaxis:{gridcolor:'#1f2430'},yaxis:{automargin:true}}),cfg);
+  const M=D.matriz, rows=M.localidades.filter((l,i)=>M.valores[i].some(v=>v)), ri=rows.map(l=>M.localidades.indexOf(l));
+  const ci=M.temas.map((t,j)=>j).filter(j=>ri.some(i=>M.valores[i][j])), cols=ci.map(j=>M.temas[j]);
+  const z=ri.map(i=>{const s=M.valores[i].reduce((a,b)=>a+b,0)||1;return ci.map(j=>Math.round(M.valores[i][j]/s*1000)/10);});
+  const txt=ri.map(i=>ci.map(j=>M.valores[i][j]?String(M.valores[i][j]):''));
+  Plotly.react('g-matriz',[{type:'heatmap',z,x:cols,y:rows,text:txt,texttemplate:'%{text}',colorscale:[[0,'#13161d'],[.3,'#21548f'],[.6,'#3987e5'],[.8,'#c98500'],[1,'#e66767']],
+    hovertemplate:'%{y} · %{x}<br>%{z}% de sus reclamos (%{text})<extra></extra>',colorbar:{title:{text:'%',side:'right'},thickness:10}}],
+    base({margin:{l:110,r:10,t:10,b:150},xaxis:{tickangle:-40},yaxis:{autorange:'reversed'}}),cfg);
+  $('#g-matriz').on('plotly_click',e=>{const p=e.points[0];fTema=p.x;fLoc=p.y;voces();document.querySelector('[data-t=voces]').click();});
+  const S=D.serie, top6=D.temas.filter(x=>x.reclamos).slice(0,6).map(x=>x.tema);
+  Plotly.react('g-serie',top6.map((t,i)=>({x:S.semanas,y:S.temas[t],name:t,type:'scatter',mode:'lines',stackgroup:'a',line:{width:1,color:PAL[D.matriz.temas.indexOf(t)%PAL.length]}})),
+    base({margin:{l:40,r:10,t:10,b:40},legend:{orientation:'h',y:-.15},xaxis:{gridcolor:'#1f2430'},yaxis:{gridcolor:'#1f2430'}}),cfg);
+}
+
+function voces(){
+  const tset=D.matriz.temas.filter(t=>(D.frases_tema[t]||[]).length||D.ejemplos.some(e=>e.temas.includes(t))), lset=D.matriz.localidades.filter(l=>(D.frases_localidad[l]||[]).length||D.ejemplos.some(e=>e.localidad===l));
+  const chips=(arr,cur)=>`<button class="chip ${cur==null?'on':''}" data-v="">Todos</button>`+arr.map(v=>`<button class="chip ${cur===v?'on':''}" data-v="${esc(v)}">${esc(v)}</button>`).join('');
+  $('#f-tema').innerHTML='<span style="color:var(--dim);font-size:12px;width:70px">Tema</span>'+chips(tset,fTema);
+  $('#f-loc').innerHTML='<span style="color:var(--dim);font-size:12px;width:70px">Localidad</span>'+chips(lset,fLoc);
+  $('#f-tema').querySelectorAll('button').forEach(b=>b.onclick=()=>{fTema=b.dataset.v||null;if(fTema)fLoc=null;voces();});
+  $('#f-loc').querySelectorAll('button').forEach(b=>b.onclick=()=>{fLoc=b.dataset.v||null;if(fLoc)fTema=null;voces();});
+  let fr, titulo;
+  if(fTema){fr=D.frases_tema[fTema]||[];titulo='Frases en reclamos de '+fTema;}
+  else if(fLoc){fr=D.frases_localidad[fLoc]||[];titulo='Frases en reclamos de '+fLoc;}
+  else{const c={};Object.values(D.frases_tema).flat().forEach(([g,k])=>c[g]=Math.max(c[g]||0,k));fr=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,30);titulo='Frases más repetidas en todos los reclamos';}
+  const mx=fr.length?fr[0][1]:1;
+  $('#frases').innerHTML=`<p style="color:var(--txt);margin:0 0 6px">${esc(titulo)}</p>`+(fr.length?fr.map(([g,k])=>`<span class="chip" style="cursor:default;font-size:${12+Math.round(k/mx*8)}px;border-color:${k/mx>.6?'var(--acc)':'var(--line)'}">${esc(g)} <span style="color:var(--dim);font-family:var(--mono)">${k}</span></span>`).join(''):'<div class="empty" style="padding:8px 0">Todavía no hay suficientes comentarios para este filtro.</div>');
+  const ev=D.ejemplos.filter(e=>(!fTema||e.temas.includes(fTema))&&(!fLoc||e.localidad===fLoc)).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,30);
+  $('#voces').innerHTML=ev.length?ev.map(e=>`<div class="voz"><q>${esc(e.texto)}</q><div>${e.temas.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}${e.localidad!=='Sin localidad'?`<span class="tag" style="border-color:var(--acc)">${esc(e.localidad)}</span>`:''}</div>
+    <div class="m">${esc(e.fuente)} · ${esc(e.fecha)} · <a href="${esc(e.url)}" target="_blank" rel="noopener">nota</a></div></div>`).join(''):'<div class="empty">No hay titulares de reclamo para ese filtro.</div>';
+}
+
+function tablas(){
+  $('#t-videos').innerHTML='<tr><th>Video</th><th class="n">Reclamos</th><th class="n">Coment.</th></tr>'+(D.videos.map(v=>`<tr><td><a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.titulo)}</a><br><span style="font-size:12px">${esc(v.canal)} · ${esc(v.fecha)}</span></td><td class="n">${v.reclamos}</td><td class="n">${v.comentarios}</td></tr>`).join('')||'<tr><td colspan=3 class="empty">Sin datos</td></tr>');
+  $('#t-news').innerHTML='<tr><th>Titular</th><th>Temas</th></tr>'+(D.titulares.slice(0,25).map(n=>`<tr><td><a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.titulo)}</a><br><span style="font-size:12px">${esc(n.medio)} · ${esc(n.fecha)}${n.localidad!=='Sin localidad'?' · '+esc(n.localidad):''}</span></td><td>${n.temas.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</td></tr>`).join('')||'<tr><td colspan=2 class="empty">Sin datos</td></tr>');
+}
+
+function dirigentes(){
+  const P=Object.entries(D.politicos).sort((a,b)=>a[1].menciones-b[1].menciones);
+  if(!P.length){['g-pol','g-polloc'].forEach(id=>$('#'+id).innerHTML='<div class="empty">Sin menciones todavía</div>');$('#t-pol').innerHTML='';return;}
+  Plotly.react('g-pol',[
+    {type:'bar',orientation:'h',y:P.map(p=>p[0]),x:P.map(p=>-p[1].negativas),name:'Negativas',marker:{color:C.bad},customdata:P.map(p=>p[1].negativas),hovertemplate:'%{y}: %{customdata} negativas<extra></extra>'},
+    {type:'bar',orientation:'h',y:P.map(p=>p[0]),x:P.map(p=>p[1].positivas),name:'Positivas',marker:{color:C.acc},hovertemplate:'%{y}: %{x} positivas<extra></extra>'}
+  ],base({barmode:'relative',margin:{l:130,r:10,t:10,b:40},legend:{orientation:'h',y:-.12},xaxis:{gridcolor:'#1f2430',zerolinecolor:C.dim}}),cfg);
+  const L=D.matriz.localidades.filter(l=>l!=='Sin localidad');
+  Plotly.react('g-polloc',[{type:'heatmap',z:P.map(p=>L.map(l=>p[1].por_localidad[l]||0)),x:L,y:P.map(p=>p[0]),colorscale:[[0,'#13161d'],[.5,'#21548f'],[1,'#3987e5']],texttemplate:'%{z}',hovertemplate:'%{y} en %{x}: %{z}<extra></extra>',showscale:false}],
+    base({margin:{l:130,r:10,t:10,b:90}}),cfg);
+  $('#t-pol').innerHTML='<tr><th>Dirigente</th><th class="n">Menciones</th><th class="n">En reclamos</th><th>Temas de reclamo asociados</th></tr>'+[...P].reverse().map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v.menciones}</td><td class="n">${v.en_reclamos}</td><td>${v.temas.map(t=>`<span class="tag">${esc(t[0])} · ${t[1]}</span>`).join('')}</td></tr>`).join('');
+}
+
+function fuentes(){
+  const S=D.status||{}, names={youtube:'YouTube (comentarios)',google_news:'Google News (medios)',openstreetmap:'OpenStreetMap (mapa y equipamiento)'};
+  $('#status').innerHTML=Object.entries(names).map(([k,n])=>{const s=S[k]||{};return `<span class="chip ${s.ok?'ok':'no'}">${n}${s.items!=null?' · '+s.items:''}${s.boundaries!=null?' · '+s.boundaries+' límites':''}</span>`;}).join('')+
+    `<span class="chip no">Facebook / Instagram · sin API abierta</span><p style="margin-top:10px">Población del partido: ${fmt(D.poblacion_partido.valor)} hab. (${esc(D.poblacion_partido.fuente)}).</p>`;
+  $('#win').textContent='últimos '+D.window_days+' días';
+  $('#regla').textContent=D.metodo.regla; $('#regla-loc').textContent=D.metodo.localidad;
+  $('#t-dic').innerHTML='<tr><th>Tema</th><th>Raíces buscadas</th></tr>'+Object.entries(D.metodo.temas).map(([k,v])=>`<tr><td>${esc(k)}</td><td style="font-size:12px">${esc(v.join(', '))}</td></tr>`).join('');
+}
+})();
+</script>
+</body>
+</html>
