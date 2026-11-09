@@ -68,7 +68,7 @@ section{overflow-x:auto;background:#111a28;margin:26px 0;padding:24px;border-top
   <section id="r3"><h2>Narrativas por plataforma</h2>
     <p class="how">Dónde circula cada relato: lo que domina en medios no siempre es lo que domina en redes.</p><div class="plot" id="plot-r3"></div></section>
   <section id="r13"><h2>Qué busca la gente en Google</h2>
-    <p class="how">Google Trends mide búsquedas de toda la población conectada, no solo de quienes publican. Es la señal más masiva del radar y sirve para contrastar el ruido de redes.</p><div class="plot" id="plot-r13"></div></section>
+    <p class="how">Google Trends mide búsquedas de toda la población conectada, no solo de quienes publican. Es la señal más masiva del radar y sirve para contrastar el ruido de redes.</p><div class="plot" id="plot-r13"></div><div class="plot" id="plot-r15" style="margin-top:20px"></div></section>
   <section id="r14"><h2>YouTube por línea editorial</h2>
     <p class="how">Comentarios en videos recientes de canales de todo el espectro, agrupados por la línea editorial del canal. Permite comparar qué relato domina en cada audiencia.</p><div class="plot" id="plot-r14"></div></section>
   <section id="r4"><h2>Menciones por actor</h2><div class="plot" id="plot-r4"></div></section>
@@ -137,6 +137,7 @@ fetch('./data/radar.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
     Plotly.newPlot('plot-'+id,fig.data,fig.layout,{responsive:true,displaylogo:false,toImageButtonOptions:{format:'png',scale:2}});};
   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)draw(e.target)}),{rootMargin:'600px'});
   document.querySelectorAll('section[id^="r"]').forEach(x=>obs.observe(x));
+  const r15=document.getElementById('plot-r15');if(r15&&d.figures.r15)Plotly.newPlot(r15,d.figures.r15.data,d.figures.r15.layout,{responsive:true,displaylogo:false});
 }).catch(e=>{document.getElementById('sub').textContent='No se pudieron cargar los datos: '+e.message;});
 </script>
 </body>

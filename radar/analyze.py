@@ -106,7 +106,8 @@ def load(path: Path, extra=()) -> pd.DataFrame:
     rows = read_jsonl(path) if Path(path).exists() else []
     for e in extra:  # otros JSONL con el mismo esquema (por ejemplo, una recolección manual)
         for f in (sorted(Path(e).glob("*.jsonl*")) if Path(e).is_dir() else [Path(e)]):
-            rows += read_jsonl(f)
+            if not f.name.startswith("trends"):  # las series de Google Trends no son publicaciones
+                rows += read_jsonl(f)
     df = pd.DataFrame(rows).drop_duplicates(subset="id", keep="last")
     for col, default in [("hashtags", None), ("domains", None), ("outlet", ""), ("engagement", 0), ("kind", "post")]:
         if col not in df:
@@ -402,19 +403,59 @@ def amplifiers(df, top=15):
     return axes(fig), conc
 
 
-def trends(path: Path):
-    if not path.exists():
-        return None
-    t = json.loads(path.read_text(encoding="utf8"))
-    if not t.get("rows"):
-        return None
-    x = [datetime.fromtimestamp(r["time"], timezone.utc).strftime("%Y-%m-%d") for r in t["rows"]]
-    fig = go.Figure()
-    for i, term in enumerate(t["terms"]):
-        fig.add_scatter(x=x, y=[r["values"][i] for r in t["rows"]], name=term, mode="lines", line=dict(width=2, color=PALETTE[i % len(PALETTE)]))
-    fig.update_layout(**layout(f"Interés de búsqueda en Google ({t['geo']}), 100 = máximo del período", yaxis_title="interés relativo",
-                               yaxis_range=[0, 105]))
-    return axes(fig)
+def trends(path: Path, extra=()):
+    """Google Trends. Acepta trends.json (del recolector) o trends_*.jsonl (una fila por punto: group, term, series, date, value)."""
+    rows = []
+    for e in extra:
+        for f in (sorted(Path(e).glob("trends_*.jsonl")) if Path(e).is_dir() else [Path(e)] if "trends" in Path(e).name else []):
+            rows += read_jsonl(f)
+    if not rows and path.exists():
+        t = json.loads(path.read_text(encoding="utf8"))
+        for r in t.get("rows", []):
+            for term, v in zip(t["terms"], r["values"]):
+                rows.append({"series": "time", "group": "actores", "term": term, "geo": t["geo"],
+                             "date": datetime.fromtimestamp(r["time"], timezone.utc).strftime("%Y-%m-%d"), "value": v, "timeframe": "1m"})
+    if not rows:
+        return None, None
+    t = pd.DataFrame(rows)
+    ts = t[t["series"] == "time"]
+    if "timeframe" in ts and ts["timeframe"].nunique() > 1:  # el período más corto, más legible
+        ts = ts[ts["timeframe"] == sorted(ts["timeframe"].unique(), key=lambda x: ("12" in x, x))[0]]
+    groups = [g for g in ["actores", "economia", "agenda"] if g in set(ts["group"])] or sorted(ts["group"].unique())
+    from plotly.subplots import make_subplots
+    names = {"actores": "Dirigentes", "economia": "Economía", "agenda": "Agenda"}
+    fig = make_subplots(rows=len(groups), cols=1, shared_xaxes=True, vertical_spacing=0.07,
+                        subplot_titles=[names.get(g, g) + " (100 = máximo del grupo)" for g in groups])
+    for k, g in enumerate(groups, 1):
+        d = ts[ts["group"] == g]
+        for i, term in enumerate(d["term"].unique()):
+            x = d[d["term"] == term].sort_values("date")
+            fig.add_scatter(x=x["date"], y=x["value"], name=term, mode="lines", legendgroup=g, legendgrouptitle_text=names.get(g, g),
+                            line=dict(width=2, color=PALETTE[i % len(PALETTE)]), row=k, col=1)
+    geo = ts["geo"].iloc[0] if "geo" in ts else "AR"
+    fig.update_layout(**layout(f"Qué busca la gente en Google ({geo})", height=260 * len(groups) + 120,
+                               legend=dict(orientation="v", x=1.02, y=1), margin=dict(l=60, r=200, t=90, b=50)))
+    for a in fig.layout.annotations:
+        a.font = dict(size=13, color=MUTED)
+    axes(fig)
+
+    reg = t[(t["series"] == "region") & (t["group"] == "actores")] if "region" in set(t["series"]) else pd.DataFrame()
+    fig_r = None
+    if not reg.empty:
+        if "timeframe" in reg and reg["timeframe"].nunique() > 1:
+            reg = reg[reg["timeframe"] == sorted(reg["timeframe"].unique(), key=lambda x: ("12" in x, x))[0]]
+        piv = reg.pivot_table(index="region", columns="term", values="value", aggfunc="mean").fillna(0)
+        share = piv.div(piv.sum(axis=1).replace(0, np.nan), axis=0).mul(100).fillna(0)
+        lead = share.columns[0] if "Milei" not in share.columns else "Milei"
+        share = share.sort_values(lead)
+        fig_r = go.Figure()
+        for i, term in enumerate(share.columns):
+            fig_r.add_bar(y=share.index, x=share[term].round(1), name=term, orientation="h", marker_color=PALETTE[i % len(PALETTE)])
+        fig_r.update_layout(**layout("Reparto de las búsquedas de dirigentes por provincia (%)", height=120 + 24 * len(share),
+                                     barmode="stack", xaxis_title="% de las búsquedas de estos 5 dirigentes", xaxis_range=[0, 100],
+                                     margin=dict(l=190, r=30, t=70, b=60)))
+        axes(fig_r)
+    return fig, fig_r
 
 
 def editorial_lines(df):
@@ -476,7 +517,8 @@ def main():
     figs["r10"] = domains(df)
     figs["r11"] = coverage(df, status)
     figs["r12"], conc = amplifiers(df)
-    figs["r13"] = trends(store.parent / "trends.json")
+    # Series de Google Trends: del recolector o importadas (agregados públicos, se versionan en radar/data/trends/)
+    figs["r13"], figs["r15"] = trends(store.parent / "trends.json", list(args.extra) + [str(HERE / "data" / "trends")])
     figs["r14"] = editorial_lines(df)
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
