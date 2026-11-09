@@ -700,6 +700,7 @@ def actor_profiles(df, men, fc, days):
     last = df["day"].max()
     fc_men = mentions(fc) if not fc.empty else pd.DataFrame(columns=["actor"])
     total_mentions = max(len(men), 1)
+    ALIAS_WORDS = set(re.findall(r"[a-z]{4,}", " ".join(norm(x) for k, v in CONFIG["actors"].items() for x in v + [k])))
     by_ix = men.groupby(level=0)["actor"].agg(set).to_dict() if not men.empty else {}
     out = []
     for a, alias in CONFIG["actors"].items():
@@ -724,7 +725,7 @@ def actor_profiles(df, men, fc, days):
         risk = pct(m["risk"].mean())
         idx, parts = pressure(tone["NEG"], agr, risk, delta)
         narr = m.loc[m["narrative"] != "Sin narrativa clara", "narrative"].value_counts()
-        own = set(re.findall(r"[a-z]{4,}", " ".join(norm(x) for x in alias + [a])))
+        own = ALIAS_WORDS
         mine = Counter(w for ix in m.index.unique() for w in words[pos_of[ix]])
         nm, nall = len(m.index.unique()), len(df)
         score = {w: (c / nm) / ((total_words[w] - c + 1) / max(nall - nm, 1)) for w, c in mine.items() if c >= 3 and w not in own}
@@ -745,7 +746,7 @@ def actor_profiles(df, men, fc, days):
             "daily_social": daily_s.astype(int).tolist(), "daily_news": daily_n.astype(int).tolist(),
             "tone": tone, "tone_base": "redes" if len(soc) >= 10 else "todas", "tone_news": tone_news, "emotions": emotions,
             "agresivo": agr, "risk": risk, "risk_ci": round(ci95(m["risk"].mean(), n), 1),
-            "pressure": idx if n >= 10 else None, "pressure_parts": parts if n >= 10 else None,
+            "pressure": idx if n >= 20 else None, "pressure_parts": parts if n >= 20 else None,
             "narratives": [{"n": k, "pct": pct(v / max(narr.sum(), 1))} for k, v in narr.head(5).items()],
             "words": [{"w": w, "s": round(v, 1)} for w, v in sorted(score.items(), key=lambda x: -x[1])[:12]],
             "co": [{"a": b, "n": c} for b, c in co.most_common(6)],
@@ -774,7 +775,8 @@ def province_map(df):
 
 def live_layer(df, fc, men, profiles, spikes, coord):
     """Feed de titulares (públicos) y alertas automáticas, al estilo de un monitor OSINT."""
-    news = pd.concat([df[df["kind"] == "news"], fc]).sort_values("ts", ascending=False).drop_duplicates("clean").head(80)
+    news = pd.concat([df[df["kind"] == "news"].sort_values("ts", ascending=False).drop_duplicates("clean").head(70),
+                      fc.sort_values("ts", ascending=False).drop_duplicates("clean").head(40)]).sort_values("ts", ascending=False)
     tag = {}
     for ix, a in zip(men.index, men["actor"]):
         tag.setdefault(ix, set()).add(a)
